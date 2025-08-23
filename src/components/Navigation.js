@@ -145,9 +145,7 @@ const Navigation = ({ user, onLogout }) => {
   };
 
   // Mobile Navigation (Bottom Navigation)
-  if (isMobile) {
-    const currentIndex = menuItems.findIndex(item => item.path && item.path === location.pathname);
-    
+  if (isMobile) {    
     return (
       <>
         {/* Mobile App Bar */}
@@ -388,7 +386,6 @@ const Navigation = ({ user, onLogout }) => {
                       fontSize: '9px',
                       fontStyle: 'normal',
                       fontWeight: 600,
-                      textAlign: 'center',
                       lineHeight: 1,
                     }}
                   >

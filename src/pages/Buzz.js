@@ -39,7 +39,7 @@ const Buzz = () => {
   // Load buzz content when category or page changes
   useEffect(() => {
     loadBuzzContent();
-  }, [selectedCategory, currentPage]);
+  });
 
   const loadCategories = async () => {
     try {
@@ -137,12 +137,6 @@ const Buzz = () => {
     } catch (error) {
       return dateString;
     }
-  };
-
-  const truncateText = (text, maxLength = 150) => {
-    if (!text) return '';
-    if (text.length <= maxLength) return text;
-    return text.substr(0, maxLength) + '...';
   };
 
   const extractDomain = (url) => {

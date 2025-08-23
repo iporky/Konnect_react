@@ -24,7 +24,6 @@ import { useNavigate } from 'react-router-dom';
 import BuzzCarousel from '../components/BuzzCarousel';
 import Footer from '../components/Footer';
 import TrendingSearches from '../components/TrendingSearches';
-import { useTheme as useCustomTheme } from '../contexts/ThemeContext';
 
 const categoryIcons = [
   { icon: "/images/plan-trip.png", label: "Plan Trip", color: "#8888881A" },
@@ -43,7 +42,6 @@ const Home = () => {
   const [searchValue, setSearchValue] = useState('');
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const theme = useTheme();
-  const { isDarkMode } = useCustomTheme();
   const searchInputRef = useRef(null);
 
   // Toggle state for right-side icons in the search bar

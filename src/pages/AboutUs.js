@@ -16,24 +16,9 @@ import {
   Typography,
   useTheme
 } from '@mui/material';
-import { motion, useScroll, useTransform } from 'framer-motion';
-import { useState } from 'react';
+import { motion } from 'framer-motion';
 // import ThemeToggle from '../components/ThemeToggle';
-import { useTheme as useCustomTheme } from '../contexts/ThemeContext';
 
-// Animation components
-const FadeInWhenVisible = ({ children, delay = 0 }) => {
-  return (
-    <motion.div
-      initial={{ opacity: 0, y: 60 }}
-      whileInView={{ opacity: 1, y: 0 }}
-      viewport={{ once: true, amount: 0.3 }}
-      transition={{ duration: 0.6, delay, ease: "easeOut" }}
-    >
-      {children}
-    </motion.div>
-  );
-};
 
 const SlideInLeft = ({ children, delay = 0 }) => {
   return (
@@ -74,37 +59,8 @@ const ScaleIn = ({ children, delay = 0 }) => {
   );
 };
 
-const CountUp = ({ end, duration = 2, delay = 0 }) => {
-  const count = useTransform(
-    useScroll().scrollYProgress,
-    [0, 1],
-    [0, end]
-  );
-  
-  return (
-    <motion.div
-      initial={{ opacity: 0 }}
-      whileInView={{ opacity: 1 }}
-      viewport={{ once: true }}
-      transition={{ delay }}
-    >
-      <motion.span>{count}</motion.span>
-    </motion.div>
-  );
-};
-
 const AboutUs = () => {
   const theme = useTheme();
-  const { isDarkMode, toggleTheme } = useCustomTheme();
-  const [email, setEmail] = useState('');
-
-  const handleSubscribe = (e) => {
-    e.preventDefault();
-    // Handle newsletter subscription
-    console.log('Subscribe:', email);
-    setEmail('');
-  };
-
 
   return (
     <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ duration: 1 }}>
