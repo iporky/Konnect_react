@@ -1,13 +1,13 @@
-import React from 'react';
-import {
-  Box,
-  Container,
-  Link,
-  useTheme,
-} from '@mui/material';
+import { Box, Container, Link, useTheme } from '@mui/material';
+import { useNavigate } from 'react-router-dom';
 
 const Footer = ({ floating = false, stickToBottom = true }) => {
   const theme = useTheme();
+  const navigate = useNavigate();
+
+  const handleNavigation = (path) => {
+    navigate(path);
+  };
 
   return (
     <Box
@@ -42,7 +42,7 @@ const Footer = ({ floating = false, stickToBottom = true }) => {
         >
           {/* Updated links per new design */}
           <Link 
-            href="/about"
+            onClick={() => handleNavigation('/about')}
             underline="hover"
             variant="body2"
             sx={{
@@ -58,7 +58,7 @@ const Footer = ({ floating = false, stickToBottom = true }) => {
             About Us
           </Link>
           <Link 
-            href="/business"
+            onClick={() => handleNavigation('/business')}
             underline="hover"
             variant="body2"
             sx={{
@@ -74,7 +74,7 @@ const Footer = ({ floating = false, stickToBottom = true }) => {
             Business
           </Link>
           <Link 
-            href="/contact"
+            onClick={() => handleNavigation('/contact')}
             underline="hover"
             variant="body2"
             sx={{
@@ -90,7 +90,7 @@ const Footer = ({ floating = false, stickToBottom = true }) => {
             Contact Us
           </Link>
           <Link 
-            href="/privacy"
+            onClick={() => handleNavigation('/privacy')}
             underline="hover"
             variant="body2"
             sx={{
