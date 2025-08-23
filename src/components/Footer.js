@@ -35,7 +35,7 @@ const Footer = ({ floating = false, stickToBottom = true }) => {
             flexDirection: 'row',
             justifyContent: 'center', // center align all items
             alignItems: 'center',
-            gap: 3,
+            gap: '55px',
             flexWrap: 'wrap', // allow wrapping on small screens while staying centered
             textAlign: 'center',
           }}
@@ -43,41 +43,65 @@ const Footer = ({ floating = false, stickToBottom = true }) => {
           {/* Updated links per new design */}
           <Link 
             href="/about"
-            color="#888888"
             underline="hover"
-            fontSize={10}
             variant="body2"
-            sx={{ '&:hover': { color: 'primary.main' } }}
+            sx={{
+              color: '#888',
+              textAlign: 'center',
+              fontFamily: 'Metropolis',
+              fontSize: '13px',
+              fontStyle: 'normal',
+              fontWeight: 500,
+              '&:hover': { color: '#888' }
+            }}
           >
             About Us
           </Link>
           <Link 
             href="/business"
-            color="#888888"
             underline="hover"
-            fontSize={10}
             variant="body2"
-            sx={{ '&:hover': { color: 'primary.main' } }}
+            sx={{
+              color: '#888',
+              textAlign: 'center',
+              fontFamily: 'Metropolis',
+              fontSize: '13px',
+              fontStyle: 'normal',
+              fontWeight: 500,
+              '&:hover': { color: '#888' }
+            }}
           >
             Business
           </Link>
           <Link 
             href="/contact"
-            color="#888888"
             underline="hover"
-            fontSize={10}
             variant="body2"
-            sx={{ '&:hover': { color: 'primary.main' } }}
+            sx={{
+              color: '#888',
+              textAlign: 'center',
+              fontFamily: 'Metropolis',
+              fontSize: '13px',
+              fontStyle: 'normal',
+              fontWeight: 500,
+              '&:hover': { color: '#888' }
+            }}
           >
             Contact Us
           </Link>
           <Link 
             href="/privacy"
-            color="#888888"
             underline="hover"
-            fontSize={10}
             variant="body2"
-            sx={{ '&:hover': { color: 'primary.main' } }}
+            sx={{
+              color: '#888',
+              textAlign: 'center',
+              fontFamily: 'Metropolis',
+              fontSize: '13px',
+              fontStyle: 'normal',
+              fontWeight: 500,
+              '&:hover': { color: '#888' }
+            }}
           >
             Privacy
           </Link>

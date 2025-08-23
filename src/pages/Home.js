@@ -44,7 +44,7 @@ const Home = () => {
   const theme = useTheme();
   const searchInputRef = useRef(null);
 
-  // Toggle state for right-side icons in the search bar
+  // Right-side icons in the search bar: toggle to highlight active; hover also highlights
   const [searchToggles, setSearchToggles] = useState({
     group: false,
     badge: false,
@@ -122,24 +122,24 @@ const Home = () => {
           
           {/* Hide sign-in CTA on mobile (user icon lives in app bar) */}
           {!isAuthenticated && (
-            <motion.div initial={{ opacity: 0, y: -300 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 1.2, delay: 0.2 }}>
-              <Box sx={{ position: 'absolute', width: '151px', height: '64px', right: 16, top: -40, display: { xs: 'none', md: 'block' } }}>
+            <motion.div initial={{ opacity: 0, y: -300}} animate={{ opacity: 1, y: 0 }} transition={{ duration: 1.2, delay: 0.2 }}>
+              <Box sx={{ position: 'absolute', width: '200px', height: '64px', right: 45, top: -35, display: { xs: 'none', md: 'block' } }}>
                 <Button
                   variant="outlined"
                   onClick={() => navigate('/login')}
                   sx={{
                     borderRadius: '25px',
                     px: 0,
-                    width: '151px', 
-                    height: '34px',
+                    width: '200px', 
+                    height: '45px',
                     py: 0,
                     textTransform: 'none',
                     fontWeight: 600,
                     opacity: 1,
                     transform: 'rotate(0deg)',
                     fontFamily: 'Metropolis',
-                    fontStyle: 'Semi Bold',
-                    fontSize: '10px',
+                    fontStyle: 'normal',
+                    fontSize: '13px',
                     textAlign: 'center',
                     verticalAlign: 'middle',
                     border: '1px solid #888888',
@@ -154,7 +154,7 @@ const Home = () => {
         </Box>
 
         {/* Main Content */}
-  <Container maxWidth="lg" sx={{ flex: 1, px: 2, pt: 1, pb: { xs: 0, md: showAllCategories ? 2 : 10 } }}>
+        <Container maxWidth="lg" sx={{ flex: 1, px: 2, pt: 1, pb: { xs: 0, md: showAllCategories ? 2 : 10 } }}>
           {/* Search Section */}
           <motion.div
             initial={{ opacity: 0, y: 30 }}
@@ -188,8 +188,14 @@ const Home = () => {
                 }}
               >
                 {/* Left plus icon */}
-                <IconButton size="small" aria-label="add" sx={{ mr: 1 }}>
-                  <AddRounded sx={{ fontSize: 22, color: '#CD2028' }} />
+                <IconButton
+                  aria-label="add"
+                  size="small"
+                  disableRipple
+                  disableFocusRipple
+                  sx={{ mr: 1, p: 0, '&:hover': { backgroundColor: 'transparent' } }}
+                >
+                  <AddRounded sx={{ width: 20, height: 16, color: '#CD2028' }} />
                 </IconButton>
 
                 {/* Input */}
@@ -226,41 +232,41 @@ const Home = () => {
                     size="small"
                     aria-label="group"
                     onClick={() => toggleIcon('group')}
-                    sx={{ mx: 0.5, color: searchToggles.group ? '#6F95BD' : theme.palette.text.secondary }}
+                    sx={{ mx: 0.5, color: theme.palette.text.secondary, '&:hover': { backgroundColor: 'transparent' }, '&:hover svg': { color: '#6F95BD' } }}
                   >
-                    <GroupOutlined sx={{ fontSize: 20 }} />
+                    <GroupOutlined sx={{ width: 20, height: 16, color: searchToggles.group ? '#6F95BD' : undefined }} />
                   </IconButton>
                   <IconButton
                     size="small"
                     aria-label="badge"
                     onClick={() => toggleIcon('badge')}
-                    sx={{ mx: 0.5, color: searchToggles.badge ? '#6F95BD' : theme.palette.text.secondary }}
+                    sx={{ mx: 0.5, color: theme.palette.text.secondary, '&:hover': { backgroundColor: 'transparent' }, '&:hover svg': { color: '#6F95BD' } }}
                   >
-                    <WorkspacePremiumOutlined sx={{ fontSize: 20 }} />
+                    <WorkspacePremiumOutlined sx={{ width: 20, height: 16, color: searchToggles.badge ? '#6F95BD' : undefined }} />
                   </IconButton>
                   <IconButton
                     size="small"
                     aria-label="language"
                     onClick={() => toggleIcon('globe')}
-                    sx={{ mx: 0.5, color: searchToggles.globe ? '#6F95BD' : theme.palette.text.secondary }}
+                    sx={{ mx: 0.5, color: theme.palette.text.secondary, '&:hover': { backgroundColor: 'transparent' }, '&:hover svg': { color: '#6F95BD' } }}
                   >
-                    <LanguageOutlined sx={{ fontSize: 20 }} />
+                    <LanguageOutlined sx={{ width: 20, height: 16, color: searchToggles.globe ? '#6F95BD' : undefined }} />
                   </IconButton>
                   <IconButton
                     size="small"
                     aria-label="attach"
                     onClick={() => toggleIcon('attach')}
-                    sx={{ mx: 0.5, color: searchToggles.attach ? '#6F95BD' : theme.palette.text.secondary }}
+                    sx={{ mx: 0.5, color: theme.palette.text.secondary, '&:hover': { backgroundColor: 'transparent' }, '&:hover svg': { color: '#6F95BD' } }}
                   >
-                    <AttachFileOutlined sx={{ fontSize: 20 }} />
+                    <AttachFileOutlined sx={{ width: 20, height: 16, color: searchToggles.attach ? '#6F95BD' : undefined }} />
                   </IconButton>
                   <IconButton
                     size="small"
                     aria-label="mic"
                     onClick={() => toggleIcon('mic')}
-                    sx={{ ml: 0.5, color: searchToggles.mic ? '#6F95BD' : theme.palette.text.secondary }}
+                    sx={{ ml: 0.5, color: theme.palette.text.secondary, '&:hover': { backgroundColor: 'transparent' }, '&:hover svg': { color: '#6F95BD' } }}
                   >
-                    <MicOutlined sx={{ fontSize: 20 }} />
+                    <MicOutlined sx={{ width: 20, height: 16, color: searchToggles.mic ? '#6F95BD' : undefined }} />
                   </IconButton>
                 </Box>
 
@@ -560,8 +566,8 @@ const Home = () => {
         {/* Floating Feedback Button - hidden on mobile */}
         <Box sx={{
           position: 'absolute',
-          right: 16,
-          bottom: 16,
+          right: 60,
+          bottom: 50,
           zIndex: 20,
           display: { xs: 'none', md: 'block' }
         }}>
