@@ -300,7 +300,7 @@ const Navigation = ({ user, onLogout }) => {
               height: '37px',
               width: '37px',
               objectFit: 'contain',
-              marginBottom: '65px'
+              marginBottom: '25px'
             }}
           />
         </Box>
@@ -315,7 +315,7 @@ const Navigation = ({ user, onLogout }) => {
         flexDirection: 'column',
         alignItems: 'center',
         justifyContent: 'flex-start', // Center the navigation items vertically
-        gap: '32px', // total gap between each icon
+        gap: '24px', // total gap between each icon
       }}>
         {menuItems.map((item, index) => {
           if (item.requireAuth && !user) return null;

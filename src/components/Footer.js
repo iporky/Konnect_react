@@ -49,7 +49,7 @@ const Footer = ({ floating = false, stickToBottom = true }) => {
               color: '#888',
               textAlign: 'center',
               fontFamily: 'Metropolis',
-              fontSize: '13px',
+              fontSize: '14px',
               fontStyle: 'normal',
               fontWeight: 500,
               '&:hover': { color: '#888' }

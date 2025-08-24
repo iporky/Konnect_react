@@ -1,6 +1,6 @@
-import React from 'react';
-import { Box, Typography, Paper, Chip } from '@mui/material';
-import { TrendingUp } from '@mui/icons-material';
+import React, { useState } from 'react';
+import { Box, Typography, Paper, Chip, IconButton } from '@mui/material';
+import { TrendingUp, ChevronLeft, ChevronRight } from '@mui/icons-material';
 
 const TrendingSearches = () => {
   // Mock trending searches data
@@ -15,6 +15,15 @@ const TrendingSearches = () => {
     { id: 8, text: 'Currently trending topic', rank: 8, change: 'up' },
   ];
 
+  // Two-page carousel: first 5 then next 5
+  const pages = [
+    trendingSearches.slice(0, 5),
+    trendingSearches.slice(5, 10),
+  ];
+  const [page, setPage] = useState(0);
+  const nextPage = () => setPage((p) => (p === 1 ? 0 : p + 1));
+  const prevPage = () => setPage((p) => (p === 0 ? 1 : p - 1));
+
   return (
     <Paper
       elevation={3}
@@ -22,22 +31,23 @@ const TrendingSearches = () => {
         p: 1,
         borderRadius: '25px',
         backgroundColor: '#fff',
-        height: 240,
+        height: 244,
         width: 260,
         display: 'flex',
         flexDirection: 'column',
         boxShadow: '0px 0px 4px 0px #00000040',
       }}
     >
-      {/* Header */}
-      <Box sx={{ display: 'flex', alignItems: 'center', mb: 2 }}>
-        <TrendingUp sx={{ color: '#ff4757', mr: 1, fontSize: 18 }} />
+  {/* Header */}
+  <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'center', width: '100%', mb: 2 }}>
+        <TrendingUp sx={{ color: '#ff4757', mr: 1, fontSize: 18, ml: '-18px' }} />
         <Typography 
           variant="h6" 
           sx={{ 
             fontWeight: 'bold',
             color: '#ff4757',
             fontSize: '15px',
+            paddingLeft: '-18px',
             whiteSpace: 'nowrap',
             overflow: 'hidden',
             textOverflow: 'ellipsis',
@@ -47,29 +57,16 @@ const TrendingSearches = () => {
         </Typography>
       </Box>
 
-      {/* Trending List */}
+      {/* Trending List (page content) */}
       <Box sx={{ 
         display: 'flex', 
         flexDirection: 'column', 
         gap: 1.5, 
         flex: 1,
-        overflowY: 'auto',
+        overflow: 'hidden',
         pr: 1,
-        '&::-webkit-scrollbar': {
-          width: 4,
-        },
-        '&::-webkit-scrollbar-track': {
-          backgroundColor: 'transparent',
-        },
-        '&::-webkit-scrollbar-thumb': {
-          backgroundColor: 'divider',
-          borderRadius: 2,
-          '&:hover': {
-            backgroundColor: 'text.secondary',
-          },
-        },
       }}>
-        {trendingSearches.map((item) => (
+        {pages[page].map((item) => (
           <Box
             key={item.id}
             sx={{
@@ -137,6 +134,26 @@ const TrendingSearches = () => {
             </Box>
           </Box>
         ))}
+      </Box>
+
+      {/* Carousel controls */}
+      <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'center', mt: 1 }}>
+        {/* Dots */}
+        <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+          {[0,1].map((i) => (
+            <Box
+              key={i}
+              onClick={() => setPage(i)}
+              sx={{
+                width: 6,
+                height: 6,
+                borderRadius: '50%',
+                backgroundColor: i === page ? '#ff4757' : 'divider',
+                cursor: 'pointer',
+              }}
+            />
+          ))}
+        </Box>
       </Box>
     </Paper>
   );

@@ -11,8 +11,8 @@ import {
 } from '@mui/icons-material';
 
 // Icons inherit color from parent wrapper (Navigation sets it).
-// Required size: width 24px, height 18px for all icons.
-const iconSize = { width: 24, height: 18 };
+// Required size: width 24px, height 24px for all icons.
+const iconSize = { width: 24, height: 24 };
 
 export const CustomHomeIcon = ({ selected = false, sx, ...props }) => (
   selected ? (

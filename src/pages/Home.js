@@ -97,7 +97,6 @@ const Home = () => {
         display: 'flex',
         flexDirection: 'column',
         ml: { xs: 0, md: '80px' },
-        pt: '80px',
         height: '100vh',
         overflowX: 'hidden',
         // Allow page scroll on desktop when the second row of tiles is expanded
@@ -105,13 +104,13 @@ const Home = () => {
         position: 'relative'
       }}>
         {/* Header with Logo */}
-        <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', py: { xs: 3, md: 3 }, position: 'relative' }}>
+        <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', py: { xs: 3}, position: 'relative', mb: { xs: 6, md: '76px' }, mt: { xs: 2, md: '126px' }   }}>
           <motion.div initial={{ opacity: 0, y: -30 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.8 }}>
             <Box sx={{ textAlign: 'center' }}>
               <img 
                 src="/images/Konnect_logo.png" 
                 alt="Konnect" 
-                style={{ height: '68px', width: '450'}}
+                style={{ height: '65px', width: '450'}}
               />
               {/* Tagline for mobile as in mock */}
               <Typography variant="subtitle2" sx={{ color: 'primary.main', mt: 1, display: { xs: 'block', md: 'none' }, fontFamily: 'cursive' }}>
@@ -123,7 +122,7 @@ const Home = () => {
           {/* Hide sign-in CTA on mobile (user icon lives in app bar) */}
           {!isAuthenticated && (
             <motion.div initial={{ opacity: 0, y: -300}} animate={{ opacity: 1, y: 0 }} transition={{ duration: 1.2, delay: 0.2 }}>
-              <Box sx={{ position: 'absolute', width: '200px', height: '64px', right: 45, top: -35, display: { xs: 'none', md: 'block' } }}>
+              <Box sx={{ position: 'absolute', width: '200px', height: '64px', right: 30, top: -110, display: { xs: 'none', md: 'block' } }}>
                 <Button
                   variant="outlined"
                   onClick={() => navigate('/login')}
@@ -139,7 +138,7 @@ const Home = () => {
                     transform: 'rotate(0deg)',
                     fontFamily: 'Metropolis',
                     fontStyle: 'normal',
-                    fontSize: '13px',
+                    fontSize: '14px',
                     textAlign: 'center',
                     verticalAlign: 'middle',
                     border: '1px solid #888888',
@@ -161,21 +160,20 @@ const Home = () => {
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.8, delay: 0.2 }}
           >
-            <Box sx={{ display: 'flex', justifyContent: 'center', mb: { xs: 0, md: 2 } }}>
+            <Box sx={{ display: 'flex', justifyContent: 'center', mb: { xs: 0, md: '25px' } }}>
               <Paper
                 elevation={6}
                 sx={{
                   display: 'flex',
                   alignItems: 'center',
-                  width: { xs: '90%', md: '680px' },
-                  maxWidth: { xs: 600, md: 680 },
-                  height: 55,
+                  width: { xs: '90%', md: '660px' },
+                  maxWidth: { xs: 600, md: 660 },
+                  height: 70,
                   border: `2px solid ${theme.palette.divider}`,
                   borderRadius: '50px',
                   px: 3,
-                  py: 1.5,
                   backgroundColor: '#fff',
-                  boxShadow: '0px 0px 14.5px 0px #00000040',
+                  boxShadow: '0 0 14.5px 0 rgba(0, 0, 0, 0.25)',
                   position: { xs: 'fixed', md: 'static' },
                   bottom: { xs: 'max(16px, env(safe-area-inset-bottom))', md: 'auto' },
                   left: { xs: 16, md: 'auto' },
@@ -195,7 +193,7 @@ const Home = () => {
                   disableFocusRipple
                   sx={{ mr: 1, p: 0, '&:hover': { backgroundColor: 'transparent' } }}
                 >
-                  <AddRounded sx={{ width: 20, height: 16, color: '#CD2028' }} />
+                  <AddRounded sx={{ width: 20, height: 20, color: '#CD2028' }} />
                 </IconButton>
 
                 {/* Input */}
@@ -216,11 +214,8 @@ const Home = () => {
                         fontFamily: 'Metropolis',
                         fontWeight: 600,
                         fontStyle: 'Semi Bold',
-                        fontSize: '14px',
-                        lineHeight: '175%',
-                        letterSpacing: '0%',
+                        fontSize: '17px',
                         verticalAlign: 'middle',
-
                       }
                     },
                   }}
@@ -234,7 +229,7 @@ const Home = () => {
                     onClick={() => toggleIcon('group')}
                     sx={{ mx: 0.5, color: theme.palette.text.secondary, '&:hover': { backgroundColor: 'transparent' }, '&:hover svg': { color: '#6F95BD' } }}
                   >
-                    <GroupOutlined sx={{ width: 20, height: 16, color: searchToggles.group ? '#6F95BD' : undefined }} />
+                    <GroupOutlined sx={{ width: 20, height: 20, color: searchToggles.group ? '#6F95BD' : undefined }} />
                   </IconButton>
                   <IconButton
                     size="small"
@@ -242,7 +237,7 @@ const Home = () => {
                     onClick={() => toggleIcon('badge')}
                     sx={{ mx: 0.5, color: theme.palette.text.secondary, '&:hover': { backgroundColor: 'transparent' }, '&:hover svg': { color: '#6F95BD' } }}
                   >
-                    <WorkspacePremiumOutlined sx={{ width: 20, height: 16, color: searchToggles.badge ? '#6F95BD' : undefined }} />
+                    <WorkspacePremiumOutlined sx={{ width: 20, height: 20, color: searchToggles.badge ? '#6F95BD' : undefined }} />
                   </IconButton>
                   <IconButton
                     size="small"
@@ -250,7 +245,7 @@ const Home = () => {
                     onClick={() => toggleIcon('globe')}
                     sx={{ mx: 0.5, color: theme.palette.text.secondary, '&:hover': { backgroundColor: 'transparent' }, '&:hover svg': { color: '#6F95BD' } }}
                   >
-                    <LanguageOutlined sx={{ width: 20, height: 16, color: searchToggles.globe ? '#6F95BD' : undefined }} />
+                    <LanguageOutlined sx={{ width: 20, height: 20, color: searchToggles.globe ? '#6F95BD' : undefined }} />
                   </IconButton>
                   <IconButton
                     size="small"
@@ -258,7 +253,7 @@ const Home = () => {
                     onClick={() => toggleIcon('attach')}
                     sx={{ mx: 0.5, color: theme.palette.text.secondary, '&:hover': { backgroundColor: 'transparent' }, '&:hover svg': { color: '#6F95BD' } }}
                   >
-                    <AttachFileOutlined sx={{ width: 20, height: 16, color: searchToggles.attach ? '#6F95BD' : undefined }} />
+                    <AttachFileOutlined sx={{ width: 20, height: 20, color: searchToggles.attach ? '#6F95BD' : undefined }} />
                   </IconButton>
                   <IconButton
                     size="small"
@@ -266,7 +261,7 @@ const Home = () => {
                     onClick={() => toggleIcon('mic')}
                     sx={{ ml: 0.5, color: theme.palette.text.secondary, '&:hover': { backgroundColor: 'transparent' }, '&:hover svg': { color: '#6F95BD' } }}
                   >
-                    <MicOutlined sx={{ width: 20, height: 16, color: searchToggles.mic ? '#6F95BD' : undefined }} />
+                    <MicOutlined sx={{ width: 20, height: 20, color: searchToggles.mic ? '#6F95BD' : undefined }} />
                   </IconButton>
                 </Box>
 
@@ -288,11 +283,11 @@ const Home = () => {
             animate={{ opacity: 1, y: 0 }}
             transition={{ layout: { duration: 0.35, ease: 'easeInOut' }, duration: 0.6, delay: 0.35, ease: 'easeOut' }}
           >
-            {/* Desktop rows container centered as a group; second row left-aligned */}
-            <Box sx={{ display: { xs: 'none', md: 'flex' }, justifyContent: 'center' }}>
+      {/* Desktop rows container centered as a group; second row left-aligned; exact 60px gap below */}
+            <Box sx={{ display: { xs: 'none', md: 'flex' }, justifyContent: 'center', mb: { xs: 0, md: '60px' } }}>
               <Box component={motion.div} layout sx={{ width: 'fit-content' }}>
                 {/* Row 1: first N categories; show More here only when collapsed */}
-                <Box component={motion.div} layout sx={{ display: 'flex', gap: '30px', mb: 1.5, justifyContent: 'flex-start' }}>
+                <Box component={motion.div} layout sx={{ display: 'flex', gap: '30px', mb: showAllCategories ? 0.5 : 0, justifyContent: 'flex-start' }}>
                   {(showAllCategories ? categoryIcons.slice(0, ROW1_COUNT) : categoryIcons.slice(0, DESKTOP_VISIBLE)).map((category, index) => (
                     <Box
                       key={index}
@@ -301,8 +296,8 @@ const Home = () => {
                     >
                       <Box
                         sx={{
-                          width: 72,
-                          height: 72,
+                          width: 60,
+                          height: 60,
                           borderRadius: '5px',
                           display: 'flex',
                           alignItems: 'center',
@@ -317,12 +312,12 @@ const Home = () => {
                         }}
                       >
                         {category.Icon ? (
-                          <category.Icon sx={{ fontSize: 26, color: '#CD2028' }} />
+                          <category.Icon sx={{ fontSize: 36, color: '#CD2028' }} />
                         ) : (
-                          <Box component="img" src={category.icon} alt={category.label} sx={{ width: 26, height: 26 }} />
+                          <Box component="img" src={category.icon} alt={category.label} sx={{ width: 36, height: 36 }} />
                         )}
                       </Box>
-                      <Typography variant="caption" sx={{ color: '#888888', fontSize: '11px', fontWeight: 'bold' }}>
+                      <Typography variant="caption" sx={{ color: '#888888', fontSize: '14px', fontWeight: '700' }}>
                         {category.label}
                       </Typography>
                     </Box>
@@ -333,8 +328,8 @@ const Home = () => {
                       <Box
                         onClick={() => setShowAllCategories((v) => !v)}
                         sx={{
-                          width: 72,
-                          height: 72,
+                          width: 60,
+                          height: 60,
                           borderRadius: '5px',
                           display: 'flex',
                           alignItems: 'center',
@@ -367,7 +362,7 @@ const Home = () => {
                       exit={{ opacity: 0, y: -8, height: 0 }}
                       transition={{ layout: { duration: 0.35, ease: 'easeInOut' }, duration: 0.25 }}
                     >
-                      <Box component={motion.div} layout sx={{ display: 'flex', gap: '30px', mt: 1.5, mb: 3, justifyContent: 'flex-start', flexWrap: 'nowrap' }}>
+                      <Box component={motion.div} layout sx={{ display: 'flex', gap: '30px', mt: 1.5, mb: 0, justifyContent: 'flex-start', flexWrap: 'nowrap' }}>
                         {categoryIcons.slice(ROW1_COUNT).map((category, index) => (
                           <Box
                             key={index}
@@ -376,8 +371,8 @@ const Home = () => {
                           >
                             <Box
                               sx={{
-                                width: 72,
-                                height: 72,
+                                width: 60,
+                                height: 60,
                                 borderRadius: '5px',
                                 display: 'flex',
                                 alignItems: 'center',
@@ -393,9 +388,9 @@ const Home = () => {
                               }}
                             >
                               {category.Icon ? (
-                                <category.Icon sx={{ fontSize: 26, color: '#CD2028' }} />
+                                <category.Icon sx={{ fontSize: 36, color: '#CD2028' }} />
                               ) : (
-                                <Box component="img" src={category.icon} alt={category.label} sx={{ width: 26, height: 26 }} />
+                                <Box component="img" src={category.icon} alt={category.label} sx={{ width: 36, height: 36 }} />
                               )}
                             </Box>
                             <Typography variant="caption" sx={{ color: '#888888', fontSize: '11px', fontWeight: 'bold' }}>
@@ -409,8 +404,8 @@ const Home = () => {
                           <Box
                             onClick={() => setShowAllCategories((v) => !v)}
                             sx={{
-                              width: 72,
-                              height: 72,
+                              width: 60,
+                              height: 60,
                               borderRadius: '5px',
                               display: 'flex',
                               alignItems: 'center',
@@ -440,7 +435,7 @@ const Home = () => {
           {/* Carousel and Trending - hidden on mobile per mock; layout animates when tiles expand/collapse */}
           <motion.div layout initial={{ opacity: 0, y: 30 }} animate={{ opacity: 1, y: 0 }} transition={{ layout: { duration: 0.35, ease: 'easeOut' }, duration: 0.8, delay: 0.6 }}>
             <Box sx={{ mb: 2, display: { xs: 'none', md: 'flex' }, justifyContent: 'center' }}>
-              <Box sx={{ display: 'flex', gap: 3, alignItems: 'flex-start' }}>
+              <Box sx={{ display: 'flex', gap: 3, alignItems: 'flex-start', ml: '20px' }}>
                 <Box sx={{ width: 444, height: 200 }}>
                   <BuzzCarousel />
                 </Box>
