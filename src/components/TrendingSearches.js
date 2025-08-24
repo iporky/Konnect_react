@@ -1,6 +1,6 @@
-import React, { useState } from 'react';
-import { Box, Typography, Paper, Chip, IconButton } from '@mui/material';
-import { TrendingUp, ChevronLeft, ChevronRight } from '@mui/icons-material';
+import { TrendingUp } from '@mui/icons-material';
+import { Box, Chip, Paper, Typography } from '@mui/material';
+import { useState } from 'react';
 
 const TrendingSearches = () => {
   // Mock trending searches data
@@ -21,8 +21,6 @@ const TrendingSearches = () => {
     trendingSearches.slice(5, 10),
   ];
   const [page, setPage] = useState(0);
-  const nextPage = () => setPage((p) => (p === 1 ? 0 : p + 1));
-  const prevPage = () => setPage((p) => (p === 0 ? 1 : p - 1));
 
   return (
     <Paper
