@@ -5,16 +5,16 @@ import { useState } from 'react';
 const TrendingSearches = () => {
   // Mock trending searches data
   const trendingSearches = [
-    { id: 1, text: 'Currently trending topic', rank: 1, change: 'up' },
-    { id: 2, text: 'Currently trending topic', rank: 2, change: 'up' },
-    { id: 3, text: 'Currently trending topic', rank: 3, change: 'up' },
-    { id: 4, text: 'Currently trending topic', rank: 4, change: 'up' },
-    { id: 5, text: 'Currently trending topic', rank: 5, change: 'up' },
-    { id: 6, text: 'Currently trending topic', rank: 6, change: 'up' },
-    { id: 7, text: 'Currently trending topic', rank: 7, change: 'up' },
-    { id: 8, text: 'Currently trending topic', rank: 8, change: 'up' },
-    { id: 9, text: 'Currently trending topic', rank: 9, change: 'up' },
-    { id: 10, text: 'Currently trending topic', rank: 10, change: 'up' },
+    { id: 1, text: 'Currently trending topic in korea', rank: 1, change: 'up' },
+    { id: 2, text: 'Currently trending topic seoul', rank: 2, change: 'up' },
+    { id: 3, text: 'Currently trending topic busan', rank: 3, change: 'up' },
+    { id: 4, text: 'Currently trending topic gangnam', rank: 4, change: 'up' },
+    { id: 5, text: 'Currently trending topic in korea', rank: 5, change: 'up' },
+    { id: 6, text: 'Currently trending topic in korea', rank: 6, change: 'up' },
+    { id: 7, text: 'Currently trending topic in korea', rank: 7, change: 'up' },
+    { id: 8, text: 'Currently trending topic in korea', rank: 8, change: 'up' },
+    { id: 9, text: 'Currently trending topic in korea', rank: 9, change: 'up' },
+    { id: 10, text: 'Currently trending topic in korea', rank: 10, change: 'up' },
   ];
 
   // Two-page carousel: first 5 then next 5
@@ -25,17 +25,16 @@ const TrendingSearches = () => {
   const [page, setPage] = useState(0);
 
   return (
-    <Paper
+    <Box
       elevation={3}
       sx={{
         p: 1,
-        borderRadius: '25px',
+        border: '0',
         backgroundColor: '#fff',
         height: 244,
         width: 260,
         display: 'flex',
         flexDirection: 'column',
-        boxShadow: '0px 0px 4px 0px #00000040',
       }}
     >
       {/* Header */}
@@ -52,7 +51,7 @@ const TrendingSearches = () => {
             textOverflow: 'ellipsis',
           }}
         >
-          Real-time search rankings
+          Trending
         </Typography>
       </Box>
 
@@ -109,22 +108,7 @@ const TrendingSearches = () => {
             </Box>
 
             {/* Trending Indicator */}
-            <Box sx={{ display: 'flex', alignItems: 'center' }}>
-              <Chip
-                size="small"
-                label="↗"
-                sx={{
-                  backgroundColor: '#ff4757',
-                  color: 'white',
-                  fontSize: '9px',
-                  height: '16px',
-                  minWidth: '16px',
-                  '& .MuiChip-label': {
-                    px: 0.3,
-                  },
-                }}
-              />
-            </Box>
+           
           </Box>
         ))}
       </Box>
@@ -148,7 +132,7 @@ const TrendingSearches = () => {
           ))}
         </Box>
       </Box>
-    </Paper>
+    </Box>
   );
 };
 

@@ -97,22 +97,22 @@ const Home = () => {
         backgroundColor: '#ffffff',
         display: 'flex',
         flexDirection: 'column',
-        ml: { xs: 0, md: '66px' },
-        minHeight: '100vh',
-        borderRadius: { xs: 0, md: '30px' },
+        margin: { xs: 0, md: '8px 8px 8px 66px' },
+        borderRadius: { xs: 0, md: '14px' },
         overflowX: 'hidden',
+        height: '98vh',
         // Allow page scroll on desktop when the second row of tiles is expanded
-        overflowY: { xs: 'hidden', md: showAllCategories ? 'auto' : 'auto' },
+        overflowY: { xs: 'hidden', md: showAllCategories ? 'auto' : 'none' },
         position: 'relative'
       }}>
         {/* Header with Logo */}
-        <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', py: { xs: 3}, position: 'relative', mb: { xs: 6, md: '76px' }, mt: { xs: 2, md: '126px' }   }}>
+        <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', py: { xs: 3}, position: 'relative', mb: { xs: 6, md: '66px' }, mt: { xs: 2, md: '98px' }   }}>
           <motion.div initial={{ opacity: 0, y: -30 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.8 }}>
             <Box sx={{ textAlign: 'center' }}>
               <img 
                 src="/images/Konnect_logo.png" 
                 alt="Konnect" 
-                style={{ height: '65px', width: '450'}}
+                style={{ height: '69px', width: '460'}}
               />
               {/* Tagline for mobile as in mock */}
               <Typography variant="subtitle2" sx={{ color: 'primary.main', mt: 1, display: { xs: 'block', md: 'none' }, fontFamily: 'cursive' }}>
@@ -145,7 +145,7 @@ const Home = () => {
                     fontWeight: 600,
                     fontFamily: 'Metropolis',
                     fontStyle: 'normal',
-                    fontSize: '14px',
+                    fontSize: '13px',
                     backgroundColor: '#121212',
                     color: '#ffffff',
                     border: '1px solid #121212',
@@ -169,7 +169,7 @@ const Home = () => {
                     fontWeight: 600,
                     fontFamily: 'Metropolis',
                     fontStyle: 'normal',
-                    fontSize: '14px',
+                    fontSize: '13px',
                     border: '1px solid #888888',
                     color: '#888888',
                     backgroundColor: 'transparent',
@@ -179,7 +179,7 @@ const Home = () => {
                     }
                   }}
                 >
-                  log in
+                  Log in
                 </Button>
               </Box>
             </motion.div>
@@ -250,7 +250,7 @@ const Home = () => {
                         fontFamily: 'Metropolis',
                         fontWeight: 600,
                         fontStyle: 'Semi Bold',
-                        fontSize: '17px',
+                        fontSize: '13px',
                         verticalAlign: 'middle',
                       }
                     },
@@ -307,7 +307,7 @@ const Home = () => {
                       <WorkspacePremiumOutlined sx={{ width: 20, height: 20, color: searchToggles.badge ? '#6F95BD' : undefined }} />
                     </IconButton>
                   </Tooltip>
-                  <Tooltip title="Language" arrow enterDelay={300} placement="top">
+                  <Tooltip title="Translate" arrow enterDelay={300} placement="top">
                     <IconButton
                       size="small"
                       aria-label="language"
@@ -393,7 +393,7 @@ const Home = () => {
                           <Box component="img" src={category.icon} alt={category.label} sx={{ width: 36, height: 36 }} />
                         )}
                       </Box>
-                      <Typography variant="caption" sx={{ color: '#888888', fontSize: '14px', fontWeight: '600' }}>
+                      <Typography variant="caption" sx={{ color: '#888888', fontSize: '13px', fontWeight: '600' }}>
                         {category.label}
                       </Typography>
                     </Box>
