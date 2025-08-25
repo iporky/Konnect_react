@@ -1,5 +1,5 @@
 import { Bolt } from '@mui/icons-material';
-import { Box, Chip, Paper, Typography } from '@mui/material';
+import { Box, Typography } from '@mui/material';
 import { useState } from 'react';
 
 const TrendingSearches = () => {
