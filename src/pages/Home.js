@@ -94,14 +94,16 @@ const Home = () => {
   return (
     <>
       <Box sx={{ 
-        backgroundColor: theme.palette.background.default,
+        backgroundColor: '#ffffff',
         display: 'flex',
         flexDirection: 'column',
-        ml: { xs: 0, md: '80px' },
-        height: '100vh',
+        ml: { xs: 0, md: '66px' },
+        minHeight: '100vh',
+        borderTopLeftRadius: { xs: 0, md: '28px' },
+        borderBottomLeftRadius: { xs: 0, md: '28px' },
         overflowX: 'hidden',
         // Allow page scroll on desktop when the second row of tiles is expanded
-        overflowY: { xs: 'hidden', md: showAllCategories ? 'auto' : 'hidden' },
+        overflowY: { xs: 'hidden', md: showAllCategories ? 'auto' : 'auto' },
         position: 'relative'
       }}>
         {/* Header with Logo */}
@@ -392,7 +394,7 @@ const Home = () => {
                           <Box component="img" src={category.icon} alt={category.label} sx={{ width: 36, height: 36 }} />
                         )}
                       </Box>
-                      <Typography variant="caption" sx={{ color: '#888888', fontSize: '14px', fontWeight: '700' }}>
+                      <Typography variant="caption" sx={{ color: '#888888', fontSize: '14px', fontWeight: '600' }}>
                         {category.label}
                       </Typography>
                     </Box>

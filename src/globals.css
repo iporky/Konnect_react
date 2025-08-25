@@ -12,7 +12,8 @@
   }
   
   body {
-    background-color: #ffffff;
+    /* Match navigation bar tint behind rounded main content */
+    background-color: rgba(207, 32, 42, 0.05); /* #CF202A0D */
     color: #0f172a;
     margin: 0;
     line-height: 1.6;
