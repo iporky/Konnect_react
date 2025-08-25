@@ -1,7 +1,5 @@
 import {
   AccountCircle,
-  DarkMode,
-  LightMode,
   Menu as MenuIcon
 } from '@mui/icons-material';
 import {
@@ -9,12 +7,10 @@ import {
   BottomNavigation,
   Box,
   Drawer,
-  FormControlLabel,
   IconButton,
   List,
   ListItem,
   ListItemButton,
-  Switch,
   Toolbar,
   Typography,
   useMediaQuery,
@@ -23,7 +19,6 @@ import {
 import { motion } from 'framer-motion';
 import { useState } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
-import { useTheme as useCustomTheme } from '../contexts/ThemeContext';
 import {
   CustomBuzzIcon,
   CustomHomeIcon,
@@ -38,7 +33,6 @@ const Navigation = ({ user, onLogout }) => {
   const muiTheme = useMuiTheme();
   const isMobile = useMediaQuery(muiTheme.breakpoints.down('md'));
   const [mobileOpen, setMobileOpen] = useState(false);
-  const { isDarkMode, toggleTheme } = useCustomTheme();
 
   const menuItems = [
     { 
@@ -64,80 +58,12 @@ const Navigation = ({ user, onLogout }) => {
       icon: <CustomLanguageIcon selected={location.pathname === '/language'} />, 
       path: '/language', 
       requireAuth: false 
-    },
-    { 
-      text: 'Theme', 
-      icon: (
-        <FormControlLabel
-          control={
-            <Switch
-              checked={isDarkMode}
-              onChange={toggleTheme}
-              icon={<LightMode sx={{ fontSize: '1.1rem' }} />}
-              checkedIcon={<DarkMode sx={{ fontSize: '1.1rem' }} />}
-              sx={{
-                width: 45,
-                height: 34,
-                padding: 0,
-                '& .MuiSwitch-switchBase': {
-                  padding: 0,
-                  margin: 1,
-                  transitionDuration: '300ms',
-                  '&.Mui-checked': {
-                    transform: 'translateX(28px)',
-                    color: '#fff',
-                    '& + .MuiSwitch-track': {
-                      backgroundColor: muiTheme.palette.primary.main,
-                      opacity: 1,
-                      border: 0,
-                    },
-                  },
-                },
-                '& .MuiSwitch-thumb': {
-                  boxSizing: 'border-box',
-                  width: 30,
-                  height: 30,
-                  display: 'flex',
-                  alignItems: 'center',
-                  justifyContent: 'center',
-                },
-                '& .MuiSwitch-track': {
-                  borderRadius: 34 / 2,
-                  backgroundColor: muiTheme.palette.mode === 'light' ? '#1d4484' : '#39393D',
-                  opacity: 1,
-                  transition: muiTheme.transitions.create(['background-color'], {
-                    duration: 500,
-                  }),
-                },
-              }}
-            />
-          }
-          label=""
-          sx={{
-            m: 0,
-            p: 0,
-          }}
-        />
-      ), 
-      action: toggleTheme,
-      requireAuth: false 
-    },
+  },
   ];
 
-  const handleNavigation = (path, action, event) => {
-    if (action) {
-      // For theme toggle, prevent double-clicking if the event came from the switch itself
-      if (event && event.target.closest('.MuiSwitch-root')) {
-        return; // Let the switch handle its own click
-      }
-      action(); // Execute the action (like toggleTheme)
-    } else if (path) {
-      navigate(path);
-    }
-    
-    if (isMobile) {
-      setMobileOpen(false);
-    }
+  const handleNavigation = (path) => {
+    if (path) navigate(path);
+    if (isMobile) setMobileOpen(false);
   };
 
   const handleDrawerToggle = () => {
@@ -209,7 +135,7 @@ const Navigation = ({ user, onLogout }) => {
             {/* Centered nav items */}
             <List sx={{ flex: 1, px: 3 }}>
               {(() => {
-                const listItems = menuItems.filter(mi => mi.path && !mi.action && (!mi.requireAuth || user));
+                const listItems = menuItems.filter(mi => mi.path && (!mi.requireAuth || user));
                 return listItems.map((item, idx) => {
                   const isActive = location.pathname === item.path;
                   return (
@@ -336,7 +262,7 @@ const Navigation = ({ user, onLogout }) => {
             >
               <ListItem disablePadding sx={{ width: '100%', mb: 0 }}>
                 <ListItemButton
-                  onClick={(e) => handleNavigation(item.path, item.action, e)}
+                  onClick={() => handleNavigation(item.path)}
                   sx={{
                     display: 'flex',
                     flexDirection: 'column',
@@ -382,10 +308,10 @@ const Navigation = ({ user, onLogout }) => {
                     sx={{
                       color: (isActive && item.path) ? '#6F95BD' : '#CFCFCF',
                       textAlign: 'center',
-                      fontFamily: 'Metropolis, sans-serif',
-                      fontSize: '9px',
+                      fontFamily: 'Metropolis',
+                      fontSize: '11px',
                       fontStyle: 'normal',
-                      fontWeight: 600,
+                      fontWeight: 500,
                       lineHeight: 1,
                     }}
                   >

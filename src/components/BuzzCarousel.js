@@ -16,7 +16,7 @@ const BuzzCarousel = () => {
   }, []);
 
   return (
-    <Box sx={{ position: 'relative', width: 438, height: 246, borderRadius: '25px', overflow: 'hidden', boxShadow: '0 4px 10px rgba(0,0,0,0.08)' }}>
+    <Box sx={{ position: 'relative', width: 438, height: 244, borderRadius: '25px', overflow: 'hidden', boxShadow: '0 4px 10px rgba(0,0,0,0.08)' }}>
       {/* Slides */}
       {images.map((src, i) => (
         <Box

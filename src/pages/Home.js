@@ -13,6 +13,7 @@ import {
   Button,
   Container,
   IconButton,
+  Tooltip,
   Paper,
   TextField,
   Typography,
@@ -119,33 +120,65 @@ const Home = () => {
             </Box>
           </motion.div>
           
-          {/* Hide sign-in CTA on mobile (user icon lives in app bar) */}
+          {/* Desktop: top-right auth buttons */}
           {!isAuthenticated && (
-            <motion.div initial={{ opacity: 0, y: -300}} animate={{ opacity: 1, y: 0 }} transition={{ duration: 1.2, delay: 0.2 }}>
-              <Box sx={{ position: 'absolute', width: '200px', height: '64px', right: 30, top: -110, display: { xs: 'none', md: 'block' } }}>
+            <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ duration: 1.2, delay: 0.2 }}>
+              <Box
+                sx={{
+                  position: 'fixed',
+                  top: 25,
+                  right: 45,
+                  display: { xs: 'none', md: 'flex' },
+                  gap: 1,
+                  zIndex: 1200,
+                }}
+              >
+                <Button
+                  variant="contained"
+                  onClick={() => navigate('/signup')}
+                  sx={{
+                    borderRadius: '25px',
+                    px: 2.5,
+                    height: '45px',
+                    textTransform: 'none',
+                    fontWeight: 600,
+                    fontFamily: 'Metropolis',
+                    fontStyle: 'normal',
+                    fontSize: '14px',
+                    backgroundColor: '#121212',
+                    color: '#ffffff',
+                    border: '1px solid #121212',
+                    boxShadow: 'none',
+                    '&:hover': {
+                      backgroundColor: '#121212',
+                      boxShadow: 'none'
+                    }
+                  }}
+                >
+                  Sign up for free
+                </Button>
                 <Button
                   variant="outlined"
                   onClick={() => navigate('/login')}
                   sx={{
                     borderRadius: '25px',
-                    px: 0,
-                    width: '200px', 
+                    px: 2.5,
                     height: '45px',
-                    py: 0,
                     textTransform: 'none',
                     fontWeight: 600,
-                    opacity: 1,
-                    transform: 'rotate(0deg)',
                     fontFamily: 'Metropolis',
                     fontStyle: 'normal',
                     fontSize: '14px',
-                    textAlign: 'center',
-                    verticalAlign: 'middle',
                     border: '1px solid #888888',
                     color: '#888888',
+                    backgroundColor: 'transparent',
+                    boxShadow: 'none',
+                    '&:hover': {
+                      backgroundColor: 'transparent'
+                    }
                   }}
                 >
-                  Sign in to unlock Korea
+                  log in
                 </Button>
               </Box>
             </motion.div>
@@ -186,15 +219,17 @@ const Home = () => {
                 }}
               >
                 {/* Left plus icon */}
-                <IconButton
-                  aria-label="add"
-                  size="small"
-                  disableRipple
-                  disableFocusRipple
-                  sx={{ mr: 1, p: 0, '&:hover': { backgroundColor: 'transparent' } }}
-                >
-                  <AddRounded sx={{ width: 20, height: 20, color: '#CD2028' }} />
-                </IconButton>
+                <Tooltip title="Add" arrow enterDelay={300} placement="top">
+                  <IconButton
+                    aria-label="add"
+                    size="small"
+                    disableRipple
+                    disableFocusRipple
+                    sx={{ mr: 1, p: 0, '&:hover': { backgroundColor: 'transparent' } }}
+                  >
+                    <AddRounded sx={{ width: 20, height: 20, color: '#CD2028' }} />
+                  </IconButton>
+                </Tooltip>
 
                 {/* Input */}
                 <TextField
@@ -223,53 +258,93 @@ const Home = () => {
 
                 {/* Right-side toggle icons (desktop) */}
                 <Box sx={{ display: { xs: 'none', md: 'flex' }, alignItems: 'center' }}>
-                  <IconButton
-                    size="small"
-                    aria-label="group"
-                    onClick={() => toggleIcon('group')}
-                    sx={{ mx: 0.5, color: theme.palette.text.secondary, '&:hover': { backgroundColor: 'transparent' }, '&:hover svg': { color: '#6F95BD' } }}
+                  <Tooltip
+                    arrow
+                    enterDelay={300}
+                    placement="top"
+                    title={
+                      <Box sx={{ maxWidth: 240 }}>
+                        <Typography variant="subtitle2" sx={{ fontWeight: 700, mb: 0.5 }}>
+                          Community mode
+                        </Typography>
+                        <Typography variant="caption" sx={{ opacity: 0.9 }}>
+                          Ask your questions to the community directly.
+                        </Typography>
+                      </Box>
+                    }
                   >
-                    <GroupOutlined sx={{ width: 20, height: 20, color: searchToggles.group ? '#6F95BD' : undefined }} />
-                  </IconButton>
-                  <IconButton
-                    size="small"
-                    aria-label="badge"
-                    onClick={() => toggleIcon('badge')}
-                    sx={{ mx: 0.5, color: theme.palette.text.secondary, '&:hover': { backgroundColor: 'transparent' }, '&:hover svg': { color: '#6F95BD' } }}
+                    <IconButton
+                      size="small"
+                      aria-label="group"
+                      onClick={() => toggleIcon('group')}
+                      sx={{ mx: 0.5, color: theme.palette.text.secondary, '&:hover': { backgroundColor: 'transparent' }, '&:hover svg': { color: '#6F95BD' } }}
+                    >
+                      <GroupOutlined sx={{ width: 20, height: 20, color: searchToggles.group ? '#6F95BD' : undefined }} />
+                    </IconButton>
+                  </Tooltip>
+                  <Tooltip
+                    arrow
+                    enterDelay={300}
+                    placement="top"
+                    title={
+                      <Box sx={{ maxWidth: 240 }}>
+                        <Typography variant="subtitle2" sx={{ fontWeight: 700, mb: 0.5 }}>
+                          Expert mode
+                        </Typography>
+                        <Typography variant="caption" sx={{ opacity: 0.9 }}>
+                          Get your questions answered by an expert.
+                        </Typography>
+                      </Box>
+                    }
                   >
-                    <WorkspacePremiumOutlined sx={{ width: 20, height: 20, color: searchToggles.badge ? '#6F95BD' : undefined }} />
-                  </IconButton>
-                  <IconButton
-                    size="small"
-                    aria-label="language"
-                    onClick={() => toggleIcon('globe')}
-                    sx={{ mx: 0.5, color: theme.palette.text.secondary, '&:hover': { backgroundColor: 'transparent' }, '&:hover svg': { color: '#6F95BD' } }}
-                  >
-                    <LanguageOutlined sx={{ width: 20, height: 20, color: searchToggles.globe ? '#6F95BD' : undefined }} />
-                  </IconButton>
-                  <IconButton
-                    size="small"
-                    aria-label="attach"
-                    onClick={() => toggleIcon('attach')}
-                    sx={{ mx: 0.5, color: theme.palette.text.secondary, '&:hover': { backgroundColor: 'transparent' }, '&:hover svg': { color: '#6F95BD' } }}
-                  >
-                    <AttachFileOutlined sx={{ width: 20, height: 20, color: searchToggles.attach ? '#6F95BD' : undefined }} />
-                  </IconButton>
-                  <IconButton
-                    size="small"
-                    aria-label="mic"
-                    onClick={() => toggleIcon('mic')}
-                    sx={{ ml: 0.5, color: theme.palette.text.secondary, '&:hover': { backgroundColor: 'transparent' }, '&:hover svg': { color: '#6F95BD' } }}
-                  >
-                    <MicOutlined sx={{ width: 20, height: 20, color: searchToggles.mic ? '#6F95BD' : undefined }} />
-                  </IconButton>
+                    <IconButton
+                      size="small"
+                      aria-label="badge"
+                      onClick={() => toggleIcon('badge')}
+                      sx={{ mx: 0.5, color: theme.palette.text.secondary, '&:hover': { backgroundColor: 'transparent' }, '&:hover svg': { color: '#6F95BD' } }}
+                    >
+                      <WorkspacePremiumOutlined sx={{ width: 20, height: 20, color: searchToggles.badge ? '#6F95BD' : undefined }} />
+                    </IconButton>
+                  </Tooltip>
+                  <Tooltip title="Language" arrow enterDelay={300} placement="top">
+                    <IconButton
+                      size="small"
+                      aria-label="language"
+                      onClick={() => toggleIcon('globe')}
+                      sx={{ mx: 0.5, color: theme.palette.text.secondary, '&:hover': { backgroundColor: 'transparent' }, '&:hover svg': { color: '#6F95BD' } }}
+                    >
+                      <LanguageOutlined sx={{ width: 20, height: 20, color: searchToggles.globe ? '#6F95BD' : undefined }} />
+                    </IconButton>
+                  </Tooltip>
+                  <Tooltip title="Attach file" arrow enterDelay={300} placement="top">
+                    <IconButton
+                      size="small"
+                      aria-label="attach"
+                      onClick={() => toggleIcon('attach')}
+                      sx={{ mx: 0.5, color: theme.palette.text.secondary, '&:hover': { backgroundColor: 'transparent' }, '&:hover svg': { color: '#6F95BD' } }}
+                    >
+                      <AttachFileOutlined sx={{ width: 20, height: 20, color: searchToggles.attach ? '#6F95BD' : undefined }} />
+                    </IconButton>
+                  </Tooltip>
+                  <Tooltip title="Voice" arrow enterDelay={300} placement="top">
+                    <IconButton
+                      size="small"
+                      aria-label="mic"
+                      onClick={() => toggleIcon('mic')}
+                      sx={{ ml: 0.5, color: theme.palette.text.secondary, '&:hover': { backgroundColor: 'transparent' }, '&:hover svg': { color: '#6F95BD' } }}
+                    >
+                      <MicOutlined sx={{ width: 20, height: 20, color: searchToggles.mic ? '#6F95BD' : undefined }} />
+                    </IconButton>
+                  </Tooltip>
                 </Box>
 
                 {/* Mobile more (three dots) icon */}
                 <Box sx={{ display: { xs: 'flex', md: 'none' } }}>
-                  <IconButton size="small" aria-label="more">
-                    <MoreHoriz />
-                  </IconButton>
+                  <Tooltip title="More options" arrow enterDelay={300} placement="top">
+                    <IconButton size="small" aria-label="more">
+                      <MoreHoriz />
+                    </IconButton>
+                  </Tooltip>
                 </Box>
               </Paper>
             </Box>
@@ -436,10 +511,10 @@ const Home = () => {
           <motion.div layout initial={{ opacity: 0, y: 30 }} animate={{ opacity: 1, y: 0 }} transition={{ layout: { duration: 0.35, ease: 'easeOut' }, duration: 0.8, delay: 0.6 }}>
             <Box sx={{ mb: 2, display: { xs: 'none', md: 'flex' }, justifyContent: 'center' }}>
               <Box sx={{ display: 'flex', gap: 3, alignItems: 'flex-start', ml: '20px' }}>
-                <Box sx={{ width: 444, height: 200 }}>
+                <Box sx={{ width: 444, height: 244 }}>
                   <BuzzCarousel />
                 </Box>
-                <Box sx={{ width: 260, height: 240 }}>
+                <Box sx={{ width: 260, height: 244 }}>
                   <TrendingSearches />
                 </Box>
               </Box>

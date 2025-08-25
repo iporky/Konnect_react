@@ -1,4 +1,4 @@
-import { TrendingUp } from '@mui/icons-material';
+import { Bolt } from '@mui/icons-material';
 import { Box, Chip, Paper, Typography } from '@mui/material';
 import { useState } from 'react';
 
@@ -13,6 +13,8 @@ const TrendingSearches = () => {
     { id: 6, text: 'Currently trending topic', rank: 6, change: 'up' },
     { id: 7, text: 'Currently trending topic', rank: 7, change: 'up' },
     { id: 8, text: 'Currently trending topic', rank: 8, change: 'up' },
+    { id: 9, text: 'Currently trending topic', rank: 9, change: 'up' },
+    { id: 10, text: 'Currently trending topic', rank: 10, change: 'up' },
   ];
 
   // Two-page carousel: first 5 then next 5
@@ -36,30 +38,29 @@ const TrendingSearches = () => {
         boxShadow: '0px 0px 4px 0px #00000040',
       }}
     >
-  {/* Header */}
-  <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'center', width: '100%', mb: 2 }}>
-        <TrendingUp sx={{ color: '#ff4757', mr: 1, fontSize: 18, ml: '-18px' }} />
-        <Typography 
-          variant="h6" 
-          sx={{ 
+      {/* Header */}
+      <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'flex-start', width: '100%', mb: 1 }}>
+        <Bolt sx={{ color: '#ff4757', mr: 1, fontSize: 18 }} />
+        <Typography
+          variant="h6"
+          sx={{
             fontWeight: 'bold',
             color: '#ff4757',
-            fontSize: '15px',
-            paddingLeft: '-18px',
+            fontSize: '13px',
             whiteSpace: 'nowrap',
             overflow: 'hidden',
             textOverflow: 'ellipsis',
           }}
         >
-          Trending searches
+          Real-time search rankings
         </Typography>
       </Box>
 
       {/* Trending List (page content) */}
-      <Box sx={{ 
-        display: 'flex', 
-        flexDirection: 'column', 
-        gap: 1.5, 
+      <Box sx={{
+        display: 'flex',
+        flexDirection: 'column',
+        gap: 1,
         flex: 1,
         overflow: 'hidden',
         pr: 1,
@@ -71,18 +72,12 @@ const TrendingSearches = () => {
               display: 'flex',
               alignItems: 'center',
               justifyContent: 'space-between',
-              py: 0.8,
-              borderBottom: '1px solid',
-              borderBottomColor: 'divider',
-              '&:last-child': {
-                borderBottom: 'none',
-              },
+              py: 0.6,
               cursor: 'pointer',
+              // Minimal hover to keep colors but avoid layout shift
               '&:hover': {
                 backgroundColor: 'action.hover',
                 borderRadius: 1,
-                px: 0.5,
-                mx: -0.5,
               },
             }}
           >
@@ -94,7 +89,7 @@ const TrendingSearches = () => {
                   fontWeight: 'bold',
                   color: 'text.secondary',
                   mr: 1,
-                  minWidth: '14px',
+                  minWidth: '16px',
                   fontSize: '12px',
                 }}
               >
