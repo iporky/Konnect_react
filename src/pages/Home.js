@@ -99,8 +99,7 @@ const Home = () => {
         flexDirection: 'column',
         ml: { xs: 0, md: '66px' },
         minHeight: '100vh',
-        borderTopLeftRadius: { xs: 0, md: '28px' },
-        borderBottomLeftRadius: { xs: 0, md: '28px' },
+        borderRadius: { xs: 0, md: '30px' },
         overflowX: 'hidden',
         // Allow page scroll on desktop when the second row of tiles is expanded
         overflowY: { xs: 'hidden', md: showAllCategories ? 'auto' : 'auto' },
