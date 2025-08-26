@@ -79,7 +79,7 @@ function App() {
           display: 'flex', 
           flexDirection: 'column', 
           minHeight: '100vh',
-          backgroundColor: '#CF202A0D'
+          backgroundColor: '#cf202a0d'
         }}>
           <Navigation user={user} onLogout={handleLogout} />
           

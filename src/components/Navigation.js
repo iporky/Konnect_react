@@ -185,8 +185,8 @@ const Navigation = ({ user, onLogout }) => {
   // Desktop Navigation (Sidebar)
   return (
     <motion.div
-      initial={{ x: -100, opacity: 0 }}
-      animate={{ x: 0, opacity: 1 }}
+      initial={{ opacity: 0 }}
+      animate={{ opacity: 1 }}
       transition={{ duration: 0.6, ease: "easeOut" }}
     >
       <Box
@@ -196,7 +196,6 @@ const Navigation = ({ user, onLogout }) => {
           top: 0,
           width: '66px',
           height: '100vh',
-          backgroundColor: '#CF202A0D',
           borderRight: `1px solid ${muiTheme.palette.divider}`,
           display: { xs: 'none', md: 'flex' }, // Hide on mobile, show on desktop
           flexDirection: 'column',
@@ -207,8 +206,8 @@ const Navigation = ({ user, onLogout }) => {
       >
       {/* Logo Section */}
       <motion.div
-        initial={{ y: -30, opacity: 0 }}
-        animate={{ y: 0, opacity: 1 }}
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
         transition={{ duration: 0.8, delay: 0.3, ease: "easeOut" }}
       >
         <Box sx={{ 
@@ -251,8 +250,8 @@ const Navigation = ({ user, onLogout }) => {
           return (
             <motion.div
               key={item.text}
-              initial={{ x: -50, opacity: 0 }}
-              animate={{ x: 0, opacity: 1 }}
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
               transition={{ 
                 duration: 0.5, 
                 delay: 0.6 + (index * 0.1), // Staggered animation

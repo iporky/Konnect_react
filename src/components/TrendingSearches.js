@@ -28,7 +28,9 @@ const TrendingSearches = () => {
     <Box
       elevation={3}
       sx={{
-        p: 1,
+        px: 1,
+        pt: 0,
+        pb: 1,
         border: '0',
         backgroundColor: '#fff',
         height: 244,
@@ -37,9 +39,9 @@ const TrendingSearches = () => {
         flexDirection: 'column',
       }}
     >
-      {/* Header */}
-      <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'flex-start', width: '100%', mb: 1 }}>
-        <Bolt sx={{ color: '#ff4757', mr: 1, fontSize: 18 }} />
+      {/* Header aligned with rank/text columns: 16px number column + 8px gap + text column */}
+      <Box sx={{ display: 'grid', gridTemplateColumns: '16px auto', columnGap: 1, alignItems: 'center', width: '100%', mb: 1 }}>
+        <Bolt sx={{ color: '#ff4757', fontSize: 16, ml: '-6px' }} />
         <Typography
           variant="h6"
           sx={{
@@ -86,7 +88,7 @@ const TrendingSearches = () => {
                 variant="body2"
                 sx={{
                   fontWeight: 'bold',
-                  color: 'text.secondary',
+                  color: item.rank <= 3 ? '#ff4757' : 'text.secondary',
                   mr: 1,
                   minWidth: '16px',
                   fontSize: '12px',

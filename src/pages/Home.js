@@ -107,7 +107,7 @@ const Home = () => {
       }}>
         {/* Header with Logo */}
         <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', py: { xs: 3}, position: 'relative', mb: { xs: 6, md: '66px' }, mt: { xs: 2, md: '98px' }   }}>
-          <motion.div initial={{ opacity: 0, y: -30 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.8 }}>
+          <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ duration: 0.8 }}>
             <Box sx={{ textAlign: 'center' }}>
               <img 
                 src="/images/Konnect_logo.png" 
@@ -145,7 +145,7 @@ const Home = () => {
                     fontWeight: 600,
                     fontFamily: 'Metropolis',
                     fontStyle: 'normal',
-                    fontSize: '13px',
+                    fontSize: '12px',
                     backgroundColor: '#121212',
                     color: '#ffffff',
                     border: '1px solid #121212',
@@ -169,7 +169,7 @@ const Home = () => {
                     fontWeight: 600,
                     fontFamily: 'Metropolis',
                     fontStyle: 'normal',
-                    fontSize: '13px',
+                    fontSize: '12px',
                     border: '1px solid #888888',
                     color: '#888888',
                     backgroundColor: 'transparent',
@@ -190,8 +190,8 @@ const Home = () => {
         <Container maxWidth="lg" sx={{ flex: 1, px: 2, pt: 1, pb: { xs: 0, md: showAllCategories ? 2 : 10 } }}>
           {/* Search Section */}
           <motion.div
-            initial={{ opacity: 0, y: 30 }}
-            animate={{ opacity: 1, y: 0 }}
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
             transition={{ duration: 0.8, delay: 0.2 }}
           >
             <Box sx={{ display: 'flex', justifyContent: 'center', mb: { xs: 0, md: '25px' } }}>
@@ -220,7 +220,21 @@ const Home = () => {
                 }}
               >
                 {/* Left plus icon */}
-                <Tooltip title="Add" arrow enterDelay={300} placement="top">
+                <Tooltip
+                  arrow
+                  enterDelay={300}
+                  placement="top"
+                  title={
+                    <Box sx={{ maxWidth: 240 }}>
+                      <Typography variant="subtitle2" sx={{ fontWeight: 700, mb: 0.5 }}>
+                        Community Post
+                      </Typography>
+                      <Typography variant="caption" sx={{ opacity: 0.9 }}>
+                        Share your Korean journey with the community
+                      </Typography>
+                    </Box>
+                  }
+                >
                   <IconButton
                     aria-label="add"
                     size="small"
@@ -354,16 +368,15 @@ const Home = () => {
           {/* Category Icons - desktop: collapsed => first 6 + More; expanded => first 7 icons; remaining left-aligned with More at end */}
           <LayoutGroup>
           <motion.div
-            layout
-            initial={{ opacity: 0, y: 30 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ layout: { duration: 0.35, ease: 'easeInOut' }, duration: 0.6, delay: 0.35, ease: 'easeOut' }}
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ duration: 0.6, delay: 0.35, ease: 'easeOut' }}
           >
       {/* Desktop rows container centered as a group; second row left-aligned; exact 60px gap below */}
             <Box sx={{ display: { xs: 'none', md: 'flex' }, justifyContent: 'center', mb: { xs: 0, md: '60px' } }}>
-              <Box component={motion.div} layout sx={{ width: 'fit-content' }}>
+              <Box sx={{ width: 'fit-content' }}>
                 {/* Row 1: first N categories; show More here only when collapsed */}
-                <Box component={motion.div} layout sx={{ display: 'flex', gap: '30px', mb: showAllCategories ? 0.5 : 0, justifyContent: 'flex-start' }}>
+                <Box sx={{ display: 'flex', gap: '30px', mb: showAllCategories ? 0.5 : 0, justifyContent: 'flex-start' }}>
                   {(showAllCategories ? categoryIcons.slice(0, ROW1_COUNT) : categoryIcons.slice(0, DESKTOP_VISIBLE)).map((category, index) => (
                     <Box
                       key={index}
@@ -431,14 +444,13 @@ const Home = () => {
                 <AnimatePresence mode="popLayout">
                   {showAllCategories && (
                     <motion.div
-                      layout
                       style={{ overflow: 'hidden' }}
-                      initial={{ opacity: 0, y: -8, height: 0 }}
-                      animate={{ opacity: 1, y: 0, height: 'auto' }}
-                      exit={{ opacity: 0, y: -8, height: 0 }}
-                      transition={{ layout: { duration: 0.35, ease: 'easeInOut' }, duration: 0.25 }}
+                      initial={{ opacity: 0 }}
+                      animate={{ opacity: 1 }}
+                      exit={{ opacity: 0 }}
+                      transition={{ duration: 0.25 }}
                     >
-                      <Box component={motion.div} layout sx={{ display: 'flex', gap: '30px', mt: 1.5, mb: 0, justifyContent: 'flex-start', flexWrap: 'nowrap' }}>
+                      <Box sx={{ display: 'flex', gap: '30px', mt: 1.5, mb: 0, justifyContent: 'flex-start', flexWrap: 'nowrap' }}>
                         {categoryIcons.slice(ROW1_COUNT).map((category, index) => (
                           <Box
                             key={index}
@@ -509,7 +521,7 @@ const Home = () => {
           </motion.div>
 
           {/* Carousel and Trending - hidden on mobile per mock; layout animates when tiles expand/collapse */}
-          <motion.div layout initial={{ opacity: 0, y: 30 }} animate={{ opacity: 1, y: 0 }} transition={{ layout: { duration: 0.35, ease: 'easeOut' }, duration: 0.8, delay: 0.6 }}>
+          <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ duration: 0.8, delay: 0.6 }}>
             <Box sx={{ mb: 2, display: { xs: 'none', md: 'flex' }, justifyContent: 'center' }}>
               <Box sx={{ display: 'flex', gap: 3, alignItems: 'flex-start', ml: '20px' }}>
                 <Box sx={{ width: 444, height: 244 }}>

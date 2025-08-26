@@ -12,7 +12,6 @@ import {
   CardContent,
   Container,
   Grid,
-  Paper,
   Typography,
   useTheme
 } from '@mui/material';
@@ -87,19 +86,20 @@ const AboutUs = () => {
           style={{ width: '100%' }}
         >
           <Container
-            maxWidth="lg"
+            maxWidth="80vw"
             sx={{
               minHeight: { xs: 'calc(100vh - 64px)', md: '100vh' },
               display: 'flex',
               alignItems: 'center',
               py: { xs: 4, md: 8 },
+              ml: { xs: 0, md: 15 }
             }}
           >
             {/* Hero two-column layout */}
-            <Grid container spacing={4} alignItems="center">
+            <Grid container spacing={4} alignItems="flex-start" sx={{ flexWrap: { xs: 'wrap', sm: 'nowrap' } }}>
               {/* Left copy */}
-              <Grid item xs={12} md={6}>
-                <Box sx={{ textAlign: 'left', pl: 0, mt: 4 }}>
+              <Grid item xs={12} sm={7} md={7} sx={{ minWidth: 0 }}>
+                <Box sx={{ textAlign: 'left', pl: 0, pr: { sm: 2, md: 3 }, mt: 4 }}>
                   <motion.div
                     initial={{ opacity: 0, x: -60 }}
                     whileInView={{ opacity: 1, x: 0 }}
@@ -235,58 +235,70 @@ const AboutUs = () => {
               </Grid>
 
               {/* Right mosaic */}
-              <Grid item xs={12} md={6}>
+              <Grid item xs={12} sm={5} md={5} sx={{ display: 'flex', justifyContent: { sm: 'flex-end' }, minWidth: 0 }}>
                 <motion.div
                   initial={{ opacity: 0, y: 60 }}
                   whileInView={{ opacity: 1, y: 0 }}
                   viewport={{ once: true, amount: 0.5 }}
                   transition={{ duration: 0.8, ease: 'easeOut' }}
                 >
-                  <Box sx={{ position: 'relative' }}>
+                  <Box sx={{ position: 'relative', width: '100%', maxWidth: { sm: 520, md: 560 } }}>
                     <Grid container spacing={2}>
-            <Grid item xs={6}>
-                        <Box sx={{
-              borderRadius: '20px',
-                          height: { xs: 200, md: 260 },
-                          backgroundImage: 'url(https://images.unsplash.com/photo-1549692520-acc6669e2f0c?auto=format&fit=crop&w=900&q=60)',
-                          backgroundSize: 'cover',
-                          backgroundPosition: 'center',
-                        }} />
+                      <Grid item xs={6}>
+                        <Box
+                          component="img"
+                          alt="About Konnect 1"
+                          src={`${process.env.PUBLIC_URL}/images/aboutUs/about_section_1.jpeg`}
+                          sx={{
+                            borderRadius: '20px',
+                            width: '100%',
+                            height: { xs: 140, sm: 170, md: 200 },
+                            objectFit: 'cover',
+                            display: 'block'
+                          }}
+                        />
                       </Grid>
                       <Grid item xs={6}>
-                        <Box sx={{
-              borderRadius: '20px',
-                          height: { xs: 120, md: 180 },
-                          mb: 2,
-                          backgroundImage: 'url(https://images.unsplash.com/photo-1538688423619-a81d3f23454b?auto=format&fit=crop&w=600&q=60)',
-                          backgroundSize: 'cover',
-                          backgroundPosition: 'center',
-                        }} />
-                        <Box sx={{
-              borderRadius: '20px',
-                          height: { xs: 70, md: 70 },
-                          backgroundImage: 'url(https://images.unsplash.com/photo-1512453979798-5ea266f8880c?auto=format&fit=crop&w=600&q=60)',
-                          backgroundSize: 'cover',
-                          backgroundPosition: 'center',
-                        }} />
+                        <Box
+                          component="img"
+                          alt="About Konnect 2"
+                          src={`${process.env.PUBLIC_URL}/images/aboutUs/about-section_2.jpeg`}
+                          sx={{
+                            borderRadius: '20px',
+                            width: '100%',
+                            height: { xs: 140, sm: 170, md: 200 },
+                            objectFit: 'cover',
+                            display: 'block'
+                          }}
+                        />
                       </Grid>
-                      <Grid item xs={8}>
-                        <Box sx={{
-              borderRadius: '20px',
-                          height: { xs: 120, md: 160 },
-                          backgroundImage: 'url(https://images.unsplash.com/photo-1542038784456-1ea8e935640e?auto=format&fit=crop&w=900&q=60)',
-                          backgroundSize: 'cover',
-                          backgroundPosition: 'center',
-                        }} />
+                      <Grid item xs={6}>
+                        <Box
+                          component="img"
+                          alt="About Konnect 3"
+                          src={`${process.env.PUBLIC_URL}/images/aboutUs/about-section_3.jpeg`}
+                          sx={{
+                            borderRadius: '20px',
+                            width: '100%',
+                            height: { xs: 140, sm: 170, md: 200 },
+                            objectFit: 'cover',
+                            display: 'block'
+                          }}
+                        />
                       </Grid>
-                      <Grid item xs={4}>
-                        <Box sx={{
-              borderRadius: '20px',
-                          height: { xs: 120, md: 160 },
-                          backgroundImage: 'url(https://images.unsplash.com/photo-1563240389-1b3d1b2323cf?auto=format&fit=crop&w=600&q=60)',
-                          backgroundSize: 'cover',
-                          backgroundPosition: 'center',
-                        }} />
+                      <Grid item xs={6}>
+                        <Box
+                          component="img"
+                          alt="About Konnect 4"
+                          src={`${process.env.PUBLIC_URL}/images/aboutUs/about-section_4.jpeg`}
+                          sx={{
+                            borderRadius: '20px',
+                            width: '100%',
+                            height: { xs: 140, sm: 170, md: 200 },
+                            objectFit: 'cover',
+                            display: 'block'
+                          }}
+                        />
                       </Grid>
                     </Grid>
                     {/* removed down-arrow affordance per request */}
@@ -405,7 +417,18 @@ const AboutUs = () => {
               </Grid>
               <Grid item xs={12} md={6}>
                 <SlideInRight>
-                  <Paper elevation={0} sx={{ bgcolor: 'grey.100', height: { xs: 180, md: 240 }, borderRadius: 3 }} />
+                  <Box
+                    component="img"
+                    alt="Where we are going"
+                    src={`${process.env.PUBLIC_URL}/images/aboutUs/where_section.jpeg`}
+                    sx={{
+                      height: { xs: 180, md: 240 },
+                      width: '100%',
+                      borderRadius: 3,
+                      objectFit: 'cover',
+                      display: 'block'
+                    }}
+                  />
                 </SlideInRight>
               </Grid>
             </Grid>

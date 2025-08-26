@@ -52,7 +52,8 @@ const Footer = ({ floating = false, stickToBottom = true }) => {
               fontSize: '14px',
               fontStyle: 'normal',
               fontWeight: 500,
-              '&:hover': { color: '#888' }
+              cursor: 'pointer',
+              '&:hover': { color: '#888', cursor: 'pointer' }
             }}
           >
             About Us
@@ -68,7 +69,8 @@ const Footer = ({ floating = false, stickToBottom = true }) => {
               fontSize: '13px',
               fontStyle: 'normal',
               fontWeight: 500,
-              '&:hover': { color: '#888' }
+              cursor: 'pointer',
+              '&:hover': { color: '#888', cursor: 'pointer' }
             }}
           >
             Business
@@ -84,7 +86,8 @@ const Footer = ({ floating = false, stickToBottom = true }) => {
               fontSize: '13px',
               fontStyle: 'normal',
               fontWeight: 500,
-              '&:hover': { color: '#888' }
+              cursor: 'pointer',
+              '&:hover': { color: '#888', cursor: 'pointer' }
             }}
           >
             Contact Us
@@ -100,7 +103,8 @@ const Footer = ({ floating = false, stickToBottom = true }) => {
               fontSize: '13px',
               fontStyle: 'normal',
               fontWeight: 500,
-              '&:hover': { color: '#888' }
+              cursor: 'pointer',
+              '&:hover': { color: '#888', cursor: 'pointer' }
             }}
           >
             Privacy
