@@ -3,7 +3,10 @@ import {
   CreditCardOutlined,
   LockOutlined,
   RoomServiceOutlined,
-  TravelExploreOutlined
+  TravelExploreOutlined,
+  BadgeOutlined,
+  EventNoteOutlined,
+  WorkOutlineOutlined
 } from '@mui/icons-material';
 import {
   Box,
@@ -80,10 +83,13 @@ const AboutUs = () => {
         sx={{
           backgroundColor: theme.palette.background.default,
           color: theme.palette.text.primary,
-          ml: { xs: 0 },
-          mt: { xs: '64px', md: 0 },
-          mb: { xs: '56px', md: 0, lg: 10 }, // Add extra bottom margin for large screens
+          ml: { xs: 0, md: 9 },
+          mr: { xs: 0, md: 1 },
+          mt: { xs: '64px', md: 1 },
+          mb: { xs: '56px', md: 0, lg: 1 }, // Add extra bottom margin for large screens
           minHeight: '60vh',
+          borderRadius: { xs: 0, md: '14px' },
+          left: 100,
           display: 'flex',
           flexDirection: 'column',
           justifyContent: 'center',
@@ -105,6 +111,7 @@ const AboutUs = () => {
               display: 'flex',
               alignItems: 'center',
               ml: { xs: 0, md: 30 },
+
             }}
           >
             {/* Hero two-column layout */}
@@ -426,7 +433,7 @@ const AboutUs = () => {
                 </motion.div>
 
                 {/* Five cards row */}
-                <Box sx={{ mt: 4, display: 'grid', gap: 2.5, gridTemplateColumns: { xs: '1fr', sm: '1fr 1fr', md: 'repeat(5, 1fr)' } }}>
+                <Box sx={{ mt: 8, display: 'grid', gap: 6.5, ml:8, gridTemplateColumns: { xs: '1fr', sm: '1fr 1fr', md: 'repeat(5, 1fr)' } }}>
                   {[
                     { Icon: TravelExploreOutlined, title: 'Search', desc: 'Find what you need in your language—tourism, transport, food, events, clinics & more.' },
                     { Icon: RoomServiceOutlined, title: 'Book', desc: 'Reserve taxis, trains, restaurants, or hotels directly in the app—no Korean needed.' },
@@ -461,8 +468,8 @@ const AboutUs = () => {
                             background: 'linear-gradient(180deg, rgba(205,32,40,0.10) 0%, rgba(205,32,40,0.10) 60%, rgba(205,32,40,0.06) 100%)',
                           }}
                         />
-                        <CardContent sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center', textAlign: 'center', gap: 1.25, pt: 7 }}>
-                          <f.Icon sx={{ color: '#CD2028', fontSize: 32 }} />
+                        <CardContent sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center', textAlign: 'center', gap: 4, pt: 2 }}>
+                          <f.Icon sx={{ color: '#CD2028', fontSize: 45 }} />
                           <Typography sx={{ fontFamily: 'Metropolis, -apple-system, Segoe UI, Roboto, Helvetica, Arial, sans-serif', fontWeight: 700, fontSize: '20px' }}>{f.title}</Typography>
                           <Typography sx={{ fontFamily: 'Metropolis, -apple-system, Segoe UI, Roboto, Helvetica, Arial, sans-serif', fontWeight: 400, fontSize: '14px', color: theme.palette.text.secondary }}>
                             {f.desc}
@@ -485,34 +492,45 @@ const AboutUs = () => {
           transition={{ duration: 1, ease: 'easeOut' }}
           style={{ width: '100%', display: 'flex', justifyContent: 'center', background: 'transparent' }}
         >
-          <Container maxWidth="lg">
+          <Container maxWidth="xl"
+            sx={{
+                minHeight: { xs: 'calc(100vh - 64px)', md: '60vh' },
+                display: 'flex',
+                alignItems: 'center',
+                ml: { xs: 0, md: 30 },
+              }}
+            >
             <Grid container spacing={4} alignItems="center">
               <Grid item xs={12} md={6}>
                 <SlideInLeft>
                   <Typography
                     variant="h2"
                     sx={{
-                      fontFamily: 'Metropolis, -apple-system, Segoe UI, Roboto, Helvetica, Arial, sans-serif',
+                      fontFamily: 'Metropolis',
                       fontWeight: 700,
-                      fontSize: { xs: '36px', md: '64px' },
-                      color: theme.palette.text.primary,
+                      fontSize: { xs: '32px', md: '56px' },
+                      color: '#3289C9',
                       lineHeight: 1.1,
+                      letterSpacing: { xs: '-0.32px', md: '-0.56px' },
                       mb: 2,
                     }}
                   >
                     Where we are going
                   </Typography>
-                  <Typography
-                    variant="h5"
-                    sx={{
-                      fontFamily: 'Metropolis, -apple-system, Segoe UI, Roboto, Helvetica, Arial, sans-serif',
-                      fontWeight: 400,
-                      color: theme.palette.text.secondary,
-                      fontSize: '16px',
-                    }}
-                  >
-                    We’re just getting started. With over 100,000 users from 96 countries, Konnect is expanding every day. Our goal? To become the easiest way for anyone, anywhere, to live, travel, and thrive in Korea.
-                  </Typography>
+                  <Box sx={{ borderLeft: '3px solid #CD2028', pl: 2, ml: 0, maxWidth: 560 }}>
+                    <Typography
+                      sx={{
+                        fontFamily: 'Metropolis',
+                        fontWeight: 400,
+                        color: theme.palette.text.secondary,
+                        fontSize: '28px',
+                        fontStyle: 'italic',
+                        lineHeight: 1.7,
+                      }}
+                    >
+                      We’re just getting started. With over 100,000 users from 96 countries, Konnect is expanding every day. Our goal? To become the easiest way for anyone, anywhere, to live, travel, and thrive in Korea.
+                    </Typography>
+                  </Box>
                 </SlideInLeft>
               </Grid>
               <Grid item xs={12} md={6}>
@@ -522,11 +540,13 @@ const AboutUs = () => {
                     alt="Where we are going"
                     src={`${process.env.PUBLIC_URL}/images/aboutUs/where_section.jpeg`}
                     sx={{
-                      height: { xs: 180, md: 240 },
-                      width: '100%',
-                      borderRadius: 3,
+                      height: { xs: 200, md: 400 },
+                      width: { xs: '100%', md: '750px' },
+                      borderRadius: '16px',
+                      boxShadow: '0 6px 24px rgba(0,0,0,0.08)',
                       objectFit: 'cover',
-                      display: 'block'
+                      display: 'block',
+                      ml: { xs: 0, md: 8 },
                     }}
                   />
                 </SlideInRight>
@@ -536,52 +556,70 @@ const AboutUs = () => {
         </motion.div>
 
         {/* Coming soon */}
-        <Box sx={{ width: '100%', display: 'flex', justifyContent: 'center', py: { xs: 6, md: 10 } }}>
+        <Box sx={{ width: '100%', display: 'flex', justifyContent: 'left', py: { xs: 6, md: 10 } }}>
           <motion.div
             initial={{ opacity: 0, y: 60 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true, amount: 0.5 }}
             transition={{ duration: 0.8 }}
-            style={{ width: '100%', maxWidth: 1100 }}
+            style={{ width: '100%' }}
           >
-            <Container maxWidth="lg">
+            <Container maxWidth="xl"
+              sx={{
+                minHeight: { xs: 'calc(100vh - 64px)', md: '60vh' },
+                display: 'flex',
+                alignItems: 'center',
+                ml: { xs: 0, md: 30 },
+              }}
+            >              
               <Box sx={{ textAlign: 'left' }}>
                 <Typography
                   variant="h2"
                   sx={{
-                    fontFamily: 'Metropolis, -apple-system, Segoe UI, Roboto, Helvetica, Arial, sans-serif',
+                    fontFamily: 'Metropolis',
                     fontWeight: 700,
-                    fontSize: { xs: '36px', md: '64px' },
-                    color: theme.palette.text.primary,
-                    letterSpacing: '-0.02em',
+                    fontSize: { xs: '32px', md: '62px' },
+                    color: '#3289C9',
+                    letterSpacing: { xs: '-0.32px', md: '-0.56px' },
                   }}
                 >
-                  Coming soon
+                Coming soon
                 </Typography>
-                <Box sx={{ display: 'flex', alignItems: 'center', gap: 1.5, mt: 1 }}>
-                  <Typography sx={{ fontFamily: 'Metropolis, -apple-system, Segoe UI, Roboto, Helvetica, Arial, sans-serif', fontWeight: 400, fontSize: '11px', color: theme.palette.text.secondary }}>
-                    Any things you miss or love? We’re constantly expanding.
+                <Box sx={{ display: 'flex', alignItems: 'center', gap: 1, mt: 1, flexWrap: 'wrap' }}>
+                  <Typography sx={{ fontFamily: 'Metropolis', fontWeight: 400, fontSize: '16px', color: theme.palette.text.secondary, fontStyle: 'italic' }}>
+                    Big things are on the way! Get ready for something amazing.
                   </Typography>
-                  <Button size="small" variant="contained" color="primary" sx={{ borderRadius: 999, px: 1.5, py: 0.25, fontSize: '11px', fontWeight: 700, textTransform: 'none' }}>
-                    Stay updated
+                  <Button size="small" variant="contained" color="primary" sx={{ borderRadius: 999, px: 1.5, py: 0.25, fontSize: '15px', fontWeight: 700, textTransform: 'none' }}>
+                    Stay Updated!
                   </Button>
+                  <Typography sx={{ fontFamily: 'Metropolis', fontWeight: 400, fontSize: '16px', color: theme.palette.text.secondary, fontStyle: 'italic' }}>
+                    today!
+                  </Typography>
                 </Box>
 
-                <Grid container spacing={3} sx={{ mt: 3 }}>
+                <Grid container spacing={24} sx={{ mt: 4 }}>
                   {[
-                    { icon: '🪪', title: 'SuperK all-in-one digital card' },
-                    { icon: '🗺️', title: 'Local experiences & events' },
-                    { icon: '💼', title: 'Jobs & Internships' },
+                    { Icon: BadgeOutlined, title: 'SuperK all-in-one digital card' },
+                    { Icon: EventNoteOutlined, title: 'Local experiences & events' },
+                    { Icon: WorkOutlineOutlined, title: 'Jobs & Internships' },
                   ].map((it, i) => (
-                    <Grid item xs={12} sm={4} key={it.title}>
+                    <Grid item xs={12} sm={4} md={12} key={it.title} sx={{ mr: { xs: 0, md: 12 }, height: '100px', width: '180px' }}>
                       <ScaleIn delay={0.1 + i * 0.1}>
-                        <Box sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center', textAlign: 'center', p: 2 }}>
-                          <Box sx={{ width: 72, height: 56, borderRadius: 2, bgcolor: 'grey.100', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 28, color: theme.palette.text.secondary }}>
-                            {it.icon}
-                          </Box>
-                          <Typography sx={{ mt: 1.5, fontFamily: 'Metropolis, -apple-system, Segoe UI, Roboto, Helvetica, Arial, sans-serif', fontWeight: 400, fontSize: '11px', color: theme.palette.text.secondary }}>
+                        <Box sx={{ display: 'flex', gap:2, flexDirection: 'column', alignItems: 'center', textAlign: 'center', justifyContent: 'end', p: { xs: 1.5, md: 2 } }}>
+                          <it.Icon sx={{ color: 'grey.400', fontSize: 80 }} />
+                          <Typography 
+                            sx={{ 
+                                color: '#B9B9B9',
+                                textAlign: 'center',
+                                fontFamily: 'Metropolis',
+                                fontSize: '20px',
+                                fontStyle: 'normal',
+                                fontWeight: 600,
+                            }}
+                          >
                             {it.title}
                           </Typography>
+                          <Box sx={{ mt: 1, width: 100, height: 4, bgcolor: 'grey.300', borderRadius: 2 }} />
                         </Box>
                       </ScaleIn>
                     </Grid>
