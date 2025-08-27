@@ -16,6 +16,7 @@ import {
   useTheme
 } from '@mui/material';
 import { motion } from 'framer-motion';
+import { useEffect, useState } from 'react';
 // import ThemeToggle from '../components/ThemeToggle';
 
 
@@ -60,6 +61,18 @@ const ScaleIn = ({ children, delay = 0 }) => {
 
 const AboutUs = () => {
   const theme = useTheme();
+  // Mobile carousel setup (xs only). Desktop view remains unchanged.
+  const slides = [
+    `${process.env.PUBLIC_URL}/images/aboutUs/about_section_1.jpeg`,
+    `${process.env.PUBLIC_URL}/images/aboutUs/about_section_2.jpeg`,
+    `${process.env.PUBLIC_URL}/images/aboutUs/about_section_3.jpeg`,
+    `${process.env.PUBLIC_URL}/images/aboutUs/about_section_4.jpeg`,
+  ];
+  const [slideIndex, setSlideIndex] = useState(0);
+  useEffect(() => {
+    const id = setInterval(() => setSlideIndex((i) => (i + 1) % slides.length), 3500);
+    return () => clearInterval(id);
+  }, [slides.length]);
 
   return (
     <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ duration: 1 }}>
@@ -83,23 +96,22 @@ const AboutUs = () => {
           initial={{ opacity: 0, y: 80 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 1, ease: 'easeOut' }}
-          style={{ width: '100%' }}
+          style={{ width: 'auto' }}
         >
           <Container
-            maxWidth="80vw"
+            maxWidth="xl"
             sx={{
-              minHeight: { xs: 'calc(100vh - 64px)', md: '100vh' },
+              minHeight: { xs: 'calc(100vh - 64px)', md: '95vh' },
               display: 'flex',
               alignItems: 'center',
-              py: { xs: 4, md: 8 },
-              ml: { xs: 0, md: 15 }
+              ml: { xs: 0, md: 30 },
             }}
           >
             {/* Hero two-column layout */}
             <Grid container spacing={4} alignItems="flex-start" sx={{ flexWrap: { xs: 'wrap', sm: 'nowrap' } }}>
               {/* Left copy */}
-              <Grid item xs={12} sm={7} md={7} sx={{ minWidth: 0 }}>
-                <Box sx={{ textAlign: 'left', pl: 0, pr: { sm: 2, md: 3 }, mt: 4 }}>
+              <Grid item xs={12} sm={7} md={7}>
+                <Box sx={{ textAlign: 'left', pl: 0, pr: { sm: 2, md: 3 }, mt: 10 }}>
                   <motion.div
                     initial={{ opacity: 0, x: -60 }}
                     whileInView={{ opacity: 1, x: 0 }}
@@ -109,17 +121,18 @@ const AboutUs = () => {
                     <Typography
                       variant="h1"
                       sx={{
-                        fontFamily: 'Metropolis, -apple-system, Segoe UI, Roboto, Helvetica, Arial, sans-serif',
+                        // Exact CSS per request (except the word "Only")
+                        color: '#1E4485',
+                        fontFamily: 'Metropolis',
+                        fontSize: '64px',
+                        fontStyle: 'normal',
                         fontWeight: 700,
-                        fontSize: { xs: '40px', md: '64px' },
-                        lineHeight: 1.1,
+                        lineHeight: '119%',
+                        letterSpacing: '-0.64px',
                         mb: 3,
-                        color: theme.palette.text.primary,
-                        letterSpacing: '-0.02em',
                       }}
                     >
-                      The <Box component="span" sx={{ color: theme.palette.secondary.main, fontStyle: 'italic' }}>Only</Box>{' '}
-                      <Box component="span" sx={{ color: theme.palette.primary.main }}>App</Box>
+                      The <Box component="span" sx={{ color: theme.palette.secondary.main, fontStyle: 'italic' }}>Only</Box>{' '}App
                       <br />
                       You Need in Korea
                     </Typography>
@@ -195,6 +208,65 @@ const AboutUs = () => {
                     </Box>
                   </motion.div>
 
+                  {/* Mobile-only image carousel (appears below buttons) */}
+                  <motion.div
+                    initial={{ opacity: 0, y: 30 }}
+                    whileInView={{ opacity: 1, y: 0 }}
+                    viewport={{ once: true, amount: 0.6 }}
+                    transition={{ duration: 0.6, delay: 0.5 }}
+                  >
+                    <Box sx={{ display: { xs: 'block', sm: 'none' }, mt: 3 }}>
+                      <Box
+                        aria-label="About images carousel"
+                        sx={{
+                          position: 'relative',
+                          overflow: 'hidden',
+                          borderRadius: '20px',
+                          width: '100%',
+                          height: 220,
+                          bgcolor: theme.palette.mode === 'light' ? 'grey.100' : 'grey.800',
+                        }}
+                      >
+                        <Box
+                          sx={{
+                            display: 'flex',
+                            width: '100%',
+                            height: '100%',
+                            transform: `translateX(-${slideIndex * 100}%)`,
+                            transition: 'transform 600ms ease',
+                          }}
+                        >
+                          {slides.map((src, i) => (
+                            <Box key={i} sx={{ minWidth: '100%', height: '100%' }}>
+                              <Box
+                                component="img"
+                                src={src}
+                                alt={`About Konnect ${i + 1}`}
+                                sx={{ width: '100%', height: '100%', objectFit: 'cover', display: 'block' }}
+                              />
+                            </Box>
+                          ))}
+                        </Box>
+                      </Box>
+                      {/* Dots */}
+                      <Box sx={{ display: 'flex', justifyContent: 'center', gap: 1, mt: 1 }}>
+                        {slides.map((_, i) => (
+                          <Box
+                            key={i}
+                            onClick={() => setSlideIndex(i)}
+                            sx={{
+                              width: 6,
+                              height: 6,
+                              borderRadius: '50%',
+                              cursor: 'pointer',
+                              bgcolor: i === slideIndex ? 'grey.500' : 'grey.300',
+                            }}
+                          />
+                        ))}
+                      </Box>
+                    </Box>
+                  </motion.div>
+
                   {/* Small: What we offer + icon row */}
                   <motion.div
                     initial={{ opacity: 0, y: 30 }}
@@ -234,74 +306,66 @@ const AboutUs = () => {
                 </Box>
               </Grid>
 
-              {/* Right mosaic */}
-              <Grid item xs={12} sm={5} md={5} sx={{ display: 'flex', justifyContent: { sm: 'flex-end' }, minWidth: 0 }}>
+              {/* Right mosaic: two flex rows, each with two images; stacked vertically; right column (5/12) */}
+              <Grid item xs={12} sm={5} md={5} sx={{ display: { xs: 'none', sm: 'flex' }, justifyContent: { sm: 'flex-end' }, minWidth: 0 }}>
                 <motion.div
                   initial={{ opacity: 0, y: 60 }}
                   whileInView={{ opacity: 1, y: 0 }}
                   viewport={{ once: true, amount: 0.5 }}
                   transition={{ duration: 0.8, ease: 'easeOut' }}
                 >
-                  <Box sx={{ position: 'relative', width: '100%', maxWidth: { sm: 520, md: 560 } }}>
-                    <Grid container spacing={2}>
-                      <Grid item xs={6}>
-                        <Box
-                          component="img"
-                          alt="About Konnect 1"
-                          src={`${process.env.PUBLIC_URL}/images/aboutUs/about_section_1.jpeg`}
-                          sx={{
-                            borderRadius: '20px',
-                            width: '100%',
-                            height: { xs: 140, sm: 170, md: 200 },
-                            objectFit: 'cover',
-                            display: 'block'
-                          }}
-                        />
-                      </Grid>
-                      <Grid item xs={6}>
-                        <Box
-                          component="img"
-                          alt="About Konnect 2"
-                          src={`${process.env.PUBLIC_URL}/images/aboutUs/about-section_2.jpeg`}
-                          sx={{
-                            borderRadius: '20px',
-                            width: '100%',
-                            height: { xs: 140, sm: 170, md: 200 },
-                            objectFit: 'cover',
-                            display: 'block'
-                          }}
-                        />
-                      </Grid>
-                      <Grid item xs={6}>
-                        <Box
-                          component="img"
-                          alt="About Konnect 3"
-                          src={`${process.env.PUBLIC_URL}/images/aboutUs/about-section_3.jpeg`}
-                          sx={{
-                            borderRadius: '20px',
-                            width: '100%',
-                            height: { xs: 140, sm: 170, md: 200 },
-                            objectFit: 'cover',
-                            display: 'block'
-                          }}
-                        />
-                      </Grid>
-                      <Grid item xs={6}>
-                        <Box
-                          component="img"
-                          alt="About Konnect 4"
-                          src={`${process.env.PUBLIC_URL}/images/aboutUs/about-section_4.jpeg`}
-                          sx={{
-                            borderRadius: '20px',
-                            width: '100%',
-                            height: { xs: 140, sm: 170, md: 200 },
-                            objectFit: 'cover',
-                            display: 'block'
-                          }}
-                        />
-                      </Grid>
-                    </Grid>
-                    {/* removed down-arrow affordance per request */}
+                  <Box sx={{ width: '100%', display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 2 }}>
+                    <Box
+                      component="img"
+                      alt="About Konnect 1"
+                      src={`${process.env.PUBLIC_URL}/images/aboutUs/about_section_1.jpeg`}
+                      sx={{
+                        borderRadius: '20px',
+                        width: '320px',
+                        height: { xs: 180, sm: 240, md: 400 },
+                        objectFit: 'cover',
+                        display: 'block'
+                      }}
+                    />
+                    <Box
+                      component="img"
+                      alt="About Konnect 2"
+                      src={`${process.env.PUBLIC_URL}/images/aboutUs/about_section_2.jpeg`}
+                      sx={{
+                        ml: { xs: 0, sm: 2, md: -22 },
+                        mt: { xs: 2, sm: 3, md: 9.5 },
+                        borderRadius: '20px',
+                        width: '380px',
+                        height: { xs: 180, sm: 240, md: 320 },
+                        objectFit: 'cover',
+                        display: 'block'
+                      }}
+                    />
+                    <Box
+                      component="img"
+                      alt="About Konnect 3"
+                      src={`${process.env.PUBLIC_URL}/images/aboutUs/about_section_3.jpeg`}
+                      sx={{
+                        borderRadius: '20px',
+                        width: '500px',
+                        height: { xs: 180, sm: 240, md: 290 },
+                        objectFit: 'cover',
+                        display: 'block',
+                        ml: 'auto'
+                      }}
+                    />
+                    <Box
+                      component="img"
+                      alt="About Konnect 4"
+                      src={`${process.env.PUBLIC_URL}/images/aboutUs/about_section_4.jpeg`}
+                      sx={{
+                        borderRadius: '20px',
+                        width: '210px',
+                        height: { xs: 180, sm: 240, md: 290 },
+                        objectFit: 'cover',
+                        display: 'block'
+                      }}
+                    />
                   </Box>
                 </motion.div>
               </Grid>
@@ -311,7 +375,7 @@ const AboutUs = () => {
 
 
         {/* What you can do with Konnect Section */}
-        <Box sx={{ width: '100%', display: 'flex', justifyContent: 'center', py: { xs: 6, md: 10 } }}>
+        <Box sx={{ width: '100%', display: 'flex', justifyContent: 'left', py: { xs: 6, md: 10 } }}>
           <motion.div
             initial={{ opacity: 0, y: 80 }}
             whileInView={{ opacity: 1, y: 0 }}
@@ -319,7 +383,14 @@ const AboutUs = () => {
             transition={{ duration: 1, ease: 'easeOut' }}
             style={{ width: '100%', maxWidth: 1100 }}
           >
-            <Container maxWidth="lg">
+            <Container maxWidth="xl"
+              sx={{
+                minHeight: { xs: 'calc(100vh - 64px)', md: '60vh' },
+                display: 'flex',
+                alignItems: 'center',
+                ml: { xs: 0, md: 30 },
+              }}
+            >
               <Box sx={{ textAlign: 'left', mb: 6 }}>
                 <motion.div
                   initial={{ opacity: 0, x: -60 }}
@@ -330,11 +401,12 @@ const AboutUs = () => {
                   <Typography
                     variant="h2"
                     sx={{
-                      fontFamily: 'Metropolis, -apple-system, Segoe UI, Roboto, Helvetica, Arial, sans-serif',
+                      color: '#3289C9',
+                      textAlign: 'flex-start',
+                      fontFamily: 'Metropolis',
+                      fontSize: '52px',
+                      fontStyle: 'normal',
                       fontWeight: 700,
-                      fontSize: { xs: '36px', md: '64px' },
-                      color: theme.palette.text.primary,
-                      letterSpacing: '-0.02em',
                     }}
                   >
                     What you can do with{' '}
@@ -342,29 +414,57 @@ const AboutUs = () => {
                       <Box component="img" src="/images/Konnect_logo.png" alt="Konnect" sx={{ height: { xs: 28, md: 40 }, ml: 1, position: 'relative', top: { xs: 2, md: 4 } }} />
                     </Box>
                   </Typography>
-                  <Box sx={{ display: 'flex', alignItems: 'center', gap: 1.5, mt: 1 }}>
+                  <Box sx={{ display: 'flex', alignItems: 'center', gap: 1, mt: 1, flexWrap: 'wrap' }}>
+                    <Typography sx={{ fontFamily: 'Metropolis, -apple-system, Segoe UI, Roboto, Helvetica, Arial, sans-serif', fontWeight: 400, fontSize: '16px', color: theme.palette.text.secondary, fontStyle: 'italic' }}>
+                      To learn more about us,
+                    </Typography>
                     <Button size="small" variant="contained" color="primary" sx={{ borderRadius: 999, px: 1.5, py: 0.25, fontSize: '11px', fontWeight: 700, textTransform: 'none' }}>Join the Community</Button>
-                    <Button size="small" variant="outlined" color="secondary" sx={{ borderRadius: 999, px: 1.5, py: 0.25, fontSize: '11px', fontWeight: 700, textTransform: 'none' }}>Safety</Button>
+                    <Typography sx={{ fontFamily: 'Metropolis, -apple-system, Segoe UI, Roboto, Helvetica, Arial, sans-serif', fontWeight: 400, fontSize: '12px', color: theme.palette.text.secondary, fontStyle: 'italic' }}>
+                      today!
+                    </Typography>
                   </Box>
                 </motion.div>
 
                 {/* Five cards row */}
-                <Box sx={{ mt: 4, display: 'grid', gap: 2, gridTemplateColumns: { xs: '1fr', sm: '1fr 1fr', md: 'repeat(5, 1fr)' } }}>
+                <Box sx={{ mt: 4, display: 'grid', gap: 2.5, gridTemplateColumns: { xs: '1fr', sm: '1fr 1fr', md: 'repeat(5, 1fr)' } }}>
                   {[
-                    { icon: '🌐', title: 'Search', desc: 'Find what you need in your language—tourism, transport, food, events, clinics & more.' },
-                    { icon: '📖', title: 'Book', desc: 'Reserve taxis, trains, restaurants, or hotels directly in the app—no Korean needed.' },
-                    { icon: '💳', title: 'Pay', desc: 'Use your international card, digital wallet, or our SuperK card—even without a bank account.' },
-                    { icon: '🔐', title: 'Verify', desc: 'Scan your passport and activate your digital ID with eSIM—skip long registration queues.' },
-                    { icon: '💬', title: 'Connect', desc: 'Meet and join activities with like-minded individuals from around the world.' },
+                    { Icon: TravelExploreOutlined, title: 'Search', desc: 'Find what you need in your language—tourism, transport, food, events, clinics & more.' },
+                    { Icon: RoomServiceOutlined, title: 'Book', desc: 'Reserve taxis, trains, restaurants, or hotels directly in the app—no Korean needed.' },
+                    { Icon: CreditCardOutlined, title: 'Pay', desc: 'Use your international card, digital wallet, or our SuperK card—even without a bank account.' },
+                    { Icon: LockOutlined, title: 'Verify', desc: 'Scan your passport and activate your digital ID with eSIM—skip long registration queues.' },
+                    { Icon: ChatBubbleOutlineOutlined, title: 'Connect', desc: 'Meet and join activities with like-minded individuals from around the world.' },
                   ].map((f, i) => (
                     <ScaleIn key={f.title} delay={0.15 + i * 0.1}>
-                      <Card elevation={0} sx={{ borderRadius: 3, boxShadow: '0 2px 16px rgba(0,0,0,0.06)', height: '100%', border: `1px solid ${theme.palette.divider}` }}>
-                        <CardContent sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center', textAlign: 'center', gap: 1 }}>
-                          <Box sx={{ width: 48, height: 48, borderRadius: 2, bgcolor: '#CD20281A', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 24, color: theme.palette.secondary.main }}>
-                            {f.icon}
-                          </Box>
-                          <Typography sx={{ fontFamily: 'Metropolis, -apple-system, Segoe UI, Roboto, Helvetica, Arial, sans-serif', fontWeight: 700, fontSize: '16px' }}>{f.title}</Typography>
-                          <Typography sx={{ fontFamily: 'Metropolis, -apple-system, Segoe UI, Roboto, Helvetica, Arial, sans-serif', fontWeight: 400, fontSize: '11px', color: theme.palette.text.secondary }}>
+                      <Card
+                        elevation={0}
+                        sx={{
+                          position: 'relative',
+                          overflow: 'hidden',
+                          borderRadius: 4,
+                          boxShadow: '0 6px 24px rgba(0,0,0,0.08)',
+                          height: '380px',
+                          width: '210px',
+                          border: `1px solid ${theme.palette.divider}`,
+                          pt: 4,
+                        }}
+                      >
+                        {/* circular top shape */}
+                        <Box
+                          sx={{
+                            position: 'absolute',
+                            left: '50%',
+                            transform: 'translateX(-50%)',
+                            top: { xs: -110, md: -90 },
+                            width: { xs: 220, md: 220 },
+                            height: { xs: 220, md: 260 },
+                            borderRadius: '50%',
+                            background: 'linear-gradient(180deg, rgba(205,32,40,0.10) 0%, rgba(205,32,40,0.10) 60%, rgba(205,32,40,0.06) 100%)',
+                          }}
+                        />
+                        <CardContent sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center', textAlign: 'center', gap: 1.25, pt: 7 }}>
+                          <f.Icon sx={{ color: '#CD2028', fontSize: 32 }} />
+                          <Typography sx={{ fontFamily: 'Metropolis, -apple-system, Segoe UI, Roboto, Helvetica, Arial, sans-serif', fontWeight: 700, fontSize: '20px' }}>{f.title}</Typography>
+                          <Typography sx={{ fontFamily: 'Metropolis, -apple-system, Segoe UI, Roboto, Helvetica, Arial, sans-serif', fontWeight: 400, fontSize: '14px', color: theme.palette.text.secondary }}>
                             {f.desc}
                           </Typography>
                         </CardContent>
