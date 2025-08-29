@@ -185,7 +185,7 @@ const AboutUs = () => {
                         color="primary"
                         size="large"
                         sx={{
-                          borderRadius: 2,
+                          borderRadius: 7,
                           px: 4,
                           py: 1.5,
                           textTransform: 'none',
@@ -201,7 +201,7 @@ const AboutUs = () => {
                         color="primary"
                         size="large"
                         sx={{
-                          borderRadius: 2,
+                          borderRadius: 7,
                           px: 4,
                           py: 1.5,
                           textTransform: 'none',

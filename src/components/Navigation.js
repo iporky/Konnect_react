@@ -196,7 +196,8 @@ const Navigation = ({ user, onLogout }) => {
           top: 0,
           width: '66px',
           height: '100vh',
-          borderRight: `1px solid ${muiTheme.palette.divider}`,
+          // remove sidebar border
+          borderRight: 'none',
           display: { xs: 'none', md: 'flex' }, // Hide on mobile, show on desktop
           flexDirection: 'column',
           alignItems: 'center',

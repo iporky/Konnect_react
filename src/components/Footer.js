@@ -43,7 +43,6 @@ const Footer = ({ floating = false, stickToBottom = true }) => {
           {/* Updated links per new design */}
           <Link 
             onClick={() => handleNavigation('/about')}
-            underline="hover"
             variant="body2"
             sx={{
               color: '#888',
@@ -52,6 +51,7 @@ const Footer = ({ floating = false, stickToBottom = true }) => {
               fontSize: '14px',
               fontStyle: 'normal',
               fontWeight: 500,
+              textDecoration: 'none',
               cursor: 'pointer',
               '&:hover': { color: '#888', cursor: 'pointer' }
             }}
@@ -60,7 +60,6 @@ const Footer = ({ floating = false, stickToBottom = true }) => {
           </Link>
           <Link 
             onClick={() => handleNavigation('/business')}
-            underline="hover"
             variant="body2"
             sx={{
               color: '#888',
@@ -69,6 +68,7 @@ const Footer = ({ floating = false, stickToBottom = true }) => {
               fontSize: '13px',
               fontStyle: 'normal',
               fontWeight: 500,
+              textDecoration: 'none',
               cursor: 'pointer',
               '&:hover': { color: '#888', cursor: 'pointer' }
             }}
@@ -77,7 +77,6 @@ const Footer = ({ floating = false, stickToBottom = true }) => {
           </Link>
           <Link 
             onClick={() => handleNavigation('/contact')}
-            underline="hover"
             variant="body2"
             sx={{
               color: '#888',
@@ -86,6 +85,7 @@ const Footer = ({ floating = false, stickToBottom = true }) => {
               fontSize: '13px',
               fontStyle: 'normal',
               fontWeight: 500,
+              textDecoration: 'none',
               cursor: 'pointer',
               '&:hover': { color: '#888', cursor: 'pointer' }
             }}
@@ -94,7 +94,6 @@ const Footer = ({ floating = false, stickToBottom = true }) => {
           </Link>
           <Link 
             onClick={() => handleNavigation('/privacy')}
-            underline="hover"
             variant="body2"
             sx={{
               color: '#888',
@@ -103,6 +102,7 @@ const Footer = ({ floating = false, stickToBottom = true }) => {
               fontSize: '13px',
               fontStyle: 'normal',
               fontWeight: 500,
+              textDecoration: 'none',
               cursor: 'pointer',
               '&:hover': { color: '#888', cursor: 'pointer' }
             }}

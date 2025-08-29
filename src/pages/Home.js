@@ -251,7 +251,7 @@ const Home = () => {
                   ref={searchInputRef}
                   fullWidth
                   variant="standard"
-                  placeholder="Ask anything about Korea..."
+                  placeholder="Ask anything about Korea"
                   value={searchValue}
                   onChange={handleSearchChange}
                   onFocus={handleSearchFocus}
@@ -262,7 +262,7 @@ const Home = () => {
                       '& input::placeholder': {
                         color: '#888888',
                         fontFamily: 'Metropolis',
-                        fontWeight: 600,
+                        fontWeight: 500,
                         fontStyle: 'Semi Bold',
                         fontSize: '13px',
                         verticalAlign: 'middle',
