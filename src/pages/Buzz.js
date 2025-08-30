@@ -1,4 +1,4 @@
-import SearchIcon from '@mui/icons-material/Search';
+// Removed search icon as search bar is removed
 import TrendingUpIcon from '@mui/icons-material/TrendingUp';
 import {
   Alert,
@@ -9,24 +9,26 @@ import {
   CardMedia,
   Chip,
   Container,
-  InputAdornment,
+  // InputAdornment removed with search bar
   Pagination,
   Skeleton,
   Tab,
   Tabs,
   TextField,
-  Typography
+  Typography,
+  useTheme
 } from '@mui/material';
 import { useEffect, useState } from 'react';
-import ThemeToggle from '../components/ThemeToggle';
+// Removed ThemeToggle per request
 import { buzzAPI } from '../services/api';
 
 const Buzz = () => {
+  const theme = useTheme();
   const [selectedCategory, setSelectedCategory] = useState('default');
   const [categories, setCategories] = useState([]);
   const [buzzContent, setBuzzContent] = useState([]);
   const [loading, setLoading] = useState(true);
-  const [searchQuery, setSearchQuery] = useState('');
+  // Removed search state since search bar is removed
   const [error, setError] = useState(null);
   const [currentPage, setCurrentPage] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
@@ -90,33 +92,7 @@ const Buzz = () => {
     setCurrentPage(1); // Reset to first page when changing category
   };
 
-  const handleSearchSubmit = async () => {
-    if (!searchQuery.trim()) {
-      loadBuzzContent();
-      return;
-    }
-
-    try {
-      setLoading(true);
-      setError(null);
-      
-      const response = await buzzAPI.searchBuzz(searchQuery, selectedCategory);
-      
-      if (response.blogs) {
-        setBuzzContent(response.blogs);
-        setTotalPages(1); // Search results usually on one page
-      } else {
-        setBuzzContent([]);
-        setError('No results found for your search');
-      }
-    } catch (error) {
-      console.error('Error searching buzz content:', error);
-      setError('Failed to search buzz content');
-      setBuzzContent([]);
-    } finally {
-      setLoading(false);
-    }
-  };
+  // Search removed
 
   const handleCardClick = (url) => {
     if (url) {
@@ -187,48 +163,59 @@ const Buzz = () => {
   );
 
   return (
-    <>
-      <ThemeToggle />
-      <Box sx={{ ml: '80px' }}> {/* Add left margin to account for fixed navigation */}
-      <Container maxWidth="lg" sx={{ py: 4 }}>
+  <>
+      {/* Match AboutUs background, nav spacing and rounded corners */}
+      <Box
+        sx={{
+          backgroundColor: theme.palette.background.default,
+          color: theme.palette.text.primary,
+          ml: { xs: 0, md: 9 },
+          mr: { xs: 0, md: 1 },
+          mt: { xs: '64px', md: 1 },
+          mb: { xs: '56px', md: 0, lg: 1 },
+          minHeight: '80vh',
+          borderRadius: { xs: 0, md: '14px' },
+          display: 'flex',
+          flexDirection: 'column',
+          alignItems: 'stretch',
+          pb: { xs: 6, md: 10, lg: 14 },
+        }}
+      >
+      <Container
+        maxWidth="lg"
+        sx={{
+          py: 4,
+          ml: { xs: 0, md: 30 },
+          // Match AboutUs hero height so the rounded container fills similarly
+          minHeight: { xs: 'calc(100vh - 64px)', md: '86vh' },
+        }}
+      >
       {/* Header */}
       <Box sx={{ mb: 4 }}>
-        <Typography variant="h3" component="h1" gutterBottom sx={{ fontWeight: 'bold', color: 'primary.main' }}>
-          <TrendingUpIcon sx={{ mr: 2, fontSize: 40 }} />
+        <Typography
+          variant="h2"
+          component="h1"
+          gutterBottom
+          sx={{
+            color: '#3289C9',
+            fontFamily: 'Metropolis',
+            fontWeight: 700,
+            fontSize: { xs: '32px', md: '56px' },
+            lineHeight: 1.1,
+            letterSpacing: { xs: '-0.32px', md: '-0.56px' },
+            display: 'flex',
+            alignItems: 'center',
+            gap: 1.5,
+          }}
+        >
+          <TrendingUpIcon sx={{ fontSize: { xs: 30, md: 40 } }} />
           Buzz
         </Typography>
         <Typography variant="h6" color="text.secondary">
           Stay updated with the latest news and trends in Korea
         </Typography>
       </Box>
-
-      {/* Search */}
-      <Box sx={{ mb: 3 }}>
-        <TextField
-          fullWidth
-          variant="outlined"
-          placeholder="Search buzz content..."
-          value={searchQuery}
-          onChange={(e) => setSearchQuery(e.target.value)}
-          onKeyPress={(e) => {
-            if (e.key === 'Enter') {
-              handleSearchSubmit();
-            }
-          }}
-          InputProps={{
-            startAdornment: (
-              <InputAdornment position="start">
-                <SearchIcon />
-              </InputAdornment>
-            ),
-          }}
-          sx={{
-            '& .MuiOutlinedInput-root': {
-              borderRadius: 3,
-            },
-          }}
-        />
-      </Box>
+      {/* Search removed */}
 
       {/* Category Tabs */}
       <Box sx={{ mb: 4 }}>

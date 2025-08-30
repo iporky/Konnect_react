@@ -227,7 +227,7 @@ const Home = () => {
                   title={
                     <Box sx={{ maxWidth: 240 }}>
                       <Typography variant="subtitle2" sx={{ fontWeight: 700, mb: 0.5 }}>
-                        Community Post
+                        Post Wall
                       </Typography>
                       <Typography variant="caption" sx={{ opacity: 0.9 }}>
                         Share your Korean journey with the community
