@@ -56,10 +56,13 @@ const Business = () => {
         sx={{
           backgroundColor: theme.palette.background.default,
           color: theme.palette.text.primary,
-          ml: { xs: 0 },
-          mt: { xs: '64px', md: 0 },
-          mb: { xs: '56px', md: 0, lg: 10 },
+          // Match AboutUs container offsets so rounded corners align with sidebar
+          ml: { xs: 0, md: 9 },
+          mr: { xs: 0, md: 1 },
+          mt: { xs: '64px', md: 1 },
+          mb: { xs: '56px', md: 0, lg: 1 },
           minHeight: '60vh',
+           borderRadius: { xs: 0, md: '14px' },
           display: 'flex',
           flexDirection: 'column',
           justifyContent: 'center',
@@ -221,11 +224,10 @@ const Business = () => {
                                 <Box key={i} sx={{ display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
                                   <Box
                                     sx={{
-                                      width: 80,
-                                      height: 80,
+                                      width: 90,
+                                      height: 90,
                                       borderRadius: '20px',
                                       bgcolor: '#fff',
-                                      boxShadow: 'inset 0 0 0 1px rgba(0,0,0,0.04)',
                                       display: 'flex',
                                       alignItems: 'center',
                                       justifyContent: 'center',
@@ -240,7 +242,7 @@ const Business = () => {
                                         // fallback to transparent pixel to keep grey tile when logo missing
                                         e.currentTarget.style.display = 'none';
                                       }}
-                                      sx={{ maxWidth: '70%', maxHeight: '70%', objectFit: 'contain', opacity: 1 }}
+                                      sx={{ maxWidth: '95%', objectFit: 'contain', opacity: 1 }}
                                     />
                                   </Box>
                                 </Box>
@@ -309,7 +311,7 @@ const Business = () => {
                 <Typography
                   variant="h2"
                   sx={{
-                    fontFamily: 'Metropolis, -apple-system, Segoe UI, Roboto, Helvetica, Arial, sans-serif',
+                    fontFamily: 'Metropolis',
                     fontWeight: 700,
                     fontSize: { xs: '32px', md: '56px' },
                     color: '#3289C9',
@@ -319,11 +321,11 @@ const Business = () => {
                   We help bring foreign customers to your doorstep
                 </Typography>
                 <Box sx={{ display: 'flex', alignItems: 'center', gap: 1, mt: 1, flexWrap: 'wrap' }}>
-                  <Typography sx={{ fontFamily: 'Metropolis, -apple-system, Segoe UI, Roboto, Helvetica, Arial, sans-serif', fontWeight: 400, fontSize: '16px', color: theme.palette.text.secondary, fontStyle: 'italic' }}>
+                  <Typography sx={{ fontFamily: 'Metropolis', fontWeight: 400, fontSize: '16px', color: theme.palette.text.secondary, fontStyle: 'italic' }}>
                     To be a part of us,
                   </Typography>
                   <Button size="small" variant="contained" color="primary" sx={{ borderRadius: 999, px: 1.5, py: 0.25, fontSize: '11px', fontWeight: 700, textTransform: 'none' }}>List your Business</Button>
-                  <Typography sx={{ fontFamily: 'Metropolis, -apple-system, Segoe UI, Roboto, Helvetica, Arial, sans-serif', fontWeight: 400, fontSize: '16px', color: theme.palette.text.secondary, fontStyle: 'italic' }}>
+                  <Typography sx={{ fontFamily: 'Metropolis', fontWeight: 400, fontSize: '16px', color: theme.palette.text.secondary, fontStyle: 'italic' }}>
                     today!
                   </Typography>
                 </Box>
@@ -345,7 +347,7 @@ const Business = () => {
                         borderRadius: 4,
                         boxShadow: '0 6px 24px rgba(0,0,0,0.08)',
                         height: '380px',
-                        width: '340px',
+                        width: '320px',
                         border: `1px solid ${theme.palette.divider}`,
                         pt: 4,
                       }}
