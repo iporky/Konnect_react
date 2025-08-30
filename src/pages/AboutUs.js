@@ -16,7 +16,8 @@ import {
   Container,
   Grid,
   Typography,
-  useTheme
+  useTheme,
+  useMediaQuery
 } from '@mui/material';
 import { motion } from 'framer-motion';
 import { useEffect, useState } from 'react';
@@ -64,6 +65,7 @@ const ScaleIn = ({ children, delay = 0 }) => {
 
 const AboutUs = () => {
   const theme = useTheme();
+  const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
   // Mobile carousel setup (xs only). Desktop view remains unchanged.
   const slides = [
     `${process.env.PUBLIC_URL}/images/aboutUs/about_section_1.jpeg`,
@@ -381,24 +383,25 @@ const AboutUs = () => {
         </motion.div>
 
 
-        {/* What you can do with Konnect Section */}
-        <Box sx={{ width: '100%', display: 'flex', justifyContent: 'left', py: { xs: 6, md: 10 } }}>
+  {/* What you can do with Konnect Section */}
+    <Box sx={{ width: '100%', display: 'flex', justifyContent: 'left', py: { xs: 4, md: 10 } }}>
           <motion.div
-            initial={{ opacity: 0, y: 80 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true, amount: 0.5 }}
+      initial={{ opacity: 0, y: 80 }}
+      whileInView={{ opacity: 1, y: 0 }}
+      viewport={{ once: true, amount: isMobile ? 0.12 : 0.5 }}
             transition={{ duration: 1, ease: 'easeOut' }}
             style={{ width: '100%', maxWidth: 1100 }}
           >
             <Container maxWidth="xl"
               sx={{
-                minHeight: { xs: 'calc(100vh - 64px)', md: '60vh' },
+                minHeight: { xs: 'auto', md: '60vh' },
                 display: 'flex',
-                alignItems: 'center',
+                alignItems: { xs: 'flex-start', md: 'center' },
+                py: { xs: 3, md: 0 },
                 ml: { xs: 0, md: 30 },
               }}
             >
-              <Box sx={{ textAlign: 'left', mb: 6 }}>
+              <Box sx={{ textAlign: 'left', mb: { xs: 2, md: 6 } }}>
                 <motion.div
                   initial={{ opacity: 0, x: -60 }}
                   whileInView={{ opacity: 1, x: 0 }}
@@ -433,7 +436,7 @@ const AboutUs = () => {
                 </motion.div>
 
                 {/* Five cards row */}
-                <Box sx={{ mt: 8, display: 'grid', gap: 6.5, ml:8, gridTemplateColumns: { xs: '1fr', sm: '1fr 1fr', md: 'repeat(5, 1fr)' } }}>
+                <Box sx={{ mt: { xs: 2, md: 8 }, display: 'grid', gap: { xs: 2.5, md: 6.5 }, ml: { xs: 0, md: 8 }, gridTemplateColumns: { xs: '1fr', sm: '1fr 1fr', md: 'repeat(5, 1fr)' }, justifyItems: { xs: 'center', sm: 'center', md: 'stretch' } }}>
                   {[
                     { Icon: TravelExploreOutlined, title: 'Search', desc: 'Find what you need in your language—tourism, transport, food, events, clinics & more.' },
                     { Icon: RoomServiceOutlined, title: 'Book', desc: 'Reserve taxis, trains, restaurants, or hotels directly in the app—no Korean needed.' },
@@ -442,7 +445,7 @@ const AboutUs = () => {
                     { Icon: ChatBubbleOutlineOutlined, title: 'Connect', desc: 'Meet and join activities with like-minded individuals from around the world.' },
                   ].map((f, i) => (
                     <ScaleIn key={f.title} delay={0.15 + i * 0.1}>
-                      <Card
+            <Card
                         elevation={0}
                         sx={{
                           position: 'relative',
@@ -452,7 +455,8 @@ const AboutUs = () => {
                           height: '380px',
                           width: '210px',
                           border: `1px solid ${theme.palette.divider}`,
-                          pt: 4,
+              pt: 4,
+              mx: { xs: 'auto', md: 0 },
                         }}
                       >
                         {/* circular top shape */}
@@ -488,31 +492,32 @@ const AboutUs = () => {
         <motion.div
           initial={{ opacity: 0, y: 80 }}
           whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true, amount: 0.5 }}
+          viewport={{ once: true, amount: isMobile ? 0.12 : 0.5 }}
           transition={{ duration: 1, ease: 'easeOut' }}
           style={{ width: '100%', display: 'flex', justifyContent: 'center', background: 'transparent' }}
         >
           <Container maxWidth="xl"
             sx={{
-                minHeight: { xs: 'calc(100vh - 64px)', md: '60vh' },
+                minHeight: { xs: 'auto', md: '60vh' },
                 display: 'flex',
-                alignItems: 'center',
+                alignItems: { xs: 'flex-start', md: 'center' },
+                py: { xs: 3, md: 0 },
                 ml: { xs: 0, md: 30 },
               }}
             >
             <Grid container spacing={4} alignItems="center">
               <Grid item xs={12} md={6}>
                 <SlideInLeft>
-                  <Typography
+          <Typography
                     variant="h2"
                     sx={{
                       fontFamily: 'Metropolis',
                       fontWeight: 700,
-                      fontSize: { xs: '32px', md: '56px' },
+            fontSize: { xs: '32px', md: '56px' },
                       color: '#3289C9',
                       lineHeight: 1.1,
                       letterSpacing: { xs: '-0.32px', md: '-0.56px' },
-                      mb: 2,
+            mb: { xs: 1, md: 2 },
                     }}
                   >
                     Where we are going
@@ -555,20 +560,21 @@ const AboutUs = () => {
           </Container>
         </motion.div>
 
-        {/* Coming soon */}
-        <Box sx={{ width: '100%', display: 'flex', justifyContent: 'left', py: { xs: 6, md: 10 } }}>
+  {/* Coming soon */}
+  <Box sx={{ width: '100%', display: 'flex', justifyContent: 'left', py: { xs: 4, md: 10 } }}>
           <motion.div
             initial={{ opacity: 0, y: 60 }}
             whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true, amount: 0.5 }}
+            viewport={{ once: true, amount: isMobile ? 0.12 : 0.5 }}
             transition={{ duration: 0.8 }}
             style={{ width: '100%' }}
           >
             <Container maxWidth="xl"
               sx={{
-                minHeight: { xs: 'calc(100vh - 64px)', md: '60vh' },
+                minHeight: { xs: 'auto', md: '60vh' },
                 display: 'flex',
-                alignItems: 'center',
+                alignItems: { xs: 'flex-start', md: 'center' },
+                py: { xs: 1, md: 0 },
                 ml: { xs: 0, md: 30 },
               }}
             >              
@@ -585,7 +591,7 @@ const AboutUs = () => {
                 >
                 Coming soon
                 </Typography>
-                <Box sx={{ display: 'flex', alignItems: 'center', gap: 1, mt: 1, flexWrap: 'wrap' }}>
+                <Box sx={{ display: 'flex', alignItems: 'center', gap: 1, mt: { xs: 0.5, md: 1 }, flexWrap: 'wrap' }}>
                   <Typography sx={{ fontFamily: 'Metropolis', fontWeight: 400, fontSize: '16px', color: theme.palette.text.secondary, fontStyle: 'italic' }}>
                     Big things are on the way! Get ready for something amazing.
                   </Typography>
@@ -597,29 +603,40 @@ const AboutUs = () => {
                   </Typography>
                 </Box>
 
-                <Grid container spacing={24} sx={{ mt: 4 }}>
+                <Grid container spacing={{ xs: 4, md: 24 }} sx={{ mt: 2 }}>
                   {[
                     { Icon: BadgeOutlined, title: 'SuperK all-in-one digital card' },
                     { Icon: EventNoteOutlined, title: 'Local experiences & events' },
                     { Icon: WorkOutlineOutlined, title: 'Jobs & Internships' },
                   ].map((it, i) => (
-                    <Grid item xs={12} sm={4} md={12} key={it.title} sx={{ mr: { xs: 0, md: 12 }, height: '100px', width: '180px' }}>
+                    <Grid
+                      item
+                      xs={12}
+                      sm={4}
+                      md={12}
+                      key={it.title}
+                      sx={{
+                        mr: { xs: 0, md: 12 },
+                        width: { xs: '100%', md: '180px' },
+                        height: { xs: 'auto', md: '100px' },
+                      }}
+                    >
                       <ScaleIn delay={0.1 + i * 0.1}>
-                        <Box sx={{ display: 'flex', gap:2, flexDirection: 'column', alignItems: 'center', textAlign: 'center', justifyContent: 'end', p: { xs: 1.5, md: 2 } }}>
-                          <it.Icon sx={{ color: 'grey.400', fontSize: 80 }} />
-                          <Typography 
-                            sx={{ 
-                                color: '#B9B9B9',
-                                textAlign: 'center',
-                                fontFamily: 'Metropolis',
-                                fontSize: '20px',
-                                fontStyle: 'normal',
-                                fontWeight: 600,
+                        <Box sx={{ display: 'flex', gap: { xs: 1, md: 2 }, flexDirection: 'column', alignItems: 'center', textAlign: 'center', justifyContent: { xs: 'center', md: 'end' }, p: { xs: 1, md: 2 } }}>
+                          <it.Icon sx={{ color: 'grey.400', fontSize: { xs: 56, md: 80 } }} />
+                          <Typography
+                            sx={{
+                              color: '#B9B9B9',
+                              textAlign: 'center',
+                              fontFamily: 'Metropolis',
+                              fontSize: { xs: '18px', md: '20px' },
+                              fontStyle: 'normal',
+                              fontWeight: 600,
                             }}
                           >
                             {it.title}
                           </Typography>
-                          <Box sx={{ mt: 1, width: 100, height: 4, bgcolor: 'grey.300', borderRadius: 2 }} />
+                          <Box sx={{ mt: { xs: 0.5, md: 1 }, width: { xs: 80, md: 100 }, height: 4, bgcolor: 'grey.300', borderRadius: 2 }} />
                         </Box>
                       </ScaleIn>
                     </Grid>
