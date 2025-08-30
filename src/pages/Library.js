@@ -1,440 +1,175 @@
-import React, { useState } from 'react';
-import ThemeToggle from '../components/ThemeToggle';
-import {
-  Container,
-  Typography,
-  Box,
-  Grid,
-  Card,
-  CardContent,
-  CardMedia,
-  LinearProgress,
-  Chip,
-  Button,
-  TextField,
-  InputAdornment,
-  Tabs,
-  Tab,
-  IconButton,
-  Avatar,
-} from '@mui/material';
-import {
-  Search,
-  Book,
-  VideoLibrary,
-  Quiz,
-  Language,
-  PlayArrow,
-  Bookmark,
-  BookmarkBorder,
-  Star,
-} from '@mui/icons-material';
+import React, { useEffect, useRef, useState } from 'react';
+import { Box, Chip, Container, IconButton, Typography, useTheme } from '@mui/material';
+import MoreVertIcon from '@mui/icons-material/MoreVert';
+import AccessTimeIcon from '@mui/icons-material/AccessTime';
+import ChevronLeftIcon from '@mui/icons-material/ChevronLeft';
+import ChevronRightIcon from '@mui/icons-material/ChevronRight';
 
-const Library = ({ user }) => {
-  const [searchQuery, setSearchQuery] = useState('');
-  const [selectedTab, setSelectedTab] = useState(0);
-  const [bookmarkedItems, setBookmarkedItems] = useState(new Set());
+const categoryChips = ['Konnect AI', 'Community', 'Expert', 'Post Wall'];
 
-  const libraryTabs = [
-    { label: 'All', icon: <Book /> },
-    { label: 'Courses', icon: <VideoLibrary /> },
-    { label: 'Guides', icon: <Book /> },
-    { label: 'Language', icon: <Language /> },
-    { label: 'Tests', icon: <Quiz /> },
-  ];
+const Library = () => {
+  const theme = useTheme();
+  const [activeChip, setActiveChip] = useState('Konnect AI');
+  const [data, setData] = useState([]);
+  const chipsRef = useRef(null);
 
-  const libraryItems = [
-    {
-      id: 1,
-      title: 'Korean Language Basics',
-      description: 'Essential vocabulary and grammar for beginners',
-      type: 'Language Course',
-      progress: 45,
-      duration: '12 hours',
-      level: 'Beginner',
-      rating: 4.8,
-      image: '/api/placeholder/300/200',
-      category: 'language',
-    },
-    {
-      id: 2,
-      title: 'Seoul City Guide',
-      description: 'Comprehensive guide to exploring Seoul',
-      type: 'Travel Guide',
-      progress: 75,
-      duration: '2 hours',
-      level: 'All Levels',
-      rating: 4.6,
-      image: '/api/placeholder/300/200',
-      category: 'guides',
-    },
-    {
-      id: 3,
-      title: 'Korean Cuisine Cookbook',
-      description: 'Traditional and modern Korean recipes',
-      type: 'Cookbook',
-      progress: 20,
-      duration: '4 hours',
-      level: 'Intermediate',
-      rating: 4.9,
-      image: '/api/placeholder/300/200',
-      category: 'guides',
-    },
-    {
-      id: 4,
-      title: 'Business Korean Course',
-      description: 'Professional Korean for workplace communication',
-      type: 'Language Course',
-      progress: 60,
-      duration: '20 hours',
-      level: 'Advanced',
-      rating: 4.7,
-      image: '/api/placeholder/300/200',
-      category: 'language',
-    },
-    {
-      id: 5,
-      title: 'Korean Culture Quiz',
-      description: 'Test your knowledge of Korean traditions',
-      type: 'Quiz',
-      progress: 100,
-      duration: '30 minutes',
-      level: 'All Levels',
-      rating: 4.5,
-      image: '/api/placeholder/300/200',
-      category: 'tests',
-    },
-    {
-      id: 6,
-      title: 'Video: Korean Etiquette',
-      description: 'Learn proper behavior in Korean society',
-      type: 'Video Course',
-      progress: 0,
-      duration: '1.5 hours',
-      level: 'Beginner',
-      rating: 4.8,
-      image: '/api/placeholder/300/200',
-      category: 'courses',
-    },
-  ];
+  useEffect(() => {
+    import('../data/library.json').then((mod) => setData(mod.default || []));
+  }, []);
 
-  const handleTabChange = (event, newValue) => {
-    setSelectedTab(newValue);
-  };
+  const items = data.filter((d) => d.answeredBy === activeChip);
 
-  const handleBookmark = (itemId) => {
-    const newBookmarks = new Set(bookmarkedItems);
-    if (newBookmarks.has(itemId)) {
-      newBookmarks.delete(itemId);
-    } else {
-      newBookmarks.add(itemId);
-    }
-    setBookmarkedItems(newBookmarks);
-  };
-
-  const filteredItems = libraryItems.filter(item => {
-    const matchesSearch = item.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
-                         item.description.toLowerCase().includes(searchQuery.toLowerCase());
-    
-    if (selectedTab === 0) return matchesSearch; // All
-    
-    const tabCategory = libraryTabs[selectedTab].label.toLowerCase();
-    const matchesTab = item.category === tabCategory;
-    
-    return matchesSearch && matchesTab;
-  });
-
-  const getProgressColor = (progress) => {
-    if (progress === 100) return 'success';
-    if (progress >= 50) return 'primary';
-    if (progress > 0) return 'warning';
-    return 'inherit';
-  };
-
-  const getLevelColor = (level) => {
-    switch (level.toLowerCase()) {
-      case 'beginner': return 'success';
-      case 'intermediate': return 'warning';
-      case 'advanced': return 'error';
-      default: return 'default';
-    }
-  };
+  const timeFor = (d) => (d.answeredTime && d.answeredTime.trim() !== '' ? d.answeredTime : d.time);
 
   return (
-    <>
-      <ThemeToggle />
-      <Box sx={{ ml: '80px' }}> {/* Add left margin to account for fixed navigation */}
-      <Container maxWidth="lg" sx={{ py: 4 }}>
-      {/* Header */}
-      <Box sx={{ mb: 4 }}>
-        <Typography variant="h3" component="h1" gutterBottom sx={{ fontWeight: 'bold' }}>
-          Your Library
-        </Typography>
-        <Typography variant="h6" color="text.secondary">
-          Continue your learning journey with personalized content and resources
-        </Typography>
-      </Box>
+    <Box
+      sx={{
+        backgroundColor: theme.palette.background.default,
+        color: theme.palette.text.primary,
+        ml: { xs: 0, md: 9 },
+        mr: { xs: 0, md: 1 },
+        mt: { xs: '64px', md: 1 },
+        mb: { xs: '56px', md: 0, lg: 1 },
+        minHeight: '60vh',
+        borderRadius: { xs: 0, md: '14px' },
+        display: 'flex',
+        flexDirection: 'column',
+        alignItems: 'stretch',
+        pb: { xs: 6, md: 10, lg: 14 },
+      }}
+    >
+      <Container
+        maxWidth="lg"
+        sx={{
+          ml: { xs: 0, md: 30 },
+          py: 4,
+          minHeight: { xs: 'calc(100vh - 64px)', md: '95vh' },
+        }}
+      >
+        {/* Header */}
+        <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: { xs: 'center', md: 'flex-start' }, mb: 2 }}>
+          <Typography
+            variant="h2"
+            sx={{
+              color: '#3289C9',
+              fontFamily: 'Metropolis',
+              fontWeight: 700,
+              fontSize: { xs: '32px', md: '56px' },
+              lineHeight: 1.1,
+              letterSpacing: { xs: '-0.32px', md: '-0.56px' },
+            }}
+          >
+            Library
+          </Typography>
+        </Box>
 
-      {/* User Stats */}
-      {user && (
-        <Card sx={{ mb: 4, background: 'linear-gradient(135deg, #57d1d6 0%, #c43e59 100%)' }}>
-          <CardContent>
-            <Box sx={{ display: 'flex', alignItems: 'center', color: 'white' }}>
-              <Avatar
-                src={user.picture}
-                sx={{ width: 60, height: 60, mr: 3 }}
-              >
-                {user.name?.charAt(0)}
-              </Avatar>
-              <Box sx={{ flexGrow: 1 }}>
-                <Typography variant="h6" sx={{ fontWeight: 'bold' }}>
-                  Welcome back, {user.name || 'Student'}!
-                </Typography>
-                <Typography variant="body2" sx={{ opacity: 0.9 }}>
-                  You've completed 3 courses this month
-                </Typography>
-              </Box>
-              <Box sx={{ textAlign: 'center', mx: 3 }}>
-                <Typography variant="h4" sx={{ fontWeight: 'bold' }}>
-                  12
-                </Typography>
-                <Typography variant="body2">Courses</Typography>
-              </Box>
-              <Box sx={{ textAlign: 'center', mx: 3 }}>
-                <Typography variant="h4" sx={{ fontWeight: 'bold' }}>
-                  48h
-                </Typography>
-                <Typography variant="body2">Study Time</Typography>
-              </Box>
-              <Box sx={{ textAlign: 'center' }}>
-                <Typography variant="h4" sx={{ fontWeight: 'bold' }}>
-                  85%
-                </Typography>
-                <Typography variant="body2">Avg. Progress</Typography>
-              </Box>
-            </Box>
-          </CardContent>
-        </Card>
-      )}
-
-      {/* Search Bar */}
-      <Box sx={{ mb: 4 }}>
-        <TextField
-          fullWidth
-          variant="outlined"
-          placeholder="Search your library..."
-          value={searchQuery}
-          onChange={(e) => setSearchQuery(e.target.value)}
-          InputProps={{
-            startAdornment: (
-              <InputAdornment position="start">
-                <Search color="primary" />
-              </InputAdornment>
-            ),
-          }}
-          sx={{ maxWidth: '600px', mx: 'auto', display: 'block' }}
-        />
-      </Box>
-
-      {/* Category Tabs */}
-      <Box sx={{ mb: 4, borderBottom: 1, borderColor: 'divider' }}>
-        <Tabs
-          value={selectedTab}
-          onChange={handleTabChange}
-          variant="scrollable"
-          scrollButtons="auto"
-        >
-          {libraryTabs.map((tab, index) => (
-            <Tab
-              key={index}
-              label={tab.label}
-              icon={tab.icon}
-              iconPosition="start"
-            />
-          ))}
-        </Tabs>
-      </Box>
-
-      {/* Library Items */}
-      <Grid container spacing={4}>
-        {filteredItems.length === 0 ? (
-          <Grid item xs={12}>
-            <Box sx={{ textAlign: 'center', py: 8 }}>
-              <Typography variant="h6" color="text.secondary">
-                No items found
-              </Typography>
-              <Typography variant="body2" color="text.secondary" sx={{ mt: 1 }}>
-                Try adjusting your search or browse different categories.
-              </Typography>
-            </Box>
-          </Grid>
-        ) : (
-          filteredItems.map((item) => (
-            <Grid item xs={12} sm={6} md={4} key={item.id}>
-              <Card
+        {/* Chips row - carousel on mobile with arrows */}
+        <Box sx={{ position: 'relative', mb: 3 }}>
+          <Box
+            ref={chipsRef}
+            sx={{
+              display: 'flex',
+              gap: 2,
+              overflowX: { xs: 'auto', md: 'visible' },
+              flexWrap: { xs: 'nowrap', md: 'wrap' },
+              px: { xs: 1, md: 0 },
+              scrollbarWidth: 'none',
+              '&::-webkit-scrollbar': { display: 'none' },
+            }}
+          >
+            {categoryChips.map((c) => (
+              <Chip
+                key={c}
+                label={c}
+                onClick={() => setActiveChip(c)}
+                variant="outlined"
+                color={activeChip === c ? 'error' : 'default'}
                 sx={{
-                  height: '420px',
-                  cursor: 'pointer',
-                  transition: 'all 0.3s ease',
-                  display: 'flex',
-                  flexDirection: 'column',
-                  '&:hover': {
-                    transform: 'translateY(-4px)',
-                    boxShadow: (theme) => theme.shadows[8],
-                  },
+                  flex: '0 0 auto',
+                  px: 1.5,
+                  borderRadius: 999,
+                  borderColor: activeChip === c ? '#DB6067' : 'divider',
+                  color: activeChip === c ? '#DB6067' : 'text.primary',
                 }}
-              >
-                <Box sx={{ position: 'relative' }}>
-                  <CardMedia
-                    component="img"
-                    height="200"
-                    image={item.image}
-                    alt={item.title}
-                    sx={{ backgroundColor: 'grey.200' }}
-                  />
-                  
-                  {/* Bookmark Button */}
-                  <IconButton
-                    sx={{
-                      position: 'absolute',
-                      top: 8,
-                      right: 8,
-                      backgroundColor: 'rgba(255, 255, 255, 0.9)',
-                      '&:hover': {
-                        backgroundColor: 'rgba(255, 255, 255, 1)',
-                      },
-                    }}
-                    onClick={(e) => {
-                      e.stopPropagation();
-                      handleBookmark(item.id);
-                    }}
-                  >
-                    {bookmarkedItems.has(item.id) ? (
-                      <Bookmark color="primary" />
-                    ) : (
-                      <BookmarkBorder />
-                    )}
-                  </IconButton>
+              />
+            ))}
+          </Box>
+          {/* Arrow hints on mobile */}
+          <IconButton
+            aria-label="scroll left"
+            size="small"
+            onClick={() => chipsRef.current?.scrollBy({ left: -200, behavior: 'smooth' })}
+            sx={{
+              display: { xs: 'flex', md: 'none' },
+              position: 'absolute',
+              left: -6,
+              top: '50%',
+              transform: 'translateY(-50%)',
+              bgcolor: 'background.paper',
+              boxShadow: 1,
+            }}
+          >
+            <ChevronLeftIcon fontSize="small" />
+          </IconButton>
+          <IconButton
+            aria-label="scroll right"
+            size="small"
+            onClick={() => chipsRef.current?.scrollBy({ left: 200, behavior: 'smooth' })}
+            sx={{
+              display: { xs: 'flex', md: 'none' },
+              position: 'absolute',
+              right: -6,
+              top: '50%',
+              transform: 'translateY(-50%)',
+              bgcolor: 'background.paper',
+              boxShadow: 1,
+            }}
+          >
+            <ChevronRightIcon fontSize="small" />
+          </IconButton>
+        </Box>
 
-                  {/* Play Button for Videos */}
-                  {item.type.includes('Video') && (
-                    <IconButton
-                      sx={{
-                        position: 'absolute',
-                        top: '50%',
-                        left: '50%',
-                        transform: 'translate(-50%, -50%)',
-                        backgroundColor: 'rgba(0, 0, 0, 0.7)',
-                        color: 'white',
-                        '&:hover': {
-                          backgroundColor: 'rgba(0, 0, 0, 0.8)',
-                        },
-                      }}
-                    >
-                      <PlayArrow sx={{ fontSize: 40 }} />
-                    </IconButton>
-                  )}
+        {/* List - mobile and desktop */}
+        <Box sx={{ display: { xs: 'block', md: 'none' } }}>
+          {items.map((d) => (
+            <Box key={d.id} sx={{ pb: 2, mb: 2, borderBottom: '1px solid', borderColor: 'divider' }}>
+              <Typography sx={{ fontWeight: 600, mb: 1.2 }}>{d.question}</Typography>
+              <Typography sx={{ color: 'text.secondary', fontSize: 12, mb: 1.2 }}>{d.answer}</Typography>
+              <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+                <Box sx={{ display: 'flex', alignItems: 'center', gap: 0.5, color: 'text.secondary', fontSize: 12 }}>
+                  <AccessTimeIcon sx={{ fontSize: 16 }} />
+                  <Typography variant="caption">{timeFor(d)}</Typography>
                 </Box>
+                <IconButton size="small">
+                  <MoreVertIcon fontSize="small" />
+                </IconButton>
+              </Box>
+            </Box>
+          ))}
+        </Box>
 
-                <CardContent sx={{ 
-                  flexGrow: 1, 
-                  display: 'flex', 
-                  flexDirection: 'column',
-                  height: '220px',
-                  p: 2
-                }}>
-                  {/* Tags */}
-                  <Box sx={{ mb: 2, display: 'flex', gap: 1, flexWrap: 'wrap' }}>
-                    <Chip
-                      label={item.type}
-                      size="small"
-                      color="primary"
-                      variant="outlined"
-                    />
-                    <Chip
-                      label={item.level}
-                      size="small"
-                      color={getLevelColor(item.level)}
-                      variant="outlined"
-                    />
-                  </Box>
-                  
-                  <Typography
-                    variant="h6"
-                    component="h3"
-                    gutterBottom
-                    sx={{ 
-                      fontWeight: 'bold',
-                      height: '48px',
-                      overflow: 'hidden',
-                      display: '-webkit-box',
-                      WebkitLineClamp: 2,
-                      WebkitBoxOrient: 'vertical',
-                      mb: 1
-                    }}
-                  >
-                    {item.title}
+        <Box sx={{ display: { xs: 'none', md: 'block' } }}>
+          {items.map((d) => (
+            <Box key={d.id} sx={{ display: 'grid', gridTemplateColumns: '1fr auto', alignItems: 'start', gap: 2, py: 2, borderBottom: '1px solid', borderColor: 'divider' }}>
+              <Box>
+                <Typography sx={{ fontWeight: 600, mb: 1.2 }}>{d.question}</Typography>
+                <Typography sx={{ color: 'text.secondary', fontSize: 14, mb: 1.2 }}>{d.answer}</Typography>
+                <Box sx={{ display: 'flex', alignItems: 'center', gap: 1, color: 'text.secondary' }}>
+                  <AccessTimeIcon sx={{ fontSize: 16 }} />
+                  <Typography variant="body2">{timeFor(d)}</Typography>
+                  <Typography variant="body2" sx={{ '&::before': { content: '"•"', mx: 1 } }}>
+                    {d.answeredBy}
                   </Typography>
-                  
-                  <Typography
-                    variant="body2"
-                    color="text.secondary"
-                    sx={{ 
-                      flexGrow: 1,
-                      overflow: 'hidden',
-                      display: '-webkit-box',
-                      WebkitLineClamp: 2,
-                      WebkitBoxOrient: 'vertical',
-                      mb: 2
-                    }}
-                  >
-                    {item.description}
-                  </Typography>
-
-                  {/* Progress Bar */}
-                  <Box sx={{ mb: 2 }}>
-                    <Box sx={{ display: 'flex', justifyContent: 'space-between', mb: 1 }}>
-                      <Typography variant="body2" color="text.secondary">
-                        Progress
-                      </Typography>
-                      <Typography variant="body2" color="text.secondary">
-                        {item.progress}%
-                      </Typography>
-                    </Box>
-                    <LinearProgress
-                      variant="determinate"
-                      value={item.progress}
-                      color={getProgressColor(item.progress)}
-                      sx={{ height: 6, borderRadius: 3 }}
-                    />
-                  </Box>
-
-                  {/* Footer Info */}
-                  <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mt: 'auto' }}>
-                    <Box sx={{ display: 'flex', alignItems: 'center' }}>
-                      <Star sx={{ fontSize: 16, color: 'warning.main', mr: 0.5 }} />
-                      <Typography variant="body2">{item.rating}</Typography>
-                    </Box>
-                    <Typography variant="body2" color="text.secondary">
-                      {item.duration}
-                    </Typography>
-                  </Box>
-
-                  <Button
-                    variant={item.progress > 0 ? 'contained' : 'outlined'}
-                    fullWidth
-                  >
-                    {item.progress === 100 ? 'Review' : item.progress > 0 ? 'Continue' : 'Start'}
-                  </Button>
-                </CardContent>
-              </Card>
-            </Grid>
-          ))
-        )}
-      </Grid>
-    </Container>
+                </Box>
+              </Box>
+              <IconButton size="small">
+                <MoreVertIcon fontSize="small" />
+              </IconButton>
+            </Box>
+          ))}
+        </Box>
+      </Container>
     </Box>
-    </>
   );
 };
 

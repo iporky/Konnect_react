@@ -1,0 +1,107 @@
+[
+  {
+    "id": 1,
+    "question": "What kind of Visa do I need for working in Korea?",
+    "answer": "To work in South Korea, you will need a specific type of Visa depending on your profession and the duration of your stay. Common visas include E-7 (Specialty occupation) and E-9 (Non-professional employment).",
+    "time": "10h",
+    "answeredTime": "",
+    "answeredBy": "Konnect AI"
+  },
+  {
+    "id": 2,
+    "question": "How long does the E-7 visa process usually take?",
+    "answer": "Processing time can vary but typically ranges from 2 to 6 weeks depending on documentation and region. Ensure your employer provides all required sponsorship documents.",
+    "time": "2d",
+    "answeredTime": "1d",
+    "answeredBy": "Expert"
+  },
+  {
+    "id": 6,
+    "question": "Does Konnect AI support languages beyond English and Korean?",
+    "answer": "Yes. Konnect AI supports 100+ languages for content discovery and answers, improving accessibility for international users.",
+    "time": "4h",
+    "answeredTime": "",
+    "answeredBy": "Konnect AI"
+  },
+  {
+    "id": 7,
+    "question": "Where can I find embassy contacts for visa help?",
+    "answer": "You can search the official Ministry of Foreign Affairs website or contact your home country embassy in Seoul for the most up-to-date details.",
+    "time": "12h",
+    "answeredTime": "",
+    "answeredBy": "Konnect AI"
+  },
+  {
+    "id": 8,
+    "question": "Best neighborhoods in Seoul for international residents?",
+    "answer": "Popular choices include Itaewon, Hannam, and Seongdong for diverse amenities and international communities.",
+    "time": "1d",
+    "answeredTime": "",
+    "answeredBy": "Community"
+  },
+  {
+    "id": 9,
+    "question": "Can I find part-time jobs while studying in Korea?",
+    "answer": "Yes, many students work part-time in cafes or retail. You may need a permit depending on your visa type—check immigration rules for D-2 holders.",
+    "time": "7h",
+    "answeredTime": "",
+    "answeredBy": "Community"
+  },
+  {
+    "id": 3,
+    "question": "Can I switch from tourist visa to work visa in Korea?",
+    "answer": "Generally, you must apply for a change of status at the immigration office. Not all tourist visas are eligible for status change; check with immigration for your specific case.",
+    "time": "5h",
+    "answeredTime": "",
+    "answeredBy": "Post Wall"
+  },
+  {
+    "id": 4,
+    "question": "Do I need a degree for E-2 English teaching visa?",
+    "answer": "Yes, a bachelor’s degree from an accredited institution is typically required along with a clean background check and proof of nationality from approved countries.",
+    "time": "3d",
+    "answeredTime": "2d",
+    "answeredBy": "Expert"
+  },
+  {
+    "id": 5,
+    "question": "What documents are needed for visa renewal?",
+    "answer": "Passport, ARC (Alien Registration Card), employment contract, income statements, and a completed application form are commonly required for renewals.",
+    "time": "8h",
+    "answeredTime": "",
+    "answeredBy": "Konnect AI"
+  }
+  ,
+  {
+    "id": 10,
+    "question": "How do I register my address after moving in Korea?",
+    "answer": "Visit your local district office (gu-cheong) within 14 days with your lease contract and ARC. Some offices allow online appointments.",
+    "time": "6h",
+    "answeredTime": "",
+    "answeredBy": "Konnect AI"
+  },
+  {
+    "id": 11,
+    "question": "Any tips for learning Korean fast while working full-time?",
+    "answer": "Try 30-minute daily sessions with spaced repetition apps (e.g., Anki), plus weekend language exchanges. Focus on survival phrases first.",
+    "time": "19h",
+    "answeredTime": "",
+    "answeredBy": "Community"
+  },
+  {
+    "id": 12,
+    "question": "Where can I find international grocery stores in Seoul?",
+    "answer": "Check Itaewon and Hannam for import stores; online options like Market Kurly also carry international items.",
+    "time": "3d",
+    "answeredTime": "2d",
+    "answeredBy": "Community"
+  },
+  {
+    "id": 13,
+    "question": "What’s the cheapest way to get mobile data on arrival?",
+    "answer": "Prepaid eSIMs booked online are often cheaper than airport kiosks. Compare carriers and check if your phone is unlocked before traveling.",
+    "time": "9h",
+    "answeredTime": "",
+    "answeredBy": "Konnect AI"
+  }
+]
