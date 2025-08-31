@@ -9,7 +9,6 @@ import {
   CardMedia,
   Chip,
   Container,
-  // InputAdornment removed with search bar
   Pagination,
   Skeleton,
   Tab,
@@ -163,23 +162,8 @@ const Buzz = () => {
 
   return (
   <>
-      {/* Match AboutUs background, nav spacing and rounded corners */}
-      <Box
-        sx={{
-          backgroundColor: theme.palette.background.default,
-          color: theme.palette.text.primary,
-          ml: { xs: 0, md: 9 },
-          mr: { xs: 0, md: 1 },
-          mt: { xs: '64px', md: 1 },
-          mb: { xs: '56px', md: 0, lg: 1 },
-          minHeight: '80vh',
-          borderRadius: { xs: 0, md: '14px' },
-          display: 'flex',
-          flexDirection: 'column',
-          alignItems: 'stretch',
-          pb: { xs: 6, md: 10, lg: 14 },
-        }}
-      >
+  {/* Page wrapper inside global white container */}
+  <Box sx={{ color: theme.palette.text.primary, display: 'flex', flexDirection: 'column', alignItems: 'stretch', pb: { xs: 6, md: 10, lg: 14 } }}>
       <Container
         maxWidth="lg"
         sx={{

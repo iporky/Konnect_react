@@ -1,8 +1,24 @@
 import React, { useEffect, useState } from 'react';
 import { Box } from '@mui/material';
 
-// Minimal image-only carousel for three buzz images
-const images = ['/images/buzz1.jpg', '/images/buzz2.jpg', '/images/buzz3.jpg'];
+// Minimal image-only carousel for three buzz images (from buzzCarousel folder)
+const slides = [
+  {
+    src: '/images/buzzCarousel/Chunju_Main Banner _ 1.webp',
+    url: 'https://www.expedia.com/Things-To-Do-In-Chungju.d6139560.Travel-Guide-Activities',
+    alt: 'Chungju activities - Expedia',
+  },
+  {
+    src: '/images/buzzCarousel/Chungju_mainbanner_2.png',
+    url: 'https://www.seoultravelpass.com/en/products/1639-chungbuk-from-seoul-chungju-activity-day-tour-cruise-cable-car-cave-kayak-adventure?srsltid=AfmBOoqFBMEZ5yLLk-QrGwfGbW2N5nnoBK86nMRcTp4ezgVOllqgTS8l',
+    alt: 'Chungju day tour - Seoul Travel Pass',
+  },
+  {
+    src: '/images/buzzCarousel/Main Banner_3.webp',
+    url: 'https://thewanderingwhittens.com/2022/11/04/hwalok-cave-in-chungju/',
+    alt: 'Hwalok Cave in Chungju - Blog',
+  },
+];
 
 const BuzzCarousel = () => {
   const [current, setCurrent] = useState(0);
@@ -10,7 +26,7 @@ const BuzzCarousel = () => {
   // Optional autoplay (every 4s)
   useEffect(() => {
     const id = setInterval(() => {
-      setCurrent((p) => (p + 1) % images.length);
+      setCurrent((p) => (p + 1) % slides.length);
     }, 4000);
     return () => clearInterval(id);
   }, []);
@@ -18,27 +34,35 @@ const BuzzCarousel = () => {
   return (
     <Box sx={{ position: 'relative', width: 438, height: 244, borderRadius: '25px', overflow: 'hidden', boxShadow: '0 4px 10px rgba(0,0,0,0.08)' }}>
       {/* Slides */}
-      {images.map((src, i) => (
+      {slides.map((s, i) => (
         <Box
-          key={src}
-          component="img"
-          src={src}
-          alt={`buzz-${i + 1}`}
+          key={s.src}
+          component="a"
+          href={s.url}
+          target="_blank"
+          rel="noopener noreferrer"
+          aria-label={s.alt}
           sx={{
             position: 'absolute',
             inset: 0,
-            width: '100%',
-            height: '100%',
-            objectFit: 'cover',
+            display: 'block',
             opacity: i === current ? 1 : 0,
             transition: 'opacity 500ms ease',
+            pointerEvents: i === current ? 'auto' : 'none',
           }}
-        />
+        >
+          <Box
+            component="img"
+            src={s.src}
+            alt={s.alt}
+            sx={{ width: '100%', height: '100%', objectFit: 'cover', display: 'block' }}
+          />
+        </Box>
       ))}
 
       {/* Dots */}
       <Box sx={{ position: 'absolute', bottom: 10, left: '50%', transform: 'translateX(-50%)', display: 'flex', gap: 0.75 }}>
-        {images.map((_, i) => (
+        {slides.map((_, i) => (
           <Box
             key={i}
             onClick={() => setCurrent(i)}

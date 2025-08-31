@@ -248,7 +248,7 @@ const Privacy = () => {
   ];
 
   return (
-    <Box sx={{ ml: '80px' }}> {/* Add left margin to account for fixed navigation */}
+    <Box sx={{ ml: { xs: 0, md: '80px' } }}> {/* 0 on mobile; offset only on desktop for fixed nav */}
       <Container maxWidth="md" sx={{ py: 4 }}>
       <Card sx={{ boxShadow: 2 }}>
         <CardContent sx={{ p: 4 }}>
@@ -266,7 +266,17 @@ const Privacy = () => {
 
           {/* Introduction */}
           <Box sx={{ mb: 4 }}>
-            <Alert severity="info" sx={{ mb: 3 }}>
+            <Alert
+              severity="info"
+              sx={{
+                mb: 3,
+                backgroundColor: 'rgba(29,68,132,0.06)',
+                color: 'text.primary',
+                border: '1px solid',
+                borderColor: 'divider',
+                '& .MuiAlert-icon': { color: 'primary.main' },
+              }}
+            >
               <Typography variant="body1">
                 At Konnect.kr, your privacy is our priority. This Privacy Policy explains how we collect, 
                 use, disclose, and safeguard your information when you use our service.
@@ -280,13 +290,16 @@ const Privacy = () => {
 
           {/* Privacy Sections as Accordions */}
           {privacySections.map((section, index) => (
-            <Accordion key={section.id} sx={{ mb: 2, '&:before': { display: 'none' } }}>
+            <Accordion key={section.id} sx={{ mb: 2, '&:before': { display: 'none' }, boxShadow: 'none' }}>
               <AccordionSummary
                 expandIcon={<ExpandMoreIcon />}
                 sx={{
-                  backgroundColor: 'primary.main',
-                  color: 'white',
-                  '&:hover': { backgroundColor: 'primary.dark' },
+                  backgroundColor: 'transparent',
+                  color: 'primary.main',
+                  border: '1px solid',
+                  borderColor: 'divider',
+                  borderRadius: 1,
+                  '&:hover': { backgroundColor: 'action.hover' },
                   '& .MuiAccordionSummary-content': { alignItems: 'center', gap: 2 },
                 }}
               >
@@ -295,7 +308,7 @@ const Privacy = () => {
                   {section.title}
                 </Typography>
               </AccordionSummary>
-              <AccordionDetails sx={{ p: 3 }}>
+              <AccordionDetails sx={{ p: 3, backgroundColor: 'background.paper', border: '1px solid', borderColor: 'divider', borderTop: 'none', borderRadius: 1 }}>
                 {section.content}
               </AccordionDetails>
             </Accordion>
@@ -304,8 +317,8 @@ const Privacy = () => {
           <Divider sx={{ my: 4 }} />
 
           {/* Contact Information */}
-          <Box sx={{ textAlign: 'center', p: 3, backgroundColor: 'grey.50', borderRadius: 2 }}>
-            <ContactMailIcon sx={{ fontSize: 48, color: 'primary.main', mb: 2 }} />
+          <Box sx={{ textAlign: 'center', p: 3, backgroundColor: 'background.paper', borderRadius: 2, border: '1px solid', borderColor: 'divider' }}>
+            <ContactMailIcon sx={{ fontSize: 48, color: 'secondary.main', mb: 2 }} />
             <Typography variant="h5" gutterBottom sx={{ fontWeight: 'bold' }}>
               Questions About Privacy?
             </Typography>
@@ -326,7 +339,7 @@ const Privacy = () => {
             <Button
               variant="contained"
               color="primary"
-              sx={{ mt: 3 }}
+              sx={{ mt: 3, borderRadius: 999 }}
               onClick={() => window.location.href = 'mailto:privacy@konnect.kr'}
             >
               Contact Privacy Team

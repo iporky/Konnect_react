@@ -19,7 +19,7 @@ import {
 } from '@mui/material';
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import ThemeToggle from '../components/ThemeToggle';
+// ThemeToggle removed per request
 import { authAPI } from '../services/api';
 
 const Login = ({ onLogin }) => {
@@ -66,10 +66,10 @@ const Login = ({ onLogin }) => {
 
   return (
     <>
-      <ThemeToggle />
-      <Box sx={{ ml: '80px' }}> {/* Add left margin to account for fixed navigation */}
-      <Container maxWidth="sm" sx={{ py: 8 }}>
-      <Card sx={{ boxShadow: 4 }}>
+  {/* Theme toggle removed */}
+  <Box sx={{ ml: { xs: 0, md: '80px' } }}> {/* 0 on mobile; offset on desktop for fixed nav */}
+  <Container maxWidth="sm" sx={{ py: { xs: 4, md: 8 } }}>
+  <Card sx={{ boxShadow: 2, backgroundColor: 'background.default' }}>
         <CardContent sx={{ p: 4 }}>
           {/* Header */}
           <Box sx={{ textAlign: 'center', mb: 4 }}>

@@ -1,10 +1,13 @@
-import { Box, Button, Card, CardContent, Container, Grid, Typography, useTheme } from '@mui/material';
+import { Box, Button, Card, CardContent, Container, Grid, Typography, useTheme, useMediaQuery } from '@mui/material';
 import { motion } from 'framer-motion';
 import { useEffect, useState } from 'react';
 import { LaptopMacOutlined, VerifiedOutlined, FaceRetouchingNatural, TheaterComedy as TheaterComedyIcon } from '@mui/icons-material';
+import { useNavigate } from 'react-router-dom';
 
 const Business = () => {
   const theme = useTheme();
+  const navigate = useNavigate();
+  const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
 
   // Use the same layout and spacings as AboutUs; images load from business folder
   const slides = [
@@ -52,24 +55,7 @@ const Business = () => {
 
   return (
     <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ duration: 1 }}>
-      <Box
-        sx={{
-          backgroundColor: theme.palette.background.default,
-          color: theme.palette.text.primary,
-          // Match AboutUs container offsets so rounded corners align with sidebar
-          ml: { xs: 0, md: 9 },
-          mr: { xs: 0, md: 1 },
-          mt: { xs: '64px', md: 1 },
-          mb: { xs: '56px', md: 0, lg: 1 },
-          minHeight: '60vh',
-           borderRadius: { xs: 0, md: '14px' },
-          display: 'flex',
-          flexDirection: 'column',
-          justifyContent: 'center',
-          alignItems: 'flex-start',
-          pb: { xs: 6, md: 10, lg: 14 },
-        }}
-      >
+  <Box sx={{ color: theme.palette.text.primary, display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'flex-start', pb: { xs: 6, md: 10, lg: 14 } }}>
         <motion.div
           initial={{ opacity: 0, y: 80 }}
           animate={{ opacity: 1, y: 0 }}
@@ -80,9 +66,10 @@ const Business = () => {
             maxWidth="xl"
             sx={{
               // Reduce desktop minHeight to avoid large gap before next section
-              minHeight: { xs: 'calc(100vh - 64px)', md: '60vh' },
+              minHeight: { xs: 'auto', md: '60vh' },
               display: 'flex',
-              alignItems: 'center',
+              alignItems: { xs: 'flex-start', md: 'center' },
+              py: { xs: 2, md: 0 },
               ml: { xs: 0, md: 30 },
               mt: { xs: 0, md: 10 },
             }}
@@ -160,7 +147,7 @@ const Business = () => {
                       alignItems: { xs: 'stretch', sm: 'center' },
                       justifyContent: { xs: 'flex-start', sm: 'flex-start' },
                     }}>
-                      <Button variant="contained" color="primary" size="large" sx={{ borderRadius: 7, px: 4, py: 1.5, textTransform: 'none', fontFamily: 'Metropolis', fontWeight: 700 }}>
+                      <Button variant="contained" color="primary" size="large" sx={{ borderRadius: 7, px: 4, py: 1.5, textTransform: 'none', fontFamily: 'Metropolis', fontWeight: 700 }} onClick={() => navigate('/linkBusiness')}>
                         List your Business
                       </Button>
                       <Button variant="outlined" color="primary" size="large" sx={{ borderRadius: 7, px: 4, py: 1.5, textTransform: 'none', fontFamily: 'Metropolis', fontWeight: 700 }}>
@@ -298,11 +285,11 @@ const Business = () => {
         
         {/* Section 2: Benefits for businesses (mirrors AboutUs card layout) */}
         {/* Reduce top padding so heading sits closer to hero */}
-        <Box sx={{ width: '100%', display: 'flex', pt: { xs: 2, md: 16 }, pb: { xs: 6, md: 10 } }}>
+    <Box sx={{ width: '100%', display: 'flex', pt: { xs: 2, md: 16 }, pb: { xs: 6, md: 10 } }}>
           <motion.div
             initial={{ opacity: 0, y: 60 }}
             whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true, amount: 0.5 }}
+      viewport={{ once: true, amount: isMobile ? 0.12 : 0.5 }}
             transition={{ duration: 0.8 }}
             style={{ width: '100%', maxWidth: 1100 }}
           >
@@ -324,21 +311,21 @@ const Business = () => {
                   <Typography sx={{ fontFamily: 'Metropolis', fontWeight: 400, fontSize: '16px', color: theme.palette.text.secondary, fontStyle: 'italic' }}>
                     To be a part of us,
                   </Typography>
-                  <Button size="small" variant="contained" color="primary" sx={{ borderRadius: 999, px: 1.5, py: 0.25, fontSize: '11px', fontWeight: 700, textTransform: 'none' }}>List your Business</Button>
+                  <Button size="small" variant="contained" color="primary" sx={{ borderRadius: 999, px: 1.5, py: 0.25, fontSize: '11px', fontWeight: 700, textTransform: 'none' }} onClick={() => navigate('/linkBusiness')}>List your Business</Button>
                   <Typography sx={{ fontFamily: 'Metropolis', fontWeight: 400, fontSize: '16px', color: theme.palette.text.secondary, fontStyle: 'italic' }}>
                     today!
                   </Typography>
                 </Box>
 
                 {/* Four cards row  */}
-                <Box sx={{ mt: 8, display: 'grid', gap: 6.5, gridTemplateColumns: { xs: '1fr', sm: '1fr 1fr', md: 'repeat(4, 1fr)' } }}>
+                <Box sx={{ mt: 8, display: 'grid', gap: { xs: 3, md: 6.5 }, gridTemplateColumns: { xs: '1fr', sm: '1fr 1fr', md: 'repeat(4, 1fr)' }, justifyItems: { xs: 'center', sm: 'center', md: 'stretch' } }}>
                   {[
                     { Icon: TheaterComedyIcon, title: 'Be Yourself', desc: 'Upload information in Korean (or your language) and we convert it accurately in 100+ Languages' },
                     { Icon: VerifiedOutlined, title: 'Verified User Base', desc: 'Reach 100+ million real users planning travel or living in Korea' },
                     { Icon: FaceRetouchingNatural, title: 'Trust-Building Profile', desc: 'Business profile optimized for credibility & visibility' },
                     { Icon: LaptopMacOutlined, title: 'Embedded Booking API', desc: 'Customers book & pay directly through Konnect', comingSoon: true },
                   ].map((f, i) => (
-                    <Card
+          <Card
                       key={f.title}
                       elevation={0}
                       sx={{
@@ -346,10 +333,11 @@ const Business = () => {
                         overflow: 'hidden',
                         borderRadius: 4,
                         boxShadow: '0 6px 24px rgba(0,0,0,0.08)',
-                        height: '380px',
-                        width: '320px',
+            height: { xs: 'auto', md: '380px' },
+            width: { xs: '90%', sm: '300px', md: '320px' },
                         border: `1px solid ${theme.palette.divider}`,
-                        pt: 4,
+            pt: 4,
+            mx: { xs: 'auto', md: 0 },
                       }}
                     >
                       {/* circular top shape */}
@@ -365,10 +353,10 @@ const Business = () => {
                           background: 'linear-gradient(180deg, rgba(205,32,40,0.10) 0%, rgba(205,32,40,0.10) 60%, rgba(205,32,40,0.06) 100%)',
                         }}
                       />
-                      <CardContent sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center', textAlign: 'center', gap: 6, pt: 2 }}>
+                      <CardContent sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center', textAlign: 'center', gap: { xs: 3, md: 6 }, pt: 2 }}>
                         <f.Icon sx={{ color: '#CD2028', fontSize: 45 }} />
-                        <Typography sx={{ fontFamily: 'Metropolis', fontWeight: 700, fontSize: '22px' }}>{f.title}</Typography>
-                        <Typography sx={{ fontFamily: 'Metropolis', fontWeight: 400, fontSize: '17px', color: theme.palette.text.secondary }}>
+                        <Typography sx={{ fontFamily: 'Metropolis', fontWeight: 700, fontSize: { xs: '20px', md: '22px' } }}>{f.title}</Typography>
+                        <Typography sx={{ fontFamily: 'Metropolis', fontWeight: 400, fontSize: { xs: '15px', md: '17px' }, color: theme.palette.text.secondary }}>
                           {f.desc}
                         </Typography>
                         {f.comingSoon && (
@@ -389,7 +377,7 @@ const Business = () => {
         <motion.div
           initial={{ opacity: 0, y: 60 }}
           whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true, amount: 0.5 }}
+          viewport={{ once: true, amount: isMobile ? 0.12 : 0.5 }}
           transition={{ duration: 0.8 }}
           style={{ width: '100%' }}
         >
@@ -421,7 +409,7 @@ const Business = () => {
                 <Box
                   sx={{
                     width: '100%',
-                    height: { xs: 240, sm: 300, md: 360 },
+                    height: { xs: 260, sm: 320, md: 360 },
                     bgcolor: theme.palette.mode === 'light' ? 'grey.100' : 'grey.800',
                     borderRadius: 3,
                     display: 'flex',
@@ -434,7 +422,13 @@ const Business = () => {
                     component="img"
                     src={`${process.env.PUBLIC_URL}/images/business/yourAd.jpeg`}
                     alt="Your Ads preview"
-                    sx={{ width: { md: '500px' }, height: '100%', objectFit: 'fill ' }}
+                    sx={{
+                      width: { xs: '115%', sm: '112%', md: '500px' },
+                      height: '100%',
+                      objectFit: 'cover',
+                      mx: 'auto',
+                      transform: { xs: 'translateX(0)', sm: 'translateX(0)', md: 'none' },
+                    }}
                   />
                 </Box>
               </Grid>

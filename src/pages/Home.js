@@ -6,6 +6,7 @@ import GroupOutlined from '@mui/icons-material/GroupOutlined';
 import LanguageOutlined from '@mui/icons-material/LanguageOutlined';
 import MicOutlined from '@mui/icons-material/MicOutlined';
 import MoreHoriz from '@mui/icons-material/MoreHoriz';
+import MoreVert from '@mui/icons-material/MoreVert';
 import School from '@mui/icons-material/School';
 import WorkspacePremiumOutlined from '@mui/icons-material/WorkspacePremiumOutlined';
 import {
@@ -25,6 +26,8 @@ import { useNavigate } from 'react-router-dom';
 import BuzzCarousel from '../components/BuzzCarousel';
 import Footer from '../components/Footer';
 import TrendingSearches from '../components/TrendingSearches';
+import FeedbackPopup from '../components/FeedbackPopup';
+import CommunityPostDialog from '../components/CommunityPostDialog';
 
 const categoryIcons = [
   { icon: "/images/plan-trip.png", label: "Plan Trip", color: "#8888881A" },
@@ -53,9 +56,13 @@ const Home = () => {
     attach: false,
     mic: false,
   });
+  // Mobile: toggle vertical actions menu from the three dots
+  const [showMobileSearchActions, setShowMobileSearchActions] = useState(false);
   const toggleIcon = (key) => setSearchToggles((prev) => ({ ...prev, [key]: !prev[key] }));
   // Mobile: show more categories when tapping the three dots
   const [showAllCategories, setShowAllCategories] = useState(false);
+  const [postOpen, setPostOpen] = useState(false);
+  const [feedbackOpen, setFeedbackOpen] = useState(false);
   // Desktop: number of category tiles visible before the "More" tile
   const DESKTOP_VISIBLE = 6; // collapsed: 6 + More = 7 tiles in row 1
   const ROW1_COUNT = 7; // expanded: always keep 7 real icons on the top row
@@ -67,18 +74,18 @@ const Home = () => {
   }, []);
 
   const handleSearchFocus = () => {
-    if (!isAuthenticated) {
-      navigate('/login');
-    }
+    // Open Community Post dialog instead of redirecting to login
+    setPostOpen(true);
+    // Blur to avoid typing into the field when dialog opens
+    if (searchInputRef.current) searchInputRef.current.blur();
   };
 
   const handleSearchChange = (e) => {
     const value = e.target.value;
     setSearchValue(value);
-    
-    // Navigate to login when user starts typing
-    if (value.trim() && !isAuthenticated) {
-      navigate('/login');
+    // For consistency: open post dialog rather than redirect
+    if (value.trim() && !postOpen) {
+      setPostOpen(true);
     }
   };
 
@@ -94,28 +101,54 @@ const Home = () => {
   return (
     <>
       <Box sx={{ 
-        backgroundColor: '#ffffff',
         display: 'flex',
         flexDirection: 'column',
-        margin: { xs: 0, md: '8px 8px 8px 66px' },
-        borderRadius: { xs: 0, md: '14px' },
         overflowX: 'hidden',
-        height: '98vh',
         // Allow page scroll on desktop when the second row of tiles is expanded
         overflowY: { xs: 'hidden', md: showAllCategories ? 'auto' : 'none' },
-        position: 'relative'
+        position: 'relative',
+        height: '100%'
       }}>
         {/* Header with Logo */}
-        <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', py: { xs: 3}, position: 'relative', mb: { xs: 6, md: '66px' }, mt: { xs: 2, md: '98px' }   }}>
+        <Box sx={{
+          display: 'flex',
+          justifyContent: 'center',
+          alignItems: 'center',
+          py: { xs: 3 },
+          position: { xs: 'absolute', md: 'relative' },
+          left: { xs: 0, md: 'auto' },
+          right: { xs: 0, md: 'auto' },
+          top: { xs: '30%', md: 'auto' },
+          transform: { xs: 'translateY(-50%)', md: 'none' },
+          mb: { xs: 0, md: '66px' },
+          mt: { xs: 0, md: '98px' }
+        }}>
           <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ duration: 0.8 }}>
-            <Box sx={{ textAlign: 'center' }}>
-              <img 
-                src="/images/Konnect_logo.png" 
-                alt="Konnect" 
-                style={{ height: '69px', width: '460'}}
+            <Box sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center', width: '100%' }}>
+              <Box
+                component="img"
+                src="/images/Konnect_logo.png"
+                alt="Konnect"
+                sx={{
+                  height: { xs: 60, md: 69 },
+                  width: 'auto',
+                  maxWidth: { xs: 300, md: 460 },
+                  display: 'block'
+                }}
               />
-              {/* Tagline for mobile as in mock */}
-              <Typography variant="subtitle2" sx={{ color: 'primary.main', mt: 1, display: { xs: 'block', md: 'none' }, fontFamily: 'cursive' }}>
+              {/* Tagline for mobile: right aligned */}
+              <Typography 
+                variant="subtitle2" 
+                sx={{ 
+                  color: 'primary.main', 
+                  mt: 1, 
+                  display: { xs: 'block', md: 'none' }, 
+                  fontFamily: 'cursive', 
+                  alignSelf: 'flex-end',
+                  pr: 1.5,
+                  fontSize: { xs: '12px', md: 'inherit' }
+                }}
+              >
                 with Korea
               </Typography>
             </Box>
@@ -240,6 +273,7 @@ const Home = () => {
                     size="small"
                     disableRipple
                     disableFocusRipple
+                    onClick={() => setPostOpen(true)}
                     sx={{ mr: 1, p: 0, '&:hover': { backgroundColor: 'transparent' } }}
                   >
                     <AddRounded sx={{ width: 20, height: 20, color: '#CD2028' }} />
@@ -258,13 +292,13 @@ const Home = () => {
                   InputProps={{
                     disableUnderline: true,
                     sx: {
-                      fontSize: '16px',
+                      fontSize: { xs: '14px', md: '16px' },
                       '& input::placeholder': {
                         color: '#888888',
                         fontFamily: 'Metropolis',
                         fontWeight: 500,
                         fontStyle: 'Semi Bold',
-                        fontSize: '13px',
+                        fontSize: { xs: '12px', md: '13px' },
                         verticalAlign: 'middle',
                       }
                     },
@@ -356,14 +390,54 @@ const Home = () => {
                 {/* Mobile more (three dots) icon */}
                 <Box sx={{ display: { xs: 'flex', md: 'none' } }}>
                   <Tooltip title="More options" arrow enterDelay={300} placement="top">
-                    <IconButton size="small" aria-label="more">
-                      <MoreHoriz />
+                    <IconButton size="small" aria-label="more" onClick={() => setShowMobileSearchActions((v) => !v)}>
+                      <MoreVert />
                     </IconButton>
                   </Tooltip>
                 </Box>
               </Paper>
             </Box>
           </motion.div>
+
+          {/* Mobile vertical actions menu (appears above the fixed search bar) */}
+          {showMobileSearchActions && (
+            <>
+              {/* backdrop to close on outside click */}
+              <Box onClick={() => setShowMobileSearchActions(false)} sx={{ position: 'fixed', inset: 0, zIndex: 1105, display: { xs: 'block', md: 'none' } }} />
+              <Box
+                sx={{
+                  position: 'fixed',
+                  right: 22,
+                  bottom: 'calc(max(16px, env(safe-area-inset-bottom)) + 92px)',
+                  zIndex: 1110,
+                  bgcolor: '#fff',
+                  borderRadius: '28px',
+                  p: 1.2,
+                  boxShadow: '0 10px 22px rgba(0,0,0,0.20)',
+                  display: { xs: 'flex', md: 'none' },
+                  flexDirection: 'column',
+                  alignItems: 'center',
+                  gap: 1.2,
+                }}
+              >
+                <IconButton size="small" aria-label="group" onClick={() => toggleIcon('group')} sx={{ color: searchToggles.group ? '#6F95BD' : 'text.secondary' }}>
+                  <GroupOutlined />
+                </IconButton>
+                <IconButton size="small" aria-label="badge" onClick={() => toggleIcon('badge')} sx={{ color: searchToggles.badge ? '#6F95BD' : 'text.secondary' }}>
+                  <WorkspacePremiumOutlined />
+                </IconButton>
+                <IconButton size="small" aria-label="language" onClick={() => toggleIcon('globe')} sx={{ color: searchToggles.globe ? '#6F95BD' : 'text.secondary' }}>
+                  <LanguageOutlined />
+                </IconButton>
+                <IconButton size="small" aria-label="attach" onClick={() => toggleIcon('attach')} sx={{ color: searchToggles.attach ? '#6F95BD' : 'text.secondary' }}>
+                  <AttachFileOutlined />
+                </IconButton>
+                <IconButton size="small" aria-label="mic" onClick={() => toggleIcon('mic')} sx={{ color: searchToggles.mic ? '#6F95BD' : 'text.secondary' }}>
+                  <MicOutlined />
+                </IconButton>
+              </Box>
+            </>
+          )}
 
           {/* Category Icons - desktop: collapsed => first 6 + More; expanded => first 7 icons; remaining left-aligned with More at end */}
           <LayoutGroup>
@@ -542,7 +616,7 @@ const Home = () => {
             position: 'absolute',
             left: 0,
             right: 0,
-            bottom: { xs: 'calc(max(16px, env(safe-area-inset-bottom)) + 76px)', md: 'auto' },
+            bottom: { xs: 'calc(max(16px, env(safe-area-inset-bottom)) + 100px)', md: 'auto' },
             display: { xs: 'flex', md: 'none' },
             justifyContent: 'center',
             gap: 1.5,
@@ -571,7 +645,7 @@ const Home = () => {
                   <Box component="img" src={category.icon} alt={category.label} sx={{ width: 26, height: 26 }} />
                 )}
               </div>
-              <Typography variant="caption" sx={{ mt: 0.5, color: 'text.secondary' }}>
+              <Typography variant="caption" sx={{ mt: 0.5, color: 'text.secondary', fontSize: '11px', lineHeight: 1.2 }}>
                 {category.label}
               </Typography>
             </Box>
@@ -604,7 +678,7 @@ const Home = () => {
               position: 'absolute',
               left: 0,
               right: 0,
-              bottom: { xs: 'calc(max(16px, env(safe-area-inset-bottom)) + 76px + 72px)', md: 'auto' },
+              bottom: { xs: 'calc(max(16px, env(safe-area-inset-bottom)) + 112px + 72px)', md: 'auto' },
               display: { xs: 'flex', md: 'none' },
               justifyContent: 'center',
               gap: 1.5,
@@ -633,7 +707,7 @@ const Home = () => {
                     <Box component="img" src={category.icon} alt={category.label} sx={{ width: 26, height: 26 }} />
                   )}
                 </Paper>
-                <Typography variant="caption" sx={{ mt: 0.5, color: 'text.secondary' }}>
+                <Typography variant="caption" sx={{ mt: 0.5, color: 'text.secondary', fontSize: '11px', lineHeight: 1.2 }}>
                   {category.label}
                 </Typography>
               </Box>
@@ -654,7 +728,7 @@ const Home = () => {
           zIndex: 20,
           display: { xs: 'none', md: 'block' }
         }}>
-          <IconButton color="primary" size="large" sx={{
+          <IconButton onClick={() => setFeedbackOpen(true)} color="primary" size="large" sx={{
             backgroundColor: theme.palette.background.paper,
             color: '#888888',
             boxShadow: '0 6px 16px rgba(0,0,0,0.12)',
@@ -663,6 +737,12 @@ const Home = () => {
             <FeedbackOutlined />
           </IconButton>
         </Box>
+
+        {/* Feedback Popup */}
+        <FeedbackPopup open={feedbackOpen} onClose={() => setFeedbackOpen(false)} />
+
+  {/* Community Post Dialog */}
+  <CommunityPostDialog open={postOpen} onClose={() => setPostOpen(false)} onSubmit={(payload) => console.log('post payload', payload)} />
       </Box>
     </>
   );

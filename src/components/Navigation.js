@@ -170,7 +170,7 @@ const Navigation = ({ user, onLogout }) => {
             <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', gap: 4, py: 2, borderTop: '1px solid', borderTopColor: 'divider' }}>
               <Typography variant="caption" sx={{ cursor: 'pointer' }} onClick={() => { navigate('/about'); setMobileOpen(false); }}>About Us</Typography>
               <Typography variant="caption" sx={{ cursor: 'pointer' }} onClick={() => { navigate('/contact'); setMobileOpen(false); }}>Contact Us</Typography>
-              <Typography variant="caption" sx={{ cursor: 'pointer' }} onClick={() => { navigate('/terms'); setMobileOpen(false); }}>Terms</Typography>
+              <Typography variant="caption" sx={{ cursor: 'pointer' }} onClick={() => { navigate('/business'); setMobileOpen(false); }}>Business</Typography>
               <Typography variant="caption" sx={{ cursor: 'pointer' }} onClick={() => { navigate('/privacy'); setMobileOpen(false); }}>Privacy</Typography>
             </Box>
           </Box>
@@ -280,7 +280,7 @@ const Navigation = ({ user, onLogout }) => {
                     '&::before': (isActive && item.path) ? {
                       content: '""',
                       position: 'absolute',
-                      right: 0,
+                      right: -8, // extend into the 8px gap so it touches the white page
                       top: '50%',
                       transform: 'translateY(-50%)',
                       height: '45px',

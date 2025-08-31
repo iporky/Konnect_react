@@ -30,7 +30,7 @@ import {
   Typography
 } from '@mui/material';
 import { useState } from 'react';
-import ThemeToggle from '../components/ThemeToggle';
+// ThemeToggle removed per request
 
 const Profile = ({ user }) => {
   const [isEditing, setIsEditing] = useState(false);
@@ -128,8 +128,8 @@ const Profile = ({ user }) => {
 
   return (
     <>
-      <ThemeToggle />
-      <Box sx={{ ml: '80px' }}> {/* Add left margin to account for fixed navigation */}
+      {/* Theme toggle removed */}
+      <Box sx={{ ml: { xs: 0, md: '80px' } }}> {/* 0 on mobile; offset on desktop for fixed navigation */}
       <Container maxWidth="lg" sx={{ py: 4 }}>
       {/* Header */}
       <Box sx={{ mb: 4 }}>

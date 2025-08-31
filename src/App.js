@@ -14,6 +14,7 @@ import Terms from './pages/Terms';
 import Privacy from './pages/Privacy';
 import Business from './pages/Business';
 import Contact from './pages/Contact';
+import LinkBusiness from './pages/LinkBusiness';
 
 function App() {
   const [user, setUser] = useState(null);
@@ -83,21 +84,40 @@ function App() {
         }}>
           <Navigation user={user} onLogout={handleLogout} />
           
-          <Box component="main" sx={{ flexGrow: 1, borderRadius: 21 }}>
-            <Routes>
-              <Route path="/" element={<Home />} />
-              <Route path="/buzz" element={<Buzz />} />
-              <Route path="/about" element={<AboutUs />} />
-              <Route path="/business" element={<Business />} />
-              <Route path="/contact" element={<Contact />} />
-              <Route path="/library" element={<Library user={user} />} />
-              <Route path="/profile" element={<Profile user={user} />} />
-              <Route path="/login" element={<Login onLogin={handleLogin} />} />
-              <Route path="/signup" element={<Signup onSignup={handleLogin} />} />
-              <Route path="/terms" element={<Terms />} />
-              <Route path="/privacy" element={<Privacy />} />
-              {/* Add more routes as needed */}
-            </Routes>
+          <Box
+            component="main"
+            sx={{
+              backgroundColor: '#ffffff',
+              borderRadius: '14px',
+              position: 'fixed',
+              // fixed container with an 8px margin around it
+              top: { xs: 72, md: 8 }, // leave room for the mobile app bar (64) + 8px gap
+              right: 8,
+              bottom: 8,
+              left: { xs: 8, md: 74 }, // sidebar (66) + 8px gap on desktop
+              overflow: 'hidden',
+              display: 'flex',
+              flexDirection: 'column',
+            }}
+          >
+            {/* Scrollable content region inside the fixed white container */}
+            <Box sx={{ flex: 1, overflowY: 'auto', overflowX: 'hidden', WebkitOverflowScrolling: 'touch' }}>
+              <Routes>
+                <Route path="/" element={<Home />} />
+                <Route path="/buzz" element={<Buzz />} />
+                <Route path="/about" element={<AboutUs />} />
+                <Route path="/business" element={<Business />} />
+                <Route path="/linkBusiness" element={<LinkBusiness />} />
+                <Route path="/contact" element={<Contact />} />
+                <Route path="/library" element={<Library user={user} />} />
+                <Route path="/profile" element={<Profile user={user} />} />
+                <Route path="/login" element={<Login onLogin={handleLogin} />} />
+                <Route path="/signup" element={<Signup onSignup={handleLogin} />} />
+                <Route path="/terms" element={<Terms />} />
+                <Route path="/privacy" element={<Privacy />} />
+                {/* Add more routes as needed */}
+              </Routes>
+            </Box>
           </Box>
         </Box>
       </Router>
