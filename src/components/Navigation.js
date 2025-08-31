@@ -14,10 +14,12 @@ import {
   Toolbar,
   Typography,
   useMediaQuery,
-  useTheme as useMuiTheme
+  useTheme as useMuiTheme,
+  InputBase
 } from '@mui/material';
 import { motion } from 'framer-motion';
 import { useState } from 'react';
+import SearchIcon from '@mui/icons-material/Search';
 import { useLocation, useNavigate } from 'react-router-dom';
 import {
   CustomBuzzIcon,
@@ -33,6 +35,8 @@ const Navigation = ({ user, onLogout }) => {
   const muiTheme = useMuiTheme();
   const isMobile = useMediaQuery(muiTheme.breakpoints.down('md'));
   const [mobileOpen, setMobileOpen] = useState(false);
+  const [languageOpen, setLanguageOpen] = useState(false);
+  const [languageQuery, setLanguageQuery] = useState('');
 
   const menuItems = [
     { 
@@ -56,7 +60,7 @@ const Navigation = ({ user, onLogout }) => {
     { 
       text: 'Language', 
       icon: <CustomLanguageIcon selected={location.pathname === '/language'} />, 
-      path: '/language', 
+      path: isMobile ? '/language' : null, 
       requireAuth: false 
   },
   ];
@@ -189,7 +193,7 @@ const Navigation = ({ user, onLogout }) => {
       animate={{ opacity: 1 }}
       transition={{ duration: 0.6, ease: "easeOut" }}
     >
-      <Box
+  <Box
         sx={{
           position: 'fixed',
           left: 0,
@@ -262,7 +266,13 @@ const Navigation = ({ user, onLogout }) => {
             >
               <ListItem disablePadding sx={{ width: '100%', mb: 0 }}>
                 <ListItemButton
-                  onClick={() => handleNavigation(item.path)}
+                  onClick={() => {
+                    if (item.text === 'Language' && !isMobile) {
+                      setLanguageOpen(true);
+                      return;
+                    }
+                    handleNavigation(item.path);
+                  }}
                   sx={{
                     display: 'flex',
                     flexDirection: 'column',
@@ -324,6 +334,92 @@ const Navigation = ({ user, onLogout }) => {
         })}
       </List>
     </Box>
+
+    {/* Desktop Language Drawer overlay */}
+    {languageOpen && (
+      <>
+        {/* Backdrop */}
+        <Box
+          onClick={() => setLanguageOpen(false)}
+          sx={{
+            position: 'fixed',
+            inset: 0,
+            backgroundColor: 'rgba(0,0,0,0.08)',
+            zIndex: 1200,
+          }}
+        />
+        {/* Drawer Panel */}
+        <Box
+          role="dialog"
+          aria-label="Language selector"
+          sx={{
+            position: 'fixed',
+            top: { xs: 72, md: 8 },
+            bottom: 8,
+            left: { xs: 8, md: 74 },
+            width: 260,
+            bgcolor: '#fff',
+            borderRadius: 2,
+            boxShadow: '0px 12px 24px rgba(0,0,0,0.18)',
+            zIndex: 1300,
+            display: { xs: 'none', md: 'flex' },
+            flexDirection: 'column',
+            overflow: 'hidden',
+          }}
+        >
+          {/* Search */}
+          <Box sx={{ p: 1.5, borderBottom: '1px solid', borderColor: 'divider' }}>
+            <Box
+              sx={{
+                display: 'flex',
+                alignItems: 'center',
+                gap: 1,
+                px: 1.5,
+                py: 0.75,
+                borderRadius: 999,
+                boxShadow: '0px 4px 12px rgba(0,0,0,0.16)',
+                bgcolor: '#fff',
+              }}
+            >
+              <SearchIcon sx={{ color: 'text.disabled' }} />
+              <InputBase
+                placeholder="Search languages..."
+                value={languageQuery}
+                onChange={(e) => setLanguageQuery(e.target.value)}
+                sx={{ fontSize: 14, width: '100%' }}
+              />
+            </Box>
+          </Box>
+
+          {/* Language list */}
+          <Box sx={{ flex: 1, overflowY: 'auto' }}>
+            {[
+              '한국어 (Korean)',
+              '普通话 (Mandarin Chinese)',
+              'Español (Spanish)',
+              'English (English)',
+              'हिन्दी (Hindi)',
+              'Português (Portuguese)',
+              'Русский (Russian)',
+              'Bahasa Indonesia (Indonesian)',
+              'Français (French)',
+              'Deutsch (German)',
+              '日本語 (Japanese)',
+              'Kiswahili (Swahili)',
+              'العربية (Arabic)',
+              'ไทย (Thai)',
+              'Tiếng Việt (Vietnamese)'
+            ]
+              .filter((l) => l.toLowerCase().includes(languageQuery.toLowerCase()))
+              .map((label, idx, arr) => (
+                <Box key={label} sx={{ px: 2, py: 1.75, borderBottom: idx < arr.length - 1 ? '1px solid' : 'none', borderColor: 'divider', cursor: 'pointer', '&:hover': { bgcolor: 'grey.50' } }}>
+                  <Typography sx={{ fontSize: 14 }}>{label}</Typography>
+                </Box>
+              ))}
+          </Box>
+        </Box>
+      </>
+    )}
     </motion.div>
   );
 };
