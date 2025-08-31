@@ -74,19 +74,13 @@ const Home = () => {
   }, []);
 
   const handleSearchFocus = () => {
-    // Open Community Post dialog instead of redirecting to login
-    setPostOpen(true);
-    // Blur to avoid typing into the field when dialog opens
-    if (searchInputRef.current) searchInputRef.current.blur();
+    // No-op: do not open dialog from search focus
   };
 
   const handleSearchChange = (e) => {
     const value = e.target.value;
     setSearchValue(value);
-    // For consistency: open post dialog rather than redirect
-    if (value.trim() && !postOpen) {
-      setPostOpen(true);
-    }
+    // Do not open dialog from typing
   };
 
   const handleCategoryClick = (category) => {

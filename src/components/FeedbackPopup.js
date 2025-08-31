@@ -1,23 +1,20 @@
-import React, { useState } from 'react';
 import {
-  Backdrop,
-  Box,
-  Button,
-  Checkbox,
-  Divider,
-  FormControl,
-  FormControlLabel,
-  FormLabel,
-  Modal,
-  Radio,
-  RadioGroup,
-  TextField,
-  Typography,
-  useTheme,
+    Backdrop,
+    Box,
+    Button,
+    Checkbox,
+    Divider,
+    FormControl,
+    FormControlLabel,
+    Modal,
+    Radio,
+    RadioGroup,
+    TextField,
+    Typography
 } from '@mui/material';
+import { useState } from 'react';
 
 const FeedbackPopup = ({ open, onClose }) => {
-  const theme = useTheme();
   const [type, setType] = useState('suggest');
   const [message, setMessage] = useState('');
   const [includeScreenshot, setIncludeScreenshot] = useState(false);
@@ -46,8 +43,8 @@ const FeedbackPopup = ({ open, onClose }) => {
           zIndex: 1600,
         }}
       >
-        {/* Header */}
-        <Box sx={{ px: 2.5, py: 1.5, backgroundColor: 'secondary.light', color: theme.palette.text.primary }}>
+  {/* Header */}
+  <Box sx={{ px: 2.5, py: 1.5, backgroundColor: '#3289C9', color: '#fff' }}>
           <Typography variant="h6" sx={{ fontWeight: 700 }}>Feedback</Typography>
         </Box>
 
@@ -65,8 +62,6 @@ const FeedbackPopup = ({ open, onClose }) => {
             </RadioGroup>
           </FormControl>
 
-          {/* Message */}
-          <FormLabel sx={{ fontSize: 14, mb: 0.5 }}>Enter feedback <Typography component="span" sx={{ color: 'error.main' }}>(required)</Typography></FormLabel>
           <TextField
             value={message}
             onChange={(e) => setMessage(e.target.value)}
@@ -88,10 +83,6 @@ const FeedbackPopup = ({ open, onClose }) => {
               label={"I'd like to hear back about my feedback"}
             />
           </Box>
-
-          <Typography variant="caption" sx={{ mt: 1.5, display: 'block', color: 'text.secondary' }}>
-            By agreeing to hear back from KONNECT, you agree to receive emails from KONNECT about your feedback.
-          </Typography>
 
           <Divider sx={{ my: 2 }} />
 

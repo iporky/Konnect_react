@@ -1,5 +1,4 @@
 // Removed search icon as search bar is removed
-import TrendingUpIcon from '@mui/icons-material/TrendingUp';
 import {
   Alert,
   Box,
@@ -173,8 +172,8 @@ const Buzz = () => {
           minHeight: { xs: 'calc(100vh - 64px)', md: '86vh' },
         }}
       >
-      {/* Header */}
-      <Box sx={{ mb: 4 }}>
+      {/* Header (logo and subheading removed) */}
+      <Box sx={{ mb: 3 }}>
         <Typography
           variant="h2"
           component="h1"
@@ -186,16 +185,9 @@ const Buzz = () => {
             fontSize: { xs: '32px', md: '56px' },
             lineHeight: 1.1,
             letterSpacing: { xs: '-0.32px', md: '-0.56px' },
-            display: 'flex',
-            alignItems: 'center',
-            gap: 1.5,
           }}
         >
-          <TrendingUpIcon sx={{ fontSize: { xs: 30, md: 40 } }} />
           Buzz
-        </Typography>
-        <Typography variant="h6" color="text.secondary">
-          Stay updated with the latest news and trends in Korea
         </Typography>
       </Box>
       {/* Search removed */}

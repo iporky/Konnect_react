@@ -4,6 +4,7 @@ import { Box, Button, Container, Stack, TextField, Typography, useTheme } from '
 const Contact = () => {
   const theme = useTheme();
   const [form, setForm] = useState({ name: '', company: '', phone: '', email: '', message: '' });
+  const [submitted, setSubmitted] = useState(false);
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -14,6 +15,7 @@ const Contact = () => {
     e.preventDefault();
     // TODO: hook up API
     // For now, no-op
+  setSubmitted(true);
   };
 
   return (
@@ -98,9 +100,11 @@ const Contact = () => {
               <Button type="submit" variant="contained" color="primary" sx={{ borderRadius: 999, px: 3, py: 1.2, textTransform: 'none', fontWeight: 700 }}>
                 Send it to Us!
               </Button>
-              <Typography sx={{ color: '#DB6067', fontStyle: 'italic', fontFamily: 'Metropolis', textAlign: { xs: 'center', sm: 'left' } }}>
-                We will get back to you soon!
-              </Typography>
+              {submitted && (
+                <Typography sx={{ color: '#DB6067', fontStyle: 'italic', fontFamily: 'Metropolis', textAlign: { xs: 'center', sm: 'left' } }}>
+                  We will get back to you soon!
+                </Typography>
+              )}
             </Box>
           </Stack>
         </Box>

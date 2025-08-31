@@ -411,7 +411,7 @@ const AboutUs = () => {
                     <Typography sx={{ fontFamily: 'Metropolis, -apple-system, Segoe UI, Roboto, Helvetica, Arial, sans-serif', fontWeight: 400, fontSize: '16px', color: theme.palette.text.secondary, fontStyle: 'italic' }}>
                       To learn more about us,
                     </Typography>
-                    <Button size="small" variant="contained" color="primary" sx={{ borderRadius: 999, px: 1.5, py: 0.25, fontSize: '11px', fontWeight: 700, textTransform: 'none' }}>Join the Community</Button>
+                    <Button size="small" variant="contained" color="primary" sx={{ borderRadius: 999, px: 1.5, py: 0.25, fontSize: '11px', fontWeight: 700, textTransform: 'none' }} href="/signup">Join the Community</Button>
                     <Typography sx={{ fontFamily: 'Metropolis, -apple-system, Segoe UI, Roboto, Helvetica, Arial, sans-serif', fontWeight: 400, fontSize: '12px', color: theme.palette.text.secondary, fontStyle: 'italic' }}>
                       today!
                     </Typography>
@@ -578,7 +578,7 @@ const AboutUs = () => {
                   <Typography sx={{ fontFamily: 'Metropolis', fontWeight: 400, fontSize: '16px', color: theme.palette.text.secondary, fontStyle: 'italic' }}>
                     Big things are on the way! Get ready for something amazing.
                   </Typography>
-                  <Button size="small" variant="contained" color="primary" sx={{ borderRadius: 999, px: 1.5, py: 0.25, fontSize: '15px', fontWeight: 700, textTransform: 'none' }}>
+                  <Button size="small" variant="contained" color="primary" sx={{ borderRadius: 999, px: 1.5, py: 0.25, fontSize: '15px', fontWeight: 700, textTransform: 'none' }} href="/contact">
                     Stay Updated!
                   </Button>
                   <Typography sx={{ fontFamily: 'Metropolis', fontWeight: 400, fontSize: '16px', color: theme.palette.text.secondary, fontStyle: 'italic' }}>

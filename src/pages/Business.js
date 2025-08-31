@@ -3,6 +3,7 @@ import { motion } from 'framer-motion';
 import { useEffect, useState } from 'react';
 import { LaptopMacOutlined, VerifiedOutlined, FaceRetouchingNatural, TheaterComedy as TheaterComedyIcon } from '@mui/icons-material';
 import { useNavigate } from 'react-router-dom';
+// removed dialog-based LinkBusiness popup
 
 const Business = () => {
   const theme = useTheme();
@@ -150,7 +151,7 @@ const Business = () => {
                       <Button variant="contained" color="primary" size="large" sx={{ borderRadius: 7, px: 4, py: 1.5, textTransform: 'none', fontFamily: 'Metropolis', fontWeight: 700 }} onClick={() => navigate('/linkBusiness')}>
                         List your Business
                       </Button>
-                      <Button variant="outlined" color="primary" size="large" sx={{ borderRadius: 7, px: 4, py: 1.5, textTransform: 'none', fontFamily: 'Metropolis', fontWeight: 700 }}>
+                      <Button variant="outlined" color="primary" size="large" sx={{ borderRadius: 7, px: 4, py: 1.5, textTransform: 'none', fontFamily: 'Metropolis', fontWeight: 700 }} onClick={() => navigate('/contact')}>
                         Contact Us
                       </Button>
                     </Box>
@@ -457,7 +458,7 @@ const Business = () => {
                   ))}
 
                   <Box sx={{ mt: 1 }}>
-                    <Button variant="contained" color="primary" sx={{ borderRadius: 999, px: 3, py: 1.2, textTransform: 'none', fontWeight: 700 }}>
+                    <Button variant="contained" color="primary" sx={{ borderRadius: 999, px: 3, py: 1.2, textTransform: 'none', fontWeight: 700 }} onClick={() => navigate('/contact')}>
                       Learn More
                     </Button>
                   </Box>
@@ -467,6 +468,7 @@ const Business = () => {
           </Container>
         </motion.div>
       </Box>
+  {/* Dialog removed; navigating to /linkBusiness instead */}
     </motion.div>
   );
 };
