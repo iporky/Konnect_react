@@ -15,6 +15,7 @@ import Privacy from './pages/Privacy';
 import Business from './pages/Business';
 import Contact from './pages/Contact';
 import LinkBusiness from './pages/LinkBusiness';
+import Language from './pages/Language';
 
 function App() {
   const [user, setUser] = useState(null);
@@ -115,6 +116,7 @@ function App() {
                 <Route path="/signup" element={<Signup onSignup={handleLogin} />} />
                 <Route path="/terms" element={<Terms />} />
                 <Route path="/privacy" element={<Privacy />} />
+                <Route path="/language" element={<Language />} />
                 {/* Add more routes as needed */}
               </Routes>
             </Box>
