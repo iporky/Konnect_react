@@ -9,6 +9,8 @@
   
   html {
     font-family: var(--font-sans, system-ui), sans-serif;
+  height: 100%;
+  overflow-y: auto;
   }
   
   body {
@@ -17,6 +19,8 @@
     color: #0f172a;
     margin: 0;
     line-height: 1.6;
+  min-height: 100%;
+  overflow-y: auto;
   }
   
   .dark body {

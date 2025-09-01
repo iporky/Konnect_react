@@ -21,6 +21,7 @@ import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 // ThemeToggle removed per request
 import { authAPI } from '../services/api';
+import { getGoogleAccessToken, fetchGoogleUser } from '../lib/googleAuth';
 
 const Login = ({ onLogin }) => {
   const [formData, setFormData] = useState({
@@ -59,9 +60,29 @@ const Login = ({ onLogin }) => {
     }
   };
 
-  const handleSocialLogin = (provider) => {
-    // Redirect to your Flask backend's OAuth endpoint
-    window.location.href = `/auth/${provider}`;
+  const handleSocialLogin = async () => {
+    try {
+      setLoading(true);
+      setError('');
+      const clientId = process.env.REACT_APP_GOOGLE_CLIENT_ID || '464658982283-0qqaacdf84sjgten1d3fr4o2fa47v2c8.apps.googleusercontent.com';
+      const accessToken = await getGoogleAccessToken(clientId);
+      const profile = await fetchGoogleUser(accessToken);
+      const user = {
+        id: profile.sub,
+        name: profile.name,
+        email: profile.email,
+        avatar: profile.picture,
+        provider: 'google'
+      };
+      const token = accessToken; // use access token as session token (frontend-only scenario)
+      onLogin(user, token);
+      navigate('/');
+    } catch (e) {
+      console.error('Google login failed:', e);
+      setError('Google sign-in failed. Please try again.');
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
@@ -155,7 +176,7 @@ const Login = ({ onLogin }) => {
               fullWidth
               variant="outlined"
               startIcon={<Google />}
-              onClick={() => handleSocialLogin('google')}
+              onClick={handleSocialLogin}
               sx={{ py: 1.5 }}
             >
               Google

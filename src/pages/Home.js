@@ -98,10 +98,10 @@ const Home = () => {
         display: 'flex',
         flexDirection: 'column',
         overflowX: 'hidden',
-        // Allow page scroll on desktop when the second row of tiles is expanded
-        overflowY: { xs: 'hidden', md: showAllCategories ? 'auto' : 'none' },
+        // Always allow parent to scroll on desktop; keep mobile hidden due to fixed bottom search bar
+        overflowY: { xs: 'hidden', md: 'visible' },
         position: 'relative',
-        height: '100%'
+        minHeight: '100%'
       }}>
         {/* Header with Logo */}
         <Box sx={{
@@ -126,7 +126,7 @@ const Home = () => {
                 sx={{
                   height: { xs: 60, md: 69 },
                   width: 'auto',
-                  maxWidth: { xs: 300, md: 460 },
+                  maxWidth: { xs: 260, md: 460 },
                   display: 'block'
                 }}
               />
@@ -140,7 +140,7 @@ const Home = () => {
                   fontFamily: 'cursive', 
                   alignSelf: 'flex-end',
                   pr: 1.5,
-                  fontSize: { xs: '12px', md: 'inherit' }
+                  fontSize: { xs: '15px', md: 'inherit' }
                 }}
               >
                 with Korea

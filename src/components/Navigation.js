@@ -173,8 +173,8 @@ const Navigation = ({ user, onLogout }) => {
             {/* Bottom links centered inside drawer */}
             <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', gap: 4, py: 2, borderTop: '1px solid', borderTopColor: 'divider' }}>
               <Typography variant="caption" sx={{ cursor: 'pointer' }} onClick={() => { navigate('/about'); setMobileOpen(false); }}>About Us</Typography>
-              <Typography variant="caption" sx={{ cursor: 'pointer' }} onClick={() => { navigate('/contact'); setMobileOpen(false); }}>Contact Us</Typography>
               <Typography variant="caption" sx={{ cursor: 'pointer' }} onClick={() => { navigate('/business'); setMobileOpen(false); }}>Business</Typography>
+              <Typography variant="caption" sx={{ cursor: 'pointer' }} onClick={() => { navigate('/contact'); setMobileOpen(false); }}>Contact Us</Typography>
               <Typography variant="caption" sx={{ cursor: 'pointer' }} onClick={() => { navigate('/privacy'); setMobileOpen(false); }}>Privacy</Typography>
             </Box>
           </Box>
@@ -219,7 +219,8 @@ const Navigation = ({ user, onLogout }) => {
           display: 'flex', 
           flexDirection: 'column', 
           alignItems: 'center',
-          cursor: 'pointer'
+          cursor: 'pointer',
+          pl: 0.8
         }}
         onClick={() => navigate('/')}
         >
@@ -241,6 +242,7 @@ const Navigation = ({ user, onLogout }) => {
         flex: 1, 
         width: '100%',
         padding: 0,
+        pl: 0.8,
         display: 'flex',
         flexDirection: 'column',
         alignItems: 'center',
@@ -393,29 +395,101 @@ const Navigation = ({ user, onLogout }) => {
 
           {/* Language list */}
           <Box sx={{ flex: 1, overflowY: 'auto' }}>
-            {[
+            {
+            [
+              // East Asia
               '한국어 (Korean)',
               '普通话 (Mandarin Chinese)',
-              'Español (Spanish)',
-              'English (English)',
+              '繁體中文 (Traditional Chinese)',
+              '粵語 (Cantonese)',
+              '日本語 (Japanese)',
+              'Монгол хэл (Mongolian)',
+
+              // South & Southeast Asia
               'हिन्दी (Hindi)',
-              'Português (Portuguese)',
-              'Русский (Russian)',
+              'বাংলা (Bengali)',
+              'اردو (Urdu)',
+              'ਪੰਜਾਬੀ (Punjabi)',
+              'मराठी (Marathi)',
+              'తెలుగు (Telugu)',
+              'தமிழ் (Tamil)',
+              'ગુજરાતી (Gujarati)',
+              'ಕನ್ನಡ (Kannada)',
+              'മലയാളം (Malayalam)',
+              'සිංහල (Sinhala)',
+              'नेपाली (Nepali)',
               'Bahasa Indonesia (Indonesian)',
+              'Bahasa Melayu (Malay)',
+              'မြန်မာ (Burmese)',
+              'ខ្មែរ (Khmer)',
+              'ລາວ (Lao)',
+              'ไทย (Thai)',
+              'Tiếng Việt (Vietnamese)',
+              'Filipino (Filipino)',
+
+              // Middle East & Central Asia
+              'العربية (Arabic)',
+              'فارسی (Persian)',
+              'پښتو (Pashto)',
+              'کوردی (Kurdish)',
+              'Türkçe (Turkish)',
+              'Azərbaycan dili (Azerbaijani)',
+              'Қазақша (Kazakh)',
+              'Oʻzbekcha (Uzbek)',
+              'Тоҷикӣ (Tajik)',
+              'Հայերեն (Armenian)',
+              'ქართული (Georgian)',
+              'עברית (Hebrew)',
+
+              // Africa
+              'Kiswahili (Swahili)',
+              'Yorùbá (Yoruba)',
+              'Igbo (Igbo)',
+              'Hausa (Hausa)',
+              'isiZulu (Zulu)',
+              'isiXhosa (Xhosa)',
+              'Af Soomaali (Somali)',
+              'Afrikaans (Afrikaans)',
+              'Amharic (አማርኛ)',
+
+              // Europe
+              'English (English)',
               'Français (French)',
               'Deutsch (German)',
-              '日本語 (Japanese)',
-              'Kiswahili (Swahili)',
-              'العربية (Arabic)',
-              'ไทย (Thai)',
-              'Tiếng Việt (Vietnamese)'
+              'Español (Spanish)',
+              'Português (Portuguese)',
+              'Italiano (Italian)',
+              'Nederlands (Dutch)',
+              'Polski (Polish)',
+              'Українська (Ukrainian)',
+              'Русский (Russian)',
+              'Română (Romanian)',
+              'Ελληνικά (Greek)',
+              'Čeština (Czech)',
+              'Magyar (Hungarian)',
+              'Slovenčina (Slovak)',
+              'Slovenščina (Slovenian)',
+              'Hrvatski (Croatian)',
+              'Srpski (Serbian)',
+              'Български (Bulgarian)',
+              'Lietuvių (Lithuanian)',
+              'Latviešu (Latvian)',
+              'Eesti (Estonian)',
+              'Svenska (Swedish)',
+              'Dansk (Danish)',
+              'Norsk (Norwegian)',
+              'Suomi (Finnish)',
+              'Català (Catalan)',
+              'Euskara (Basque)',
+              'Galego (Galician)'
             ]
               .filter((l) => l.toLowerCase().includes(languageQuery.toLowerCase()))
               .map((label, idx, arr) => (
-                <Box key={label} sx={{ px: 2, py: 1.75, borderBottom: idx < arr.length - 1 ? '1px solid' : 'none', borderColor: 'divider', cursor: 'pointer', '&:hover': { bgcolor: 'grey.50' } }}>
+                <Box key={label} onClick={() => setLanguageOpen(false)} sx={{ px: 2, py: 1.75, borderBottom: idx < arr.length - 1 ? '1px solid' : 'none', borderColor: 'divider', cursor: 'pointer', '&:hover': { bgcolor: 'grey.50' } }}>
                   <Typography sx={{ fontSize: 14 }}>{label}</Typography>
                 </Box>
-              ))}
+              ))
+            }
           </Box>
         </Box>
       </>

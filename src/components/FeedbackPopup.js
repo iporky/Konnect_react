@@ -43,9 +43,9 @@ const FeedbackPopup = ({ open, onClose }) => {
           zIndex: 1600,
         }}
       >
-  {/* Header */}
-  <Box sx={{ px: 2.5, py: 1.5, backgroundColor: '#3289C9', color: '#fff' }}>
-          <Typography variant="h6" sx={{ fontWeight: 700 }}>Feedback</Typography>
+        {/* Header */}
+        <Box sx={{ px: 2.5, py: 1.5, backgroundColor: '#3289C9', color: '#fff' }}>
+          <Typography variant="h6" sx={{ fontWeight: 700, color: '#fff' }}>Feedback</Typography>
         </Box>
 
         <Box component="form" onSubmit={handleSubmit} sx={{ px: 2.5, py: 2.5 }}>
@@ -65,7 +65,7 @@ const FeedbackPopup = ({ open, onClose }) => {
           <TextField
             value={message}
             onChange={(e) => setMessage(e.target.value)}
-            placeholder="Include details such as missing or incorrect links. Don't include your name, email, or other personal info."
+            placeholder="Include details such as missing or incorrect links. Include your name, email, or other personal info if you would like to hear back from us."
             fullWidth
             multiline
             minRows={4}

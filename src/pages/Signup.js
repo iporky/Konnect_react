@@ -23,6 +23,7 @@ import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 // ThemeToggle removed per request
 import { authAPI } from '../services/api';
+import { getGoogleAccessToken, fetchGoogleUser } from '../lib/googleAuth';
 
 const Signup = ({ onSignup }) => {
   const [formData, setFormData] = useState({
@@ -100,9 +101,29 @@ const Signup = ({ onSignup }) => {
     }
   };
 
-  const handleSocialSignup = (provider) => {
-    // Redirect to your Flask backend's OAuth endpoint
-    window.location.href = `/auth/${provider}`;
+  const handleSocialSignup = async () => {
+    try {
+      setLoading(true);
+      setError('');
+      const clientId = process.env.REACT_APP_GOOGLE_CLIENT_ID || '464658982283-0qqaacdf84sjgten1d3fr4o2fa47v2c8.apps.googleusercontent.com';
+      const accessToken = await getGoogleAccessToken(clientId);
+      const profile = await fetchGoogleUser(accessToken);
+      const user = {
+        id: profile.sub,
+        name: profile.name,
+        email: profile.email,
+        avatar: profile.picture,
+        provider: 'google'
+      };
+      const token = accessToken;
+      onSignup(user, token);
+      navigate('/');
+    } catch (e) {
+      console.error('Google signup failed:', e);
+      setError('Google sign-up failed. Please try again.');
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
@@ -206,10 +227,13 @@ const Signup = ({ onSignup }) => {
                   checked={formData.termsAccepted}
                   onChange={handleChange('termsAccepted')}
                   color="primary"
+                  size="small"
+                  disableRipple
+                  sx={{ p: 0, mr: 1, pl: 1.2 }}
                 />
               }
               label={
-                <Typography variant="body2">
+                <Typography variant="body2" sx={{ lineHeight: 1.5 }}>
                   I agree to the{' '}
                   <Link href="/terms" target="_blank" color="primary">
                     Terms of Service
@@ -220,7 +244,7 @@ const Signup = ({ onSignup }) => {
                   </Link>
                 </Typography>
               }
-              sx={{ mt: 2, alignItems: 'flex-start' }}
+              sx={{ mt: 2, alignItems: 'center' }}
             />
 
             <Button
@@ -247,7 +271,7 @@ const Signup = ({ onSignup }) => {
               fullWidth
               variant="outlined"
               startIcon={<Google />}
-              onClick={() => handleSocialSignup('google')}
+              onClick={handleSocialSignup}
               sx={{ py: 1.5 }}
             >
               Google
