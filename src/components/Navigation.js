@@ -135,7 +135,7 @@ const Navigation = ({ user, onLogout }) => {
             </Box>
           </Box>
 
-          <Box sx={{ overflow: 'auto', display: 'flex', flexDirection: 'column', height: '100%' }}>
+          <Box sx={{ overflow: 'auto', display: 'flex', flexDirection: 'column', height: '100%', pb: 'calc(env(safe-area-inset-bottom, 0px) + 16px)' }}>
             {/* Centered nav items */}
             <List sx={{ flex: 1, px: 3 }}>
               {(() => {
@@ -171,7 +171,7 @@ const Navigation = ({ user, onLogout }) => {
             </List>
 
             {/* Bottom links centered inside drawer */}
-            <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', gap: 4, py: 2, borderTop: '1px solid', borderTopColor: 'divider' }}>
+            <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', gap: 4, py: 2, mb: 4 }}>
               <Typography variant="caption" sx={{ cursor: 'pointer' }} onClick={() => { navigate('/about'); setMobileOpen(false); }}>About Us</Typography>
               <Typography variant="caption" sx={{ cursor: 'pointer' }} onClick={() => { navigate('/business'); setMobileOpen(false); }}>Business</Typography>
               <Typography variant="caption" sx={{ cursor: 'pointer' }} onClick={() => { navigate('/contact'); setMobileOpen(false); }}>Contact Us</Typography>

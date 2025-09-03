@@ -124,9 +124,11 @@ const Home = () => {
                 src="/images/Konnect_logo.png"
                 alt="Konnect"
                 sx={{
-                  height: { xs: 60, md: 69 },
+                  maxHeight: { xs: 60, md: 69 },
+                  height: 'auto',
                   width: 'auto',
                   maxWidth: { xs: 260, md: 460 },
+                  objectFit: 'contain',
                   display: 'block'
                 }}
               />
