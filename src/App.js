@@ -16,6 +16,7 @@ import Business from './pages/Business';
 import Contact from './pages/Contact';
 import LinkBusiness from './pages/LinkBusiness';
 import Language from './pages/Language';
+import SearchResults from './pages/SearchResults';
 
 function App() {
   const [user, setUser] = useState(null);
@@ -117,6 +118,7 @@ function App() {
                 <Route path="/terms" element={<Terms />} />
                 <Route path="/privacy" element={<Privacy />} />
                 <Route path="/language" element={<Language />} />
+                <Route path="/search" element={<SearchResults />} />
                 {/* Add more routes as needed */}
               </Routes>
             </Box>

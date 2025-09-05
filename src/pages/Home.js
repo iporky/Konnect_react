@@ -22,6 +22,7 @@ import {
 } from '@mui/material';
 import { motion, AnimatePresence, LayoutGroup } from 'framer-motion';
 import { useEffect, useRef, useState } from 'react';
+import SearchPasswordDialog from '../components/SearchPasswordDialog';
 import { useNavigate } from 'react-router-dom';
 import BuzzCarousel from '../components/BuzzCarousel';
 import Footer from '../components/Footer';
@@ -63,6 +64,9 @@ const Home = () => {
   const [showAllCategories, setShowAllCategories] = useState(false);
   const [postOpen, setPostOpen] = useState(false);
   const [feedbackOpen, setFeedbackOpen] = useState(false);
+  const [pwdOpen, setPwdOpen] = useState(false);
+  const pendingQueryRef = useRef(null);
+  const searchAuthKey = 'searchAuthorized';
   // Desktop: number of category tiles visible before the "More" tile
   const DESKTOP_VISIBLE = 6; // collapsed: 6 + More = 7 tiles in row 1
   const ROW1_COUNT = 7; // expanded: always keep 7 real icons on the top row
@@ -81,6 +85,21 @@ const Home = () => {
     const value = e.target.value;
     setSearchValue(value);
     // Do not open dialog from typing
+  };
+
+  const goSearch = (query) => {
+    if (!query.trim()) return;
+    navigate(`/search?q=${encodeURIComponent(query.trim())}`);
+  };
+
+  const requestProtectedSearch = (query) => {
+    pendingQueryRef.current = query;
+    // If already authorized this session, skip dialog
+    if (sessionStorage.getItem(searchAuthKey) === '1') {
+      goSearch(query);
+    } else {
+      setPwdOpen(true);
+    }
   };
 
   const handleCategoryClick = (category) => {
@@ -285,6 +304,14 @@ const Home = () => {
                   value={searchValue}
                   onChange={handleSearchChange}
                   onFocus={handleSearchFocus}
+                  onKeyDown={(e) => {
+                    if (e.key === 'Enter') {
+                      e.preventDefault();
+                      if (searchValue.trim()) {
+                        requestProtectedSearch(searchValue);
+                      }
+                    }
+                  }}
                   InputProps={{
                     disableUnderline: true,
                     sx: {
@@ -739,6 +766,19 @@ const Home = () => {
 
   {/* Community Post Dialog */}
   <CommunityPostDialog open={postOpen} onClose={() => setPostOpen(false)} onSubmit={(payload) => console.log('post payload', payload)} />
+  <SearchPasswordDialog
+    open={pwdOpen}
+    onClose={() => setPwdOpen(false)}
+    onSuccess={() => {
+      sessionStorage.setItem(searchAuthKey, '1');
+      setPwdOpen(false);
+      if (pendingQueryRef.current) {
+        const q = pendingQueryRef.current;
+        pendingQueryRef.current = null;
+        goSearch(q);
+      }
+    }}
+  />
       </Box>
     </>
   );
