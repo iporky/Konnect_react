@@ -436,7 +436,7 @@ const AboutUs = () => {
                           borderRadius: 4,
                           boxShadow: '0 6px 24px rgba(0,0,0,0.08)',
                           height: '380px',
-                          width: '13vw',
+                          width: { xs: '80vw', md: '13vw' },
                           border: `1px solid ${theme.palette.divider}`,
                           pt: 4,
                           mx: { xs: 'auto', md: 0 },
