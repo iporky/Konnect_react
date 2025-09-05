@@ -64,7 +64,7 @@ const Login = ({ onLogin }) => {
     try {
       setLoading(true);
       setError('');
-      const clientId = process.env.REACT_APP_GOOGLE_CLIENT_ID || '464658982283-0qqaacdf84sjgten1d3fr4o2fa47v2c8.apps.googleusercontent.com';
+      const clientId = process.env.REACT_APP_GOOGLE_CLIENT_ID || '';
       const accessToken = await getGoogleAccessToken(clientId);
       const profile = await fetchGoogleUser(accessToken);
       const user = {
