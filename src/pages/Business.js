@@ -56,7 +56,7 @@ const Business = () => {
 
   return (
     <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ duration: 1 }}>
-  <Box sx={{ color: theme.palette.text.primary, display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'flex-start', pb: { xs: 6, md: 10, lg: 14 } }}>
+      <Box sx={{ color: theme.palette.text.primary, display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'flex-start', pb: { xs: 6, md: 10, lg: 14 } }}>
         <motion.div
           initial={{ opacity: 0, y: 80 }}
           animate={{ opacity: 1, y: 0 }}
@@ -71,7 +71,7 @@ const Business = () => {
               display: 'flex',
               alignItems: { xs: 'flex-start', md: 'center' },
               py: { xs: 2, md: 0 },
-              ml: { xs: 0, md: 30 },
+              ml: { xs: 0, md: 10 },
               mt: { xs: 0, md: 10 },
             }}
           >
@@ -257,25 +257,25 @@ const Business = () => {
                       component="img"
                       alt="Business 1"
                       src={`${process.env.PUBLIC_URL}/images/business/business_1.jpeg`}
-                      sx={{ borderRadius: '20px', width: '320px', height: { xs: 180, sm: 240, md: 400 }, objectFit: 'cover', display: 'block' }}
+                      sx={{ borderRadius: '20px', width: '16vw', height: { xs: 180, sm: 240, md: 400 }, objectFit: 'cover', display: 'block' }}
                     />
                     <Box
                       component="img"
                       alt="Business 2"
                       src={`${process.env.PUBLIC_URL}/images/business/business_2.jpeg`}
-                      sx={{ ml: { xs: 0, sm: 2, md: -22 }, mt: { xs: 2, sm: 3, md: 9.5 }, borderRadius: '20px', width: '380px', height: { xs: 180, sm: 240, md: 320 }, objectFit: 'cover', display: 'block' }}
+                      sx={{ ml: { xs: 0, sm: 2, md: '-9vw' }, mt: { xs: 2, sm: 3, md: 9.5 }, borderRadius: '20px', width: '20vw', height: { xs: 180, sm: 240, md: 320 }, objectFit: 'cover', display: 'block' }}
                     />
                     <Box
                       component="img"
                       alt="Business 3"
                       src={`${process.env.PUBLIC_URL}/images/business/business_3.jpeg`}
-                      sx={{ borderRadius: '20px', width: '500px', height: { xs: 180, sm: 240, md: 290 }, objectFit: 'cover', display: 'block', ml: 'auto' }}
+                      sx={{ borderRadius: '20px', width: '25vw', height: { xs: 180, sm: 240, md: 290 }, objectFit: 'cover', display: 'block', ml: 'auto' }}
                     />
                     <Box
                       component="img"
                       alt="Business 4"
                       src={`${process.env.PUBLIC_URL}/images/business/business_4.jpeg`}
-                      sx={{ borderRadius: '20px', width: '210px', height: { xs: 180, sm: 240, md: 290 }, objectFit: 'cover', display: 'block' }}
+                      sx={{ borderRadius: '20px', width: '12vw', height: { xs: 180, sm: 240, md: 290 }, objectFit: 'cover', display: 'block' }}
                     />
                   </Box>
                 </motion.div>
@@ -294,7 +294,7 @@ const Business = () => {
             transition={{ duration: 0.8 }}
             style={{ width: '100%', maxWidth: 1100 }}
           >
-            <Container maxWidth="xl" sx={{ ml: { xs: 0, md: 30 } }}>
+            <Container maxWidth="xl" sx={{ ml: { xs: 0, md: 10 } }}>
               <Box sx={{ textAlign: 'left', mb: 3 }}>
                 <Typography
                   variant="h2"
@@ -326,7 +326,7 @@ const Business = () => {
                     { Icon: FaceRetouchingNatural, title: 'Trust-Building Profile', desc: 'Business profile optimized for credibility & visibility' },
                     { Icon: LaptopMacOutlined, title: 'Embedded Booking API', desc: 'Customers book & pay directly through Konnect', comingSoon: true },
                   ].map((f, i) => (
-          <Card
+                    <Card
                       key={f.title}
                       elevation={0}
                       sx={{
@@ -334,11 +334,11 @@ const Business = () => {
                         overflow: 'hidden',
                         borderRadius: 4,
                         boxShadow: '0 6px 24px rgba(0,0,0,0.08)',
-            height: { xs: 'auto', md: '380px' },
-            width: { xs: '90%', sm: '300px', md: '320px' },
+                        height: { xs: 'auto', md: '380px' },
+                        width: { xs: '90%', sm: '300px', md: '18vw' },
                         border: `1px solid ${theme.palette.divider}`,
-            pt: 4,
-            mx: { xs: 'auto', md: 0 },
+                        pt: 4,
+                        mx: { xs: 'auto', md: 0 },
                       }}
                     >
                       {/* circular top shape */}
@@ -348,8 +348,8 @@ const Business = () => {
                           left: '50%',
                           transform: 'translateX(-50%)',
                           top: { xs: -110, md: -90 },
-                          width: { xs: 220, md: 380 },
-                          height: { xs: 220, md: 300 },
+                          width: { xs: 220, md: '19vw' },
+                          height: { xs: 220, md: 310 },
                           borderRadius: '50%',
                           background: 'linear-gradient(180deg, rgba(205,32,40,0.10) 0%, rgba(205,32,40,0.10) 60%, rgba(205,32,40,0.06) 100%)',
                         }}
@@ -386,7 +386,7 @@ const Business = () => {
             maxWidth="xl"
             sx={{
               py: { xs: 8, md: 12 },
-              ml: { xs: 0, md: 30 },
+              ml: { xs: 0, md: 10 },
             }}
           >
             <Box sx={{ textAlign: 'left', mb: 4 }}>
@@ -424,7 +424,7 @@ const Business = () => {
                     src={`${process.env.PUBLIC_URL}/images/business/yourAd.jpeg`}
                     alt="Your Ads preview"
                     sx={{
-                      width: { xs: '115%', sm: '112%', md: '500px' },
+                      width: { xs: '115%', sm: '112%', md: '26vw' },
                       height: '100%',
                       objectFit: 'cover',
                       mx: 'auto',
@@ -448,10 +448,10 @@ const Business = () => {
                     body: 'Ads appear next to booking, payment, and navigation flows—driving real conversions, not just clicks.',
                   }].map((p) => (
                     <Box key={p.title}>
-                      <Typography sx={{ fontFamily: 'Metropolis', fontWeight: 700, fontSize: { xs: '16px', md: '20px' }, color: '#CD2028', mb: 0.5 }}>
+                      <Typography sx={{ fontFamily: 'Metropolis', fontWeight: 700, fontSize: { xs: '16px', md: '19px' }, color: '#CD2028', mb: 0.5 }}>
                         {p.title}
                       </Typography>
-                      <Typography sx={{ fontFamily: 'Metropolis', fontWeight: 400, fontSize: { xs: '14px', md: '18px' }, color: theme.palette.text.secondary }}>
+                      <Typography sx={{ fontFamily: 'Metropolis', fontWeight: 400, fontSize: { xs: '14px', md: '17px' }, color: theme.palette.text.secondary }}>
                         {p.body}
                       </Typography>
                     </Box>

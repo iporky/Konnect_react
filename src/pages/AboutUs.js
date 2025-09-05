@@ -81,7 +81,7 @@ const AboutUs = () => {
 
   return (
     <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ duration: 1 }}>
-  <Box sx={{ color: theme.palette.text.primary, display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'flex-start', pb: { xs: 6, md: 10, lg: 14 } }}>
+      <Box sx={{ color: theme.palette.text.primary, display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'flex-start', pb: { xs: 6, md: 10, lg: 14 } }}>
         {/* Hero Section */}
         <motion.div
           initial={{ opacity: 0, y: 80 }}
@@ -95,7 +95,7 @@ const AboutUs = () => {
               minHeight: { xs: 'calc(100vh - 64px)', md: '95vh' },
               display: 'flex',
               alignItems: 'center',
-              ml: { xs: 0, md: 30 },
+              ml: { xs: 0, md: 10 },
 
             }}
           >
@@ -381,7 +381,7 @@ const AboutUs = () => {
                 display: 'flex',
                 alignItems: { xs: 'flex-start', md: 'center' },
                 py: { xs: 3, md: 0 },
-                ml: { xs: 0, md: 30 },
+                ml: { xs: 0, md: 10 },
               }}
             >
               <Box sx={{ textAlign: 'left', mb: { xs: 2, md: 6 } }}>
@@ -428,7 +428,7 @@ const AboutUs = () => {
                     { Icon: ChatBubbleOutlineOutlined, title: 'Connect', desc: 'Meet and join activities with like-minded individuals from around the world.' },
                   ].map((f, i) => (
                     <ScaleIn key={f.title} delay={0.15 + i * 0.1}>
-            <Card
+                      <Card
                         elevation={0}
                         sx={{
                           position: 'relative',
@@ -436,10 +436,10 @@ const AboutUs = () => {
                           borderRadius: 4,
                           boxShadow: '0 6px 24px rgba(0,0,0,0.08)',
                           height: '380px',
-                          width: '210px',
+                          width: '13vw',
                           border: `1px solid ${theme.palette.divider}`,
-              pt: 4,
-              mx: { xs: 'auto', md: 0 },
+                          pt: 4,
+                          mx: { xs: 'auto', md: 0 },
                         }}
                       >
                         {/* circular top shape */}
@@ -449,7 +449,7 @@ const AboutUs = () => {
                             left: '50%',
                             transform: 'translateX(-50%)',
                             top: { xs: -110, md: -90 },
-                            width: { xs: 220, md: 220 },
+                            width: { xs: 220, md: '13vw' },
                             height: { xs: 220, md: 260 },
                             borderRadius: '50%',
                             background: 'linear-gradient(180deg, rgba(205,32,40,0.10) 0%, rgba(205,32,40,0.10) 60%, rgba(205,32,40,0.06) 100%)',
@@ -485,22 +485,22 @@ const AboutUs = () => {
                 display: 'flex',
                 alignItems: { xs: 'flex-start', md: 'center' },
                 py: { xs: 3, md: 0 },
-                ml: { xs: 0, md: 30 },
+                ml: { xs: 0, md: 10 },
               }}
             >
             <Grid container spacing={4} alignItems="center">
-              <Grid item xs={12} md={6}>
+              <Grid item xs={12} md={5}>
                 <SlideInLeft>
-          <Typography
+                <Typography
                     variant="h2"
                     sx={{
                       fontFamily: 'Metropolis',
                       fontWeight: 700,
-            fontSize: { xs: '32px', md: '56px' },
+                      fontSize: { xs: '32px', md: '56px' },
                       color: '#3289C9',
                       lineHeight: 1.1,
                       letterSpacing: { xs: '-0.32px', md: '-0.56px' },
-            mb: { xs: 1, md: 2 },
+                      mb: { xs: 1, md: 2 },
                     }}
                   >
                     Where we are going
@@ -529,7 +529,7 @@ const AboutUs = () => {
                     src={`${process.env.PUBLIC_URL}/images/aboutUs/where_section.jpeg`}
                     sx={{
                       height: { xs: 200, md: 400 },
-                      width: { xs: '100%', md: '750px' },
+                      width: { xs: '100%', md: '40vw' },
                       borderRadius: '16px',
                       boxShadow: '0 6px 24px rgba(0,0,0,0.08)',
                       objectFit: 'cover',
@@ -543,8 +543,8 @@ const AboutUs = () => {
           </Container>
         </motion.div>
 
-  {/* Coming soon */}
-  <Box sx={{ width: '100%', display: 'flex', justifyContent: 'left', py: { xs: 4, md: 10 } }}>
+        {/* Coming soon */}
+        <Box sx={{ width: '100%', display: 'flex', justifyContent: 'left', py: { xs: 4, md: 10 } }}>
           <motion.div
             initial={{ opacity: 0, y: 60 }}
             whileInView={{ opacity: 1, y: 0 }}
@@ -558,7 +558,7 @@ const AboutUs = () => {
                 display: 'flex',
                 alignItems: { xs: 'flex-start', md: 'center' },
                 py: { xs: 1, md: 0 },
-                ml: { xs: 0, md: 30 },
+                ml: { xs: 0, md: 10 },
               }}
             >              
               <Box sx={{ textAlign: 'left' }}>
@@ -629,7 +629,6 @@ const AboutUs = () => {
             </Container>
           </motion.div>
         </Box>
-
       </Box>
     </motion.div>
   );

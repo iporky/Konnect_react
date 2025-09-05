@@ -8,6 +8,7 @@ const LinkBusiness = () => {
         py: { xs: 4, md: 6 },
         px: { xs: 3, md: 0 },
         textAlign: { xs: 'center', md: 'left' },
+        ml: { xs: 0, md: 10 },
       }}
     >
       {/* Title */}
