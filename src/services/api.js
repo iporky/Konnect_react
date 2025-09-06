@@ -2,12 +2,14 @@ import axios from 'axios';
 
 // Create base axios instance
 const api = axios.create({
-  baseURL: process.env.REACT_APP_API_BASE_URL || 'http://127.0.0.1:7860',
+  baseURL: process.env.REACT_APP_API_BASE_URL,
   timeout: 30000,
   withCredentials: false,
   headers: {
     'Content-Type': 'application/json',
     'Accept': 'application/json',
+    // Note: Normally set by the server in the response, adding here per request.
+    'Access-Control-Allow-Origin': '*',
   },
 });
 
@@ -45,6 +47,7 @@ export default api;
 export { chatAPI } from './chatAPI';
 export { buzzAPI } from './buzzAPI';
 export { utilsAPI } from './utilsAPI';
+export { buzzImagesAPI } from './buzzImagesAPI';
 
 // Auth API
 export const authAPI = {
