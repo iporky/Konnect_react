@@ -62,7 +62,13 @@ const Navigation = ({ user, onLogout }) => {
       icon: <CustomLanguageIcon selected={location.pathname === '/language'} />, 
       path: isMobile ? '/language' : null, 
       requireAuth: false 
-  },
+    },
+    {
+      text: 'Admin',
+      icon: <CustomLibraryIcon selected={location.pathname === '/admin'} />, // reuse library icon for now
+      path: '/admin',
+      requireAuth: false,
+    },
   ];
 
   const handleNavigation = (path) => {
