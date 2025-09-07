@@ -29,6 +29,7 @@ import Footer from '../components/Footer';
 import TrendingSearches from '../components/TrendingSearches';
 import FeedbackPopup from '../components/FeedbackPopup';
 import CommunityPostDialog from '../components/CommunityPostDialog';
+import { questionsAPI } from '../services/api';
 
 const categoryIcons = [
   { icon: "/images/plan-trip.png", label: "Plan Trip", color: "#8888881A" },
@@ -52,7 +53,7 @@ const Home = () => {
   // Right-side icons in the search bar: toggle to highlight active; hover also highlights
   const [searchToggles, setSearchToggles] = useState({
     group: false,
-    badge: false,
+  badge: false,
     globe: false,
     attach: false,
     mic: false,
@@ -67,6 +68,7 @@ const Home = () => {
   const [pwdOpen, setPwdOpen] = useState(false);
   const pendingQueryRef = useRef(null);
   const searchAuthKey = 'searchAuthorized';
+  const [expertPosting, setExpertPosting] = useState(false);
   // Desktop: number of category tiles visible before the "More" tile
   const DESKTOP_VISIBLE = 6; // collapsed: 6 + More = 7 tiles in row 1
   const ROW1_COUNT = 7; // expanded: always keep 7 real icons on the top row
@@ -75,6 +77,10 @@ const Home = () => {
     // Check if user is authenticated
     const token = localStorage.getItem('token');
     setIsAuthenticated(!!token);
+    // Initialize expert mode toggle from persisted flag
+    if (localStorage.getItem('expertMode') === '1') {
+      setSearchToggles((prev) => ({ ...prev, badge: true }));
+    }
   }, []);
 
   const handleSearchFocus = () => {
@@ -89,12 +95,39 @@ const Home = () => {
 
   const goSearch = (query) => {
     if (!query.trim()) return;
+    const isExpert = localStorage.getItem('expertMode') === '1';
+    if (isExpert) {
+      // Redirect to library with expert tab flag
+      navigate('/library?tab=expert');
+      return;
+    }
     navigate(`/search?q=${encodeURIComponent(query.trim())}`);
   };
 
   const requestProtectedSearch = (query) => {
+    if (localStorage.getItem('expertMode') === '1') {
+      // Post question to expert API then navigate to library expert tab
+      const trimmed = (query || '').trim();
+      if (!trimmed) return;
+      if (expertPosting) return; // prevent duplicate rapid submissions
+      setExpertPosting(true);
+      try {
+        const user = JSON.parse(localStorage.getItem('user') || '{}');
+        const asked_by = user.email || 'anonymous';
+        questionsAPI
+          .ask({ question_text: trimmed, asked_by })
+          .catch(() => { /* swallow error for now */ })
+          .finally(() => {
+            setExpertPosting(false);
+            goSearch(trimmed); // will redirect to library expert tab
+          });
+      } catch (e) {
+        setExpertPosting(false);
+        goSearch(trimmed);
+      }
+      return;
+    }
     pendingQueryRef.current = query;
-    // If already authorized this session, skip dialog
     if (sessionStorage.getItem(searchAuthKey) === '1') {
       goSearch(query);
     } else {
@@ -372,7 +405,15 @@ const Home = () => {
                     <IconButton
                       size="small"
                       aria-label="badge"
-                      onClick={() => toggleIcon('badge')}
+                      onClick={() => {
+                        toggleIcon('badge');
+                        const next = !searchToggles.badge;
+                        if (next) {
+                          localStorage.setItem('expertMode', '1');
+                        } else {
+                          localStorage.removeItem('expertMode');
+                        }
+                      }}
                       sx={{ mx: 0.5, color: theme.palette.text.secondary, '&:hover': { backgroundColor: 'transparent' }, '&:hover svg': { color: '#6F95BD' } }}
                     >
                       <WorkspacePremiumOutlined sx={{ width: 20, height: 20, color: searchToggles.badge ? '#6F95BD' : undefined }} />

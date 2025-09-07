@@ -48,6 +48,7 @@ export { chatAPI } from './chatAPI';
 export { buzzAPI } from './buzzAPI';
 export { utilsAPI } from './utilsAPI';
 export { buzzImagesAPI } from './buzzImagesAPI';
+export { questionsAPI } from './questionsAPI';
 
 // Auth API
 export const authAPI = {

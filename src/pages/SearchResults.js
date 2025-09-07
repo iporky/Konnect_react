@@ -1,8 +1,8 @@
-import { useEffect, useRef, useState } from 'react';
-import SearchPasswordDialog from '../components/SearchPasswordDialog';
-import { Box, CircularProgress, IconButton, InputBase, Paper, Typography } from '@mui/material';
 import ArrowBackIosNewIcon from '@mui/icons-material/ArrowBackIosNew';
+import { Box, CircularProgress, IconButton, InputBase, Paper, Typography } from '@mui/material';
+import { useEffect, useRef, useState, useCallback } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
+import SearchPasswordDialog from '../components/SearchPasswordDialog';
 import { chatCompletion } from '../services/openaiClient';
 
 function useQueryParam(name) {
@@ -13,6 +13,7 @@ function useQueryParam(name) {
 export default function SearchResults() {
   const navigate = useNavigate();
   const q = useQueryParam('q');
+  const mode = 'standard';
   const [input, setInput] = useState(q);
   const [answer, setAnswer] = useState('');
   const [loading, setLoading] = useState(false);
@@ -23,7 +24,7 @@ export default function SearchResults() {
   const abortRef = useRef();
   const runIdRef = useRef(0);
 
-  const run = async (prompt) => {
+  const run = useCallback(async (prompt) => {
     if (!prompt.trim()) return;
     if (abortRef.current) abortRef.current.abort();
     const controller = new AbortController();
@@ -32,7 +33,15 @@ export default function SearchResults() {
     setError(''); // clear any previous error
     setAnswer('');
     const currentRun = ++runIdRef.current;
-    const { content, error: err } = await chatCompletion({ prompt, signal: controller.signal });
+    let content = '';
+    let err = '';
+    try {
+      const result = await chatCompletion({ prompt, signal: controller.signal });
+      content = result.content;
+      err = result.error;
+    } catch (e) {
+      err = e?.message || 'Unknown error';
+    }
     // Ignore if a newer run started
     if (currentRun !== runIdRef.current) return;
     const abortLike = err && err.toLowerCase().includes('abort');
@@ -50,7 +59,7 @@ export default function SearchResults() {
     }
     setAnswer(content);
     setLoading(false);
-  };
+  }, []);
 
   useEffect(() => {
     if (q) {
@@ -61,11 +70,25 @@ export default function SearchResults() {
         setPwdOpen(true);
       }
     }
-  }, [q]);
+  }, [q, run]);
+
+  // Fetch questions list when in expert mode (initial + after post)
+  // (Expert mode removed from SearchResults)
+
+  // If URL has mode=expert but user turned off expertMode, strip param
+  useEffect(() => {
+    if (mode === 'expert') {
+      const params = new URLSearchParams();
+      if (q) params.set('q', q);
+      navigate(`/search?${params.toString()}`, { replace: true });
+    }
+  }, [mode, q, navigate]);
 
   const submit = (e) => {
     e.preventDefault();
-    navigate(`/search?q=${encodeURIComponent(input)}`);
+  const params = new URLSearchParams();
+  params.set('q', input);
+  navigate(`/search?${params.toString()}`);
   };
 
   return (
@@ -87,27 +110,33 @@ export default function SearchResults() {
       </Paper>
 
       <Box sx={{ flex: 1, overflowY: 'auto' }}>
-        {authorized && loading && (
-          <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
-            <CircularProgress size={20} />
-            <Typography variant="body2">Thinking...</Typography>
-          </Box>
-        )}
-        {authorized && error && (
-          <Typography color="error" variant="body2" sx={{ whiteSpace: 'pre-wrap' }}>{error}</Typography>
-        )}
-        {authorized && !loading && !error && answer && (
-          <Typography variant="body1" sx={{ whiteSpace: 'pre-wrap' }}>{answer}</Typography>
-        )}
-        {authorized && !loading && !error && !answer && q && (
-          <Typography variant="body2" color="text.secondary">No answer yet.</Typography>
+  {(
+          <>
+            {authorized && loading && (
+              <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+                <CircularProgress size={20} />
+                <Typography variant="body2">Thinking...</Typography>
+              </Box>
+            )}
+            {authorized && error && (
+              <Typography color="error" variant="body2" sx={{ whiteSpace: 'pre-wrap' }}>{error}</Typography>
+            )}
+            {authorized && !loading && !error && answer && (
+              <Typography variant="body1" sx={{ whiteSpace: 'pre-wrap' }}>{answer}</Typography>
+            )}
+            {authorized && !loading && !error && !answer && q && (
+              <Typography variant="body2" color="text.secondary">No answer yet.</Typography>
+            )}
+          </>
         )}
       </Box>
-      <SearchPasswordDialog
-        open={pwdOpen}
-        onClose={() => { setPwdOpen(false); if (!authorized) navigate(-1); }}
-  onSuccess={() => { sessionStorage.setItem(searchAuthKey, '1'); setAuthorized(true); setPwdOpen(false); setError(''); run(q); }}
-      />
+  {(
+        <SearchPasswordDialog
+          open={pwdOpen}
+          onClose={() => { setPwdOpen(false); if (!authorized) navigate(-1); }}
+          onSuccess={() => { sessionStorage.setItem(searchAuthKey, '1'); setAuthorized(true); setPwdOpen(false); setError(''); run(q); }}
+        />
+      )}
     </Box>
   );
 }
