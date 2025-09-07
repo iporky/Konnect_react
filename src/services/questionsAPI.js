@@ -14,6 +14,15 @@ export const questionsAPI = {
   list: async ({ skip = 0, limit = 100 } = {}) => {
     const response = await api.get(`/questions/?skip=${skip}&limit=${limit}`);
     return response.data; // array
+  },
+  answer: async (id, { question_text, answer, answered_by }) => {
+    const response = await api.put(`/questions/${id}`, {
+      q: { question_text, answer },
+      answered_by,
+    }, {
+      headers: { 'Content-Type': 'application/json' },
+    });
+    return response.data;
   }
 };
 

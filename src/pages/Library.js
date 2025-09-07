@@ -163,7 +163,7 @@ const Library = () => {
                   Asked by {q.asked_by || 'unknown'} • {new Date(q.asked_at).toLocaleString()}
                 </Typography>
                 {q.answer && (
-                  <Typography sx={{ color: 'text.primary', fontSize: 12, mb: 1.2 }}>{q.answer}</Typography>
+                  <Typography sx={{ color: 'success.main', fontSize: 12, mb: 1.2, fontWeight: 500, fontStyle: 'italic', fontFamily: 'Metropolis' }}>{q.answer}</Typography>
                 )}
               </Box>
             ))}
@@ -203,7 +203,7 @@ const Library = () => {
                   Asked by {q.asked_by || 'unknown'} • {new Date(q.asked_at).toLocaleString()}
                 </Typography>
                 {q.answer && (
-                  <Typography sx={{ color: 'text.primary', fontSize: 14, mb: 0.8 }}>{q.answer}</Typography>
+                  <Typography sx={{ color: 'success.main', fontSize: 14, mb: 0.8, fontWeight: 500, fontStyle: 'italic', fontFamily: 'Metropolis' }}>{q.answer}</Typography>
                 )}
               </Box>
               <IconButton size="small">
