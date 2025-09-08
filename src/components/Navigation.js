@@ -2,6 +2,7 @@ import {
   AccountCircle,
   Menu as MenuIcon
 } from '@mui/icons-material';
+import AdminPanelSettingsIcon from '@mui/icons-material/AdminPanelSettings';
 import {
   AppBar,
   BottomNavigation,
@@ -65,7 +66,7 @@ const Navigation = ({ user, onLogout }) => {
     },
     {
       text: 'Admin',
-      icon: <CustomLibraryIcon selected={location.pathname === '/admin'} />, // reuse library icon for now
+      icon: <AdminPanelSettingsIcon fontSize="inherit" />, // admin settings icon
       path: '/admin',
       requireAuth: false,
     },
