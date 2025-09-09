@@ -22,7 +22,8 @@ import {
 } from '@mui/material';
 import { motion, AnimatePresence, LayoutGroup } from 'framer-motion';
 import { useEffect, useRef, useState } from 'react';
-import SearchPasswordDialog from '../components/SearchPasswordDialog';
+import { useSelector } from 'react-redux';
+import { selectUser } from '../store';
 import { useNavigate } from 'react-router-dom';
 import BuzzCarousel from '../components/BuzzCarousel';
 import Footer from '../components/Footer';
@@ -31,21 +32,23 @@ import FeedbackPopup from '../components/FeedbackPopup';
 import CommunityPostDialog from '../components/CommunityPostDialog';
 import { questionsAPI } from '../services/api';
 
+const imgBase = process.env.PUBLIC_URL;
 const categoryIcons = [
-  { icon: "/images/plan-trip.png", label: "Plan Trip", color: "#8888881A" },
-  { icon: "/images/local-buzz.png", label: "Local Buzz", color: "#8888881A" },
-  { icon: "/images/food.png", label: "Food", color: "#8888881A" },
-  { icon: "/images/community.png", label: "Community", color: "#8888881A" },
-  { icon: "/images/culture.png", label: "Culture", color: "#8888881A" },
-  { icon: "/images/services.png", label: "Services", color: "#8888881A" },
-  { icon: "/images/people.png", label: "People", color: "#8888881A" },
-  { icon: "/images/explore.png", label: "Explore", color: "#8888881A" },
-  { icon: "/images/student.png", label: "Student", color: "#ffffff1a", Icon: School }
+  { icon: `${imgBase}/images/plan-trip.png`, label: "Plan Trip", color: "#8888881A" },
+  { icon: `${imgBase}/images/local-buzz.png`, label: "Local Buzz", color: "#8888881A" },
+  { icon: `${imgBase}/images/food.png`, label: "Food", color: "#8888881A" },
+  { icon: `${imgBase}/images/community.png`, label: "Community", color: "#8888881A" },
+  { icon: `${imgBase}/images/culture.png`, label: "Culture", color: "#8888881A" },
+  { icon: `${imgBase}/images/services.png`, label: "Services", color: "#8888881A" },
+  { icon: `${imgBase}/images/people.png`, label: "People", color: "#8888881A" },
+  { icon: `${imgBase}/images/explore.png`, label: "Explore", color: "#8888881A" },
+  { icon: `${imgBase}/images/student.png`, label: "Student", color: "#ffffff1a", Icon: School }
 ];
 
 const Home = () => {
   const navigate = useNavigate();
   const [searchValue, setSearchValue] = useState('');
+  const user = useSelector(selectUser);
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const theme = useTheme();
   const searchInputRef = useRef(null);
@@ -65,9 +68,7 @@ const Home = () => {
   const [showAllCategories, setShowAllCategories] = useState(false);
   const [postOpen, setPostOpen] = useState(false);
   const [feedbackOpen, setFeedbackOpen] = useState(false);
-  const [pwdOpen, setPwdOpen] = useState(false);
-  const pendingQueryRef = useRef(null);
-  const searchAuthKey = 'searchAuthorized';
+  // Password gating removed for standard search
   const [expertPosting, setExpertPosting] = useState(false);
   // Desktop: number of category tiles visible before the "More" tile
   const DESKTOP_VISIBLE = 6; // collapsed: 6 + More = 7 tiles in row 1
@@ -105,21 +106,20 @@ const Home = () => {
   };
 
   const requestProtectedSearch = (query) => {
+    // Expert mode still posts then redirects; standard search navigates directly (no password)
     if (localStorage.getItem('expertMode') === '1') {
-      // Post question to expert API then navigate to library expert tab
       const trimmed = (query || '').trim();
       if (!trimmed) return;
-      if (expertPosting) return; // prevent duplicate rapid submissions
+      if (expertPosting) return;
       setExpertPosting(true);
       try {
-        const user = JSON.parse(localStorage.getItem('user') || '{}');
-        const asked_by = user.email || 'anonymous';
+  const asked_by = user?.email || 'anonymous';
         questionsAPI
           .ask({ question_text: trimmed, asked_by })
-          .catch(() => { /* swallow error for now */ })
+          .catch(() => {})
           .finally(() => {
             setExpertPosting(false);
-            goSearch(trimmed); // will redirect to library expert tab
+            goSearch(trimmed);
           });
       } catch (e) {
         setExpertPosting(false);
@@ -127,12 +127,7 @@ const Home = () => {
       }
       return;
     }
-    pendingQueryRef.current = query;
-    if (sessionStorage.getItem(searchAuthKey) === '1') {
-      goSearch(query);
-    } else {
-      setPwdOpen(true);
-    }
+    goSearch(query);
   };
 
   const handleCategoryClick = (category) => {
@@ -173,7 +168,7 @@ const Home = () => {
             <Box sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center', width: '100%' }}>
               <Box
                 component="img"
-                src="/images/Konnect_logo.png"
+                src={`${imgBase}/images/Konnect_logo.png`}
                 alt="Konnect"
                 sx={{
                   maxHeight: { xs: 60, md: 69 },
@@ -203,7 +198,7 @@ const Home = () => {
           </motion.div>
           
           {/* Desktop: top-right auth buttons */}
-          {!isAuthenticated && (
+          {!isAuthenticated ? (
             <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ duration: 1.2, delay: 0.2 }}>
               <Box
                 sx={{
@@ -261,6 +256,44 @@ const Home = () => {
                   }}
                 >
                   Log in
+                </Button>
+              </Box>
+            </motion.div>
+          ) : (
+            <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ duration: 1.0, delay: 0.1 }}>
+              <Box
+                sx={{
+                  position: 'fixed',
+                  top: 25,
+                  right: 45,
+                  display: { xs: 'none', md: 'flex' },
+                  gap: 1,
+                  zIndex: 1200,
+                }}
+              >
+                <Button
+                  variant="contained"
+                  onClick={() => navigate('/profile')}
+                  sx={{
+                    borderRadius: '25px',
+                    px: 2.5,
+                    height: '45px',
+                    textTransform: 'none',
+                    fontWeight: 600,
+                    fontFamily: 'Metropolis',
+                    fontStyle: 'normal',
+                    fontSize: '12px',
+                    backgroundColor: '#121212',
+                    color: '#ffffff',
+                    border: '1px solid #121212',
+                    boxShadow: 'none',
+                    '&:hover': {
+                      backgroundColor: '#121212',
+                      boxShadow: 'none'
+                    }
+                  }}
+                >
+                  Profile
                 </Button>
               </Box>
             </motion.div>
@@ -807,19 +840,6 @@ const Home = () => {
 
   {/* Community Post Dialog */}
   <CommunityPostDialog open={postOpen} onClose={() => setPostOpen(false)} onSubmit={(payload) => console.log('post payload', payload)} />
-  <SearchPasswordDialog
-    open={pwdOpen}
-    onClose={() => setPwdOpen(false)}
-    onSuccess={() => {
-      sessionStorage.setItem(searchAuthKey, '1');
-      setPwdOpen(false);
-      if (pendingQueryRef.current) {
-        const q = pendingQueryRef.current;
-        pendingQueryRef.current = null;
-        goSearch(q);
-      }
-    }}
-  />
       </Box>
     </>
   );

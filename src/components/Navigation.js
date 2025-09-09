@@ -138,7 +138,7 @@ const Navigation = ({ user, onLogout }) => {
               onClick={() => { navigate('/'); setMobileOpen(false); }}
               sx={{ display: 'flex', alignItems: 'center', justifyContent: 'center', cursor: 'pointer' }}
             >
-              <img src="/images/Konnect_k_logo.png" alt="Konnect K" style={{ width: 44, height: 44 }} />
+              <img src={`${process.env.PUBLIC_URL || ''}/images/Konnect_k_logo.png`} alt="Konnect K" style={{ width: 44, height: 44 }} />
             </Box>
           </Box>
 
@@ -232,7 +232,7 @@ const Navigation = ({ user, onLogout }) => {
         onClick={() => navigate('/')}
         >
           <img 
-            src="/images/Konnect_k_logo.png" 
+            src={`${process.env.PUBLIC_URL || ''}/images/Konnect_k_logo.png`} 
             alt="Konnect Logo" 
             style={{ 
               height: '37px',

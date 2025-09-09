@@ -20,12 +20,15 @@ import {
   Typography,
 } from '@mui/material';
 import { useState } from 'react';
+import { useDispatch } from 'react-redux';
+import { setUser } from '../store/userSlice';
 import { useNavigate } from 'react-router-dom';
 // ThemeToggle removed per request
 import { authAPI } from '../services/api';
 import { getGoogleAccessToken, fetchGoogleUser } from '../lib/googleAuth';
 
-const Signup = ({ onSignup }) => {
+const Signup = () => {
+  const dispatch = useDispatch();
   const [formData, setFormData] = useState({
     email: '',
     password: '',
@@ -91,7 +94,9 @@ const Signup = ({ onSignup }) => {
       const response = await authAPI.signup(signupData);
       const { user, token } = response.data;
       
-      onSignup(user, token);
+  dispatch(setUser(user));
+  localStorage.setItem('token', token);
+  localStorage.setItem('user', JSON.stringify(user));
       navigate('/');
     } catch (error) {
       console.error('Signup error:', error);
@@ -116,7 +121,9 @@ const Signup = ({ onSignup }) => {
         provider: 'google'
       };
       const token = accessToken;
-      onSignup(user, token);
+  dispatch(setUser(user));
+  localStorage.setItem('token', token);
+  localStorage.setItem('user', JSON.stringify(user));
       navigate('/');
     } catch (e) {
       console.error('Google signup failed:', e);

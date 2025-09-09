@@ -1,4 +1,6 @@
 import React, { useEffect, useState } from 'react';
+import { useSelector } from 'react-redux';
+import { selectUser } from '../store';
 import { Box, Button, CircularProgress, Container, Paper, TextField, Typography } from '@mui/material';
 import SearchPasswordDialog from '../components/SearchPasswordDialog';
 import { questionsAPI } from '../services/questionsAPI';
@@ -12,6 +14,8 @@ const Admin = () => {
   const [error, setError] = useState('');
   const [answerDrafts, setAnswerDrafts] = useState({});
   const [submitting, setSubmitting] = useState({});
+
+  const user = useSelector(selectUser);
 
   const load = async () => {
     setLoading(true);
@@ -43,8 +47,7 @@ const Admin = () => {
     if (!answer) return;
     setSubmitting(s => ({ ...s, [q.id]: true }));
     try {
-      const user = JSON.parse(localStorage.getItem('user') || '{}');
-      const answered_by = user.email || 'admin';
+  const answered_by = user?.email || 'admin';
       await questionsAPI.answer(q.id, { question_text: q.question_text, answer, answered_by });
       setList(l => l.filter(item => item.id !== q.id));
     } catch (e) {

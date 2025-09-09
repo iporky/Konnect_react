@@ -1,7 +1,9 @@
-import React, { useState, useEffect } from 'react';
-import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
+import React, { useEffect } from 'react';
+import { HashRouter as Router, Routes, Route } from 'react-router-dom';
 import { Box } from '@mui/material';
 import { ThemeContextProvider } from './contexts/ThemeContext';
+import { useDispatch, useSelector } from 'react-redux';
+import { selectUser, setUser, clearUser } from './store';
 import Navigation from './components/Navigation';
 import Home from './pages/Home';
 import Buzz from './pages/Buzz';
@@ -20,8 +22,9 @@ import SearchResults from './pages/SearchResults';
 import Admin from './pages/Admin';
 
 function App() {
-  const [user, setUser] = useState(null);
-  const [loading, setLoading] = useState(true);
+  const user = useSelector(selectUser);
+  const dispatch = useDispatch();
+  const [loading, setLoading] = React.useState(true);
 
   useEffect(() => {
     // Check for existing authentication
@@ -32,7 +35,9 @@ function App() {
           // Validate token and get user info
           // This would typically be an API call
           const userData = JSON.parse(localStorage.getItem('user') || '{}');
-          setUser(userData);
+          if (userData && Object.keys(userData).length) {
+            dispatch(setUser(userData));
+          }
         }
       } catch (error) {
         console.error('Auth check failed:', error);
@@ -44,16 +49,16 @@ function App() {
     };
 
     checkAuth();
-  }, []);
+  }, [dispatch]);
 
   const handleLogin = (userData, token) => {
-    setUser(userData);
+    dispatch(setUser(userData));
     localStorage.setItem('token', token);
     localStorage.setItem('user', JSON.stringify(userData));
   };
 
   const handleLogout = () => {
-    setUser(null);
+    dispatch(clearUser());
     localStorage.removeItem('token');
     localStorage.removeItem('user');
     window.location.href = '/';

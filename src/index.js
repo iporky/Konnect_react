@@ -2,6 +2,8 @@ import React from 'react';
 import ReactDOM from 'react-dom/client';
 import { CssBaseline } from '@mui/material';
 import App from './App';
+import { Provider } from 'react-redux';
+import { store } from './store';
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
 // Suppress benign Chrome ResizeObserver loop errors caused by autosizing components
@@ -27,6 +29,8 @@ if (typeof window !== 'undefined') {
 root.render(
   <React.StrictMode>
     <CssBaseline />
-    <App />
+    <Provider store={store}>
+      <App />
+    </Provider>
   </React.StrictMode>
 );

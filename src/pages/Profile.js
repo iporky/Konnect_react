@@ -129,8 +129,8 @@ const Profile = ({ user }) => {
   return (
     <>
       {/* Theme toggle removed */}
-      <Box sx={{ ml: { xs: 0, md: '80px' } }}> {/* 0 on mobile; offset on desktop for fixed navigation */}
-      <Container maxWidth="lg" sx={{ py: 4 }}>
+      <Box sx={{ ml: { xs: 0, md: '80px' }, display: 'flex', justifyContent: { xs: 'center', md: 'flex-start' } }}> {/* center on mobile */}
+  <Container maxWidth="lg" sx={{ py: 4, display: 'flex', flexDirection: 'column', alignItems: { xs: 'center', md: 'stretch' } }}>
       {/* Header */}
       <Box sx={{ mb: 4 }}>
         <Typography variant="h3" component="h1" gutterBottom sx={{ fontWeight: 'bold' }}>
@@ -138,7 +138,7 @@ const Profile = ({ user }) => {
         </Typography>
       </Box>
 
-      <Grid container spacing={4}>
+  <Grid container spacing={4} justifyContent={{ xs: 'center', md: 'flex-start' }} sx={{ maxWidth: { xs: 430, md: '100%' }, mx: { xs: 'auto', md: 0 } }}>
         {/* Profile Summary */}
         <Grid item xs={12} md={4}>
           <Card>

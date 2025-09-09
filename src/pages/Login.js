@@ -18,12 +18,15 @@ import {
   Typography,
 } from '@mui/material';
 import { useState } from 'react';
+import { useDispatch } from 'react-redux';
+import { setUser } from '../store/userSlice';
 import { useNavigate } from 'react-router-dom';
 // ThemeToggle removed per request
 import { authAPI } from '../services/api';
 import { getGoogleAccessToken, fetchGoogleUser } from '../lib/googleAuth';
 
-const Login = ({ onLogin }) => {
+const Login = () => {
+  const dispatch = useDispatch();
   const [formData, setFormData] = useState({
     email: '',
     password: '',
@@ -50,7 +53,9 @@ const Login = ({ onLogin }) => {
       const response = await authAPI.login(formData);
       const { user, token } = response.data;
       
-      onLogin(user, token);
+  dispatch(setUser(user));
+  localStorage.setItem('token', token);
+  localStorage.setItem('user', JSON.stringify(user));
       navigate('/');
     } catch (error) {
       console.error('Login error:', error);
@@ -75,7 +80,9 @@ const Login = ({ onLogin }) => {
         provider: 'google'
       };
       const token = accessToken; // use access token as session token (frontend-only scenario)
-      onLogin(user, token);
+  dispatch(setUser(user));
+  localStorage.setItem('token', token);
+  localStorage.setItem('user', JSON.stringify(user));
       navigate('/');
     } catch (e) {
       console.error('Google login failed:', e);

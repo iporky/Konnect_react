@@ -404,7 +404,7 @@ const AboutUs = () => {
                   >
                     What you can do with{' '}
                     <Box component="span" sx={{ display: 'inline-flex', alignItems: 'center' }}>
-                      <Box component="img" src="/images/Konnect_logo.png" alt="Konnect" sx={{ height: { xs: 28, md: 40 }, ml: 1, position: 'relative', top: { xs: 2, md: 4 } }} />
+                      <Box component="img" src={`${process.env.PUBLIC_URL || ''}/images/Konnect_logo.png`} alt="Konnect" sx={{ height: { xs: 28, md: 40 }, ml: 1, position: 'relative', top: { xs: 2, md: 4 } }} />
                     </Box>
                   </Typography>
                   <Box sx={{ display: 'flex', alignItems: 'center', gap: 1, mt: 1, flexWrap: 'wrap' }}>
