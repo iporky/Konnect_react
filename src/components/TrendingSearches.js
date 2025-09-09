@@ -5,16 +5,16 @@ import { useState } from 'react';
 const TrendingSearches = () => {
   // Mock trending searches data
   const trendingSearches = [
-    { id: 1, text: 'Currently trending topic in korea', rank: 1, change: 'up' },
-    { id: 2, text: 'Currently trending topic seoul', rank: 2, change: 'up' },
-    { id: 3, text: 'Currently trending topic busan', rank: 3, change: 'up' },
-    { id: 4, text: 'Currently trending topic gangnam', rank: 4, change: 'up' },
-    { id: 5, text: 'Currently trending topic in korea', rank: 5, change: 'up' },
-    { id: 6, text: 'Currently trending topic in korea', rank: 6, change: 'up' },
-    { id: 7, text: 'Currently trending topic in korea', rank: 7, change: 'up' },
-    { id: 8, text: 'Currently trending topic in korea', rank: 8, change: 'up' },
-    { id: 9, text: 'Currently trending topic in korea', rank: 9, change: 'up' },
-    { id: 10, text: 'Currently trending topic in korea', rank: 10, change: 'up' },
+    { id: 1, text: 'Seongsu shopping cafés', rank: 1, change: 'up' },
+    { id: 2, text: 'Naver Maps over Google', rank: 2, change: 'up' },
+    { id: 3, text: 'Instagram Face', rank: 3, change: 'up' },
+    { id: 4, text: 'Digital Nomad Visa', rank: 4, change: 'up' },
+    { id: 5, text: 'Hanbok Rentals', rank: 5, change: 'up' },
+    { id: 6, text: 'Hiking near Seoul', rank: 6, change: 'up' },
+    { id: 7, text: 'Hot Summer Travel', rank: 7, change: 'up' },
+    { id: 8, text: 'K-food dishes ', rank: 8, change: 'up' },
+    { id: 9, text: 'Top tourists districts', rank: 9, change: 'up' },
+    { id: 10, text: 'Hangul basics', rank: 10, change: 'up' },
   ];
 
   // Two-page carousel: first 5 then next 5
