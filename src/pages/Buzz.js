@@ -20,7 +20,7 @@ const Buzz = () => {
   const [buzzImages, setBuzzImages] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
-  const [limit, setLimit] = useState(20); // how many to fetch
+  const [limit, setLimit] = useState(10); // how many to fetch
   const [fetchingMore, setFetchingMore] = useState(false);
 
   // Initial & subsequent fetch when limit changes
@@ -28,7 +28,7 @@ const Buzz = () => {
     let active = true;
     const fetchImages = async () => {
       try {
-        if (limit === 20) setLoading(true); else setFetchingMore(true);
+        if (limit === 10) setLoading(true); else setFetchingMore(true);
         setError(null);
         const data = await buzzImagesAPI.list({ skip: 0, limit });
         if (!active) return;

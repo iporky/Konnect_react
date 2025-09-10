@@ -12,7 +12,7 @@ export const buzzImagesAPI = {
    * @param {number} [params.limit=20] - Max number of records to return
    * @returns {Promise<Array>} Array of image objects: { id, title, description, url, created_at, updated_at }
    */
-  async list({ skip = 0, limit = 20 } = {}) {
+  async list({ skip = 0, limit = 10 } = {}) {
     const searchParams = new URLSearchParams();
     searchParams.set('skip', String(skip));
     searchParams.set('limit', String(limit));

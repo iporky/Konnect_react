@@ -30,9 +30,12 @@ import {
   Typography
 } from '@mui/material';
 import { useState } from 'react';
+import { useDispatch } from 'react-redux';
+import { clearUser } from '../store';
 // ThemeToggle removed per request
 
 const Profile = ({ user }) => {
+  const dispatch = useDispatch();
   const [isEditing, setIsEditing] = useState(false);
   const [profileData, setProfileData] = useState({
     name: user?.name || 'John Doe',
@@ -295,6 +298,30 @@ const Profile = ({ user }) => {
                   <Divider sx={{ my: 2 }} />
                   
                   <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
+                    <Button
+                      variant="contained"
+                      color="primary"
+                      startIcon={<Logout />}
+                      fullWidth
+                      onClick={() => {
+                        try {
+                          // Attempt Google logout if GIS loaded
+                          if (window.google && window.google.accounts && window.google.accounts.id) {
+                            // This clears the session for One Tap / future prompts
+                            window.google.accounts.id.disableAutoSelect();
+                          }
+                        } catch (e) {
+                          // ignore
+                        }
+                        localStorage.removeItem('token');
+                        localStorage.removeItem('user');
+                        dispatch(clearUser());
+                        // Redirect to home
+                        window.location.hash = '#/';
+                      }}
+                    >
+                      Logout
+                    </Button>
                     <Button
                       variant="outlined"
                       startIcon={<Security />}

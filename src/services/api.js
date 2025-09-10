@@ -49,6 +49,7 @@ export { buzzAPI } from './buzzAPI';
 export { utilsAPI } from './utilsAPI';
 export { buzzImagesAPI } from './buzzImagesAPI';
 export { questionsAPI } from './questionsAPI';
+export { usersAPI } from './usersAPI';
 
 // Auth API
 export const authAPI = {

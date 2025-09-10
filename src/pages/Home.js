@@ -56,7 +56,7 @@ const Home = () => {
   // Right-side icons in the search bar: toggle to highlight active; hover also highlights
   const [searchToggles, setSearchToggles] = useState({
     group: false,
-  badge: false,
+    badge: false,
     globe: false,
     attach: false,
     mic: false,
@@ -113,7 +113,7 @@ const Home = () => {
       if (expertPosting) return;
       setExpertPosting(true);
       try {
-  const asked_by = user?.email || 'anonymous';
+        const asked_by = user?.email || 'anonymous';
         questionsAPI
           .ask({ question_text: trimmed, asked_by })
           .catch(() => {})
@@ -161,8 +161,8 @@ const Home = () => {
           right: { xs: 0, md: 'auto' },
           top: { xs: '30%', md: 'auto' },
           transform: { xs: 'translateY(-50%)', md: 'none' },
-          mb: { xs: 0, md: '66px' },
-          mt: { xs: 0, md: '98px' }
+          mb: { xs: 0, md: '60px' },
+          mt: { xs: 0, md: '60px' }
         }}>
           <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ duration: 0.8 }}>
             <Box sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center', width: '100%' }}>
@@ -301,7 +301,7 @@ const Home = () => {
         </Box>
 
         {/* Main Content */}
-        <Container maxWidth="lg" sx={{ flex: 1, px: 2, pt: 1, pb: { xs: 0, md: showAllCategories ? 2 : 10 } }}>
+        <Container maxWidth="lg" sx={{ flex: 1, px: 2, pt: 1, pb: { xs: 0, md: showAllCategories ? 2 : 8.5 } }}>
           {/* Search Section */}
           <motion.div
             initial={{ opacity: 0 }}
@@ -544,7 +544,7 @@ const Home = () => {
             transition={{ duration: 0.6, delay: 0.35, ease: 'easeOut' }}
           >
       {/* Desktop rows container centered as a group; second row left-aligned; exact 60px gap below */}
-            <Box sx={{ display: { xs: 'none', md: 'flex' }, justifyContent: 'center', mb: { xs: 0, md: '60px' } }}>
+            <Box sx={{ display: { xs: 'none', md: 'flex' }, justifyContent: 'center', mb: { xs: 0, md: '50px' } }}>
               <Box sx={{ width: 'fit-content' }}>
                 {/* Row 1: first N categories; show More here only when collapsed */}
                 <Box sx={{ display: 'flex', gap: '30px', mb: showAllCategories ? 0.5 : 0, justifyContent: 'flex-start' }}>

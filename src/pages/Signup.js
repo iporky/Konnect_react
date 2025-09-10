@@ -24,7 +24,7 @@ import { useDispatch } from 'react-redux';
 import { setUser } from '../store/userSlice';
 import { useNavigate } from 'react-router-dom';
 // ThemeToggle removed per request
-import { authAPI } from '../services/api';
+import { authAPI, usersAPI } from '../services/api';
 import { getGoogleAccessToken, fetchGoogleUser } from '../lib/googleAuth';
 
 const Signup = () => {
@@ -110,20 +110,62 @@ const Signup = () => {
     try {
       setLoading(true);
       setError('');
-      const clientId = process.env.REACT_APP_GOOGLE_CLIENT_ID || '';
+      const clientId = process.env.REACT_APP_GOOGLE_CLIENT_ID;
       const accessToken = await getGoogleAccessToken(clientId);
       const profile = await fetchGoogleUser(accessToken);
-      const user = {
-        id: profile.sub,
-        name: profile.name,
+
+      // 1. Check if user already exists via backend
+      let existing = null;
+      try {
+        existing = await usersAPI.searchByEmail(profile.email);
+      } catch (searchErr) {
+        if (searchErr?.response?.status !== 404) {
+          console.error('Search user failed:', searchErr);
+          // Proceed if 404 (not found); otherwise show error
+          setError('Unable to verify existing user. Please try again.');
+          return;
+        }
+      }
+
+      if (existing && existing.email && existing.name) {
+        // User exists -> redirect to login with message
+        setError('User already exists. Redirecting to login...');
+        setTimeout(() => {
+          navigate('/login', { state: { emailPrefill: profile.email, notice: 'Account exists. Please sign in.' } });
+        }, 1200);
+        return;
+      }
+
+      // 2. Create user
+      const createPayload = {
         email: profile.email,
-        avatar: profile.picture,
+        name: profile.name,
+        given_name: profile.given_name,
+        family_name: profile.family_name,
+        picture: profile.picture,
+        email_verified: profile.email_verified,
+        sub: profile.sub
+      };
+      let created;
+      try {
+        created = await usersAPI.create(createPayload);
+      } catch (createErr) {
+        console.error('Create user failed:', createErr);
+        setError(createErr?.response?.data?.detail || 'Failed to create user.');
+        return;
+      }
+
+      // 3. Store user locally & treat accessToken as session token (or replace when backend returns one)
+      const userObj = {
+        id: created.id || createPayload.sub,
+        name: created.name || createPayload.name,
+        email: created.email || createPayload.email,
+        picture: created.picture || createPayload.picture,
         provider: 'google'
       };
-      const token = accessToken;
-  dispatch(setUser(user));
-  localStorage.setItem('token', token);
-  localStorage.setItem('user', JSON.stringify(user));
+      dispatch(setUser(userObj));
+      localStorage.setItem('token', accessToken);
+      localStorage.setItem('user', JSON.stringify(userObj));
       navigate('/');
     } catch (e) {
       console.error('Google signup failed:', e);

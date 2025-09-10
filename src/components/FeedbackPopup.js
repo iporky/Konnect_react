@@ -32,15 +32,24 @@ const FeedbackPopup = ({ open, onClose }) => {
       <Box
         sx={{
           position: 'fixed',
+          top: '50%',
           right: { xs: 12, md: 40 },
-          bottom: { xs: 12, md: 110 },
-          width: { xs: 'calc(100% - 24px)', sm: 360 },
+          transform: 'translateY(-50%)',
+          width: { xs: 'calc(100% - 24px)', sm: 380 },
+          maxHeight: 'calc(100vh - 32px)',
+          display: 'flex',
+          flexDirection: 'column',
           bgcolor: '#fff',
           borderRadius: 2,
           boxShadow: '0 16px 40px rgba(0,0,0,0.18)',
           overflow: 'hidden',
           outline: 'none',
           zIndex: 1600,
+          '@media (max-height:500px)': {
+            top: 8,
+            transform: 'none',
+            maxHeight: 'calc(100vh - 16px)'
+          }
         }}
       >
         {/* Header */}
@@ -48,7 +57,7 @@ const FeedbackPopup = ({ open, onClose }) => {
           <Typography variant="h6" sx={{ fontWeight: 700, color: '#fff' }}>Feedback</Typography>
         </Box>
 
-        <Box component="form" onSubmit={handleSubmit} sx={{ px: 2.5, py: 2.5 }}>
+        <Box component="form" onSubmit={handleSubmit} sx={{ px: 2.5, py: 2.5, overflowY: 'auto' }}>
           <Typography variant="body2" sx={{ mb: 2, color: 'text.secondary' }}>
             Please click on the specific area of the page that your feedback is related to.
           </Typography>
