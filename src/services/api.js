@@ -50,6 +50,7 @@ export { utilsAPI } from './utilsAPI';
 export { buzzImagesAPI } from './buzzImagesAPI';
 export { questionsAPI } from './questionsAPI';
 export { usersAPI } from './usersAPI';
+export { businessCardsAPI } from './businessCardsAPI';
 
 // Auth API
 export const authAPI = {

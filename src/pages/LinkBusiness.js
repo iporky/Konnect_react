@@ -1,6 +1,48 @@
-import { Box, Button, Container, TextField, Typography } from '@mui/material';
+import CloseIcon from '@mui/icons-material/Close';
+import { Alert, Box, Button, Container, Dialog, DialogActions, DialogContent, DialogTitle, IconButton, Stack, TextField, Typography } from '@mui/material';
+import { useState } from 'react';
+import { businessCardsAPI } from '../services/api';
 
 const LinkBusiness = () => {
+  const [open, setOpen] = useState(false);
+  const [companyName, setCompanyName] = useState('');
+  const [phone, setPhone] = useState('');
+  const [email, setEmail] = useState('');
+  const [file, setFile] = useState(null);
+  const [submitting, setSubmitting] = useState(false);
+  const [error, setError] = useState('');
+  const [success, setSuccess] = useState('');
+
+  const resetForm = () => {
+    setCompanyName('');
+    setPhone('');
+    setEmail('');
+    setFile(null);
+    setError('');
+    setSuccess('');
+  };
+
+  const handleUpload = async (e) => {
+    e.preventDefault();
+    setError('');
+    setSuccess('');
+    if (!companyName || !email || !file) {
+      setError('Company name, email, and file are required');
+      return;
+    }
+    setSubmitting(true);
+    try {
+      await businessCardsAPI.upload({ company_name: companyName, phone_number: phone, email, file });
+      setSuccess('Uploaded successfully');
+      setTimeout(() => { setOpen(false); resetForm(); }, 1200);
+    } catch (err) {
+      console.error('Upload failed', err);
+      setError(err?.response?.data?.detail || 'Upload failed');
+    } finally {
+      setSubmitting(false);
+    }
+  };
+
   return (
     <Container
       maxWidth="xl"
@@ -67,6 +109,7 @@ const LinkBusiness = () => {
             variant="contained"
             color="primary"
             sx={{ borderRadius: 999, px: 2.5, py: 0.6, textTransform: 'none', fontWeight: 700, minWidth: 112 }}
+            onClick={() => { resetForm(); setOpen(true); }}
           >
             Upload here
           </Button>
@@ -94,6 +137,70 @@ const LinkBusiness = () => {
           Send it to Us!
         </Button>
       </Box>
+      <Dialog open={open} onClose={() => setOpen(false)} fullWidth maxWidth="sm">
+        <DialogTitle sx={{ fontWeight: 600, pr: 5 }}>
+          Upload Business Card
+          <IconButton
+            onClick={() => setOpen(false)}
+            size="small"
+            sx={{ position: 'absolute', right: 8, top: 8 }}
+          >
+            <CloseIcon fontSize="small" />
+          </IconButton>
+        </DialogTitle>
+        <DialogContent dividers>
+          <Box component="form" onSubmit={handleUpload} id="business-card-upload-form">
+            <Stack spacing={2}>
+              {error && <Alert severity="error">{error}</Alert>}
+              {success && <Alert severity="success">{success}</Alert>}
+              <TextField
+                label="Company Name"
+                value={companyName}
+                onChange={(e) => setCompanyName(e.target.value)}
+                required
+                fullWidth
+              />
+              <TextField
+                label="Phone Number"
+                value={phone}
+                onChange={(e) => setPhone(e.target.value)}
+                placeholder="Optional"
+                fullWidth
+              />
+              <TextField
+                label="Email"
+                type="email"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+                required
+                fullWidth
+              />
+              <Button
+                variant="outlined"
+                component="label"
+                sx={{ justifyContent: 'flex-start' }}
+              >
+                {file ? file.name : 'Select Image'}
+                <input
+                  type="file"
+                  hidden
+                  accept="image/*"
+                  onChange={(e) => setFile(e.target.files?.[0] || null)}
+                />
+              </Button>
+              <Typography variant="caption" color="text.secondary">
+                Supported: JPG, PNG. Max 5MB.
+              </Typography>
+            </Stack>
+          </Box>
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={() => setOpen(false)} disabled={submitting}>Cancel</Button>
+          <Button type="submit" form="business-card-upload-form" variant="contained" disabled={submitting}>
+            {submitting ? 'Uploading...' : 'Upload'}
+          </Button>
+        </DialogActions>
+      </Dialog>
     </Container>
   );
 };
