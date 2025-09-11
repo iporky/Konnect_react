@@ -21,11 +21,10 @@ export async function chatCompletion({ prompt, signal }) {
   }
   try {
     // Using a placeholder model name; user mentioned "gpt5 nano" which is not an official model.
-    const model = 'gpt-5-nano';
+    const model = 'gpt-5';
     const response = await openai.chat.completions.create({
       model,
       messages: [
-        { role: 'system', content: 'You are a helpful assistant answering questions about Korea. Keep answers concise when possible.' },
         { role: 'user', content: prompt }
       ],
       temperature: 1,

@@ -51,6 +51,7 @@ export { buzzImagesAPI } from './buzzImagesAPI';
 export { questionsAPI } from './questionsAPI';
 export { usersAPI } from './usersAPI';
 export { businessCardsAPI } from './businessCardsAPI';
+export { feedbacksAPI } from './feedbacksAPI';
 
 // Auth API
 export const authAPI = {
