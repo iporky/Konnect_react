@@ -7,42 +7,48 @@ import LanguageOutlined from '@mui/icons-material/LanguageOutlined';
 import MicOutlined from '@mui/icons-material/MicOutlined';
 import MoreHoriz from '@mui/icons-material/MoreHoriz';
 import MoreVert from '@mui/icons-material/MoreVert';
-import School from '@mui/icons-material/School';
 import WorkspacePremiumOutlined from '@mui/icons-material/WorkspacePremiumOutlined';
 import {
   Box,
   Button,
   Container,
   IconButton,
-  Tooltip,
   Paper,
   TextField,
+  Tooltip,
   Typography,
   useTheme
 } from '@mui/material';
-import { motion, AnimatePresence, LayoutGroup } from 'framer-motion';
+import { AnimatePresence, LayoutGroup, motion } from 'framer-motion';
 import { useEffect, useRef, useState } from 'react';
 import { useSelector } from 'react-redux';
-import { selectUser } from '../store';
 import { useNavigate } from 'react-router-dom';
 import BuzzCarousel from '../components/BuzzCarousel';
+import CommunityPostDialog from '../components/CommunityPostDialog';
+import FeedbackPopup from '../components/FeedbackPopup';
 import Footer from '../components/Footer';
 import TrendingSearches from '../components/TrendingSearches';
-import FeedbackPopup from '../components/FeedbackPopup';
-import CommunityPostDialog from '../components/CommunityPostDialog';
 import { questionsAPI } from '../services/api';
+import { selectUser } from '../store';
 
 const imgBase = process.env.PUBLIC_URL;
+// Updated: Region/location icons with external URLs. Order matches the provided list (where assets exist).
+// Note: South Jeolla image not present in /public/images/home, so it's omitted for now.
+// TODO (optional): Add South Jeolla asset (e.g., 15. South_Jeolla.svg) and append its entry when available.
 const categoryIcons = [
-  { icon: `${imgBase}/images/plan-trip.png`, label: "Plan Trip", color: "#8888881A" },
-  { icon: `${imgBase}/images/local-buzz.png`, label: "Local Buzz", color: "#8888881A" },
-  { icon: `${imgBase}/images/food.png`, label: "Food", color: "#8888881A" },
-  { icon: `${imgBase}/images/community.png`, label: "Community", color: "#8888881A" },
-  { icon: `${imgBase}/images/culture.png`, label: "Culture", color: "#8888881A" },
-  { icon: `${imgBase}/images/services.png`, label: "Services", color: "#8888881A" },
-  { icon: `${imgBase}/images/people.png`, label: "People", color: "#8888881A" },
-  { icon: `${imgBase}/images/explore.png`, label: "Explore", color: "#8888881A" },
-  { icon: `${imgBase}/images/student.png`, label: "Student", color: "#ffffff1a", Icon: School }
+  { icon: `${imgBase}/images/home/1.Chungju.svg`, label: 'Chungju', color: '#8888881A', url: 'https://www.chungju.go.kr/english/index.do' },
+  { icon: `${imgBase}/images/home/2.Seoul.png`, label: 'Seoul', color: '#8888881A', url: 'https://english.seoul.go.kr' },
+  { icon: `${imgBase}/images/home/3.%20Busan.png`, label: 'Busan', color: '#8888881A', url: 'https://english.busan.go.kr' },
+  { icon: `${imgBase}/images/home/4.Daegu.png`, label: 'Daegu', color: '#8888881A', url: 'https://daegu.go.kr/english/index.do' },
+  { icon: `${imgBase}/images/home/6.%20Gwangju.png`, label: 'Gwangju', color: '#8888881A', url: 'https://gwangju.go.kr/eng/' },
+  { icon: `${imgBase}/images/home/7.%20Daejeon.png`, label: 'Daejeon', color: '#8888881A', url: 'https://www.daejeon.go.kr/english/index.do' },
+  { icon: `${imgBase}/images/home/8.%20Ulsan.png`, label: 'Ulsan', color: '#8888881A', url: 'https://www.ulsan.go.kr/u/english/main.ulsan' },
+  { icon: `${imgBase}/images/home/9.%20Sejong.png`, label: 'Sejong', color: '#8888881A', url: 'https://www.sejong.go.kr/eng.do' },
+  { icon: `${imgBase}/images/home/10.%20Gyeonggi.svg`, label: 'Gyeonggi', color: '#8888881A', url: 'https://english.gg.go.kr' },
+  { icon: `${imgBase}/images/home/11.%20gangwon.png`, label: 'Gangwon', color: '#8888881A', url: 'https://state.gwd.go.kr/portal' },
+  { icon: `${imgBase}/images/home/14.%20North_Jeolla.svg`, label: 'North Jeolla', color: '#8888881A', url: 'https://www.jeonbuk.go.kr/eng/index.jeonbuk' },
+  { icon: `${imgBase}/images/home/15.%20South_Jeolla.svg`, label: 'S. Jeolla', color: '#8888881A', url: 'https://www.jeonbuk.go.kr/eng/index.jeonbuk' },
+  { icon: `${imgBase}/images/home/18.%20Jeju.png`, label: 'Jeju', color: '#8888881A', url: 'https://www.jeju.go.kr' },
 ];
 
 const Home = () => {
@@ -131,12 +137,17 @@ const Home = () => {
   };
 
   const handleCategoryClick = (category) => {
+    // If a URL is provided, open it in a new tab. This is public info so no auth gating.
+    if (category?.url) {
+      window.open(category.url, '_blank', 'noopener,noreferrer');
+      return;
+    }
+    // Fallback: preserve previous behavior (auth gate) if no URL exists (should not happen now).
     if (!isAuthenticated) {
       navigate('/login');
       return;
     }
-    // Navigate to category page or handle search
-    console.log('Category clicked:', category);
+    console.log('Category clicked (no url):', category);
   };
 
   return (
