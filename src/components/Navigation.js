@@ -2,7 +2,6 @@ import {
   AccountCircle,
   Menu as MenuIcon
 } from '@mui/icons-material';
-import AdminPanelSettingsIcon from '@mui/icons-material/AdminPanelSettings';
 import {
   AppBar,
   BottomNavigation,
@@ -64,12 +63,7 @@ const Navigation = ({ user, onLogout }) => {
       path: isMobile ? '/language' : null, 
       requireAuth: false 
     },
-    {
-      text: 'Admin',
-      icon: <AdminPanelSettingsIcon fontSize="inherit" />, // admin settings icon
-      path: '/admin',
-      requireAuth: false,
-    },
+    // Admin item intentionally removed from visible navigation; route still accessible directly via URL.
   ];
 
   const handleNavigation = (path) => {

@@ -1,4 +1,5 @@
 import {
+  Alert,
   Backdrop,
   Box,
   Button,
@@ -10,40 +11,48 @@ import {
   Radio,
   RadioGroup,
   TextField,
-  Typography,
-  Alert
+  Typography
 } from '@mui/material';
 import { useState } from 'react';
-import { useSelector } from 'react-redux';
-import { selectUser } from '../store';
 import { feedbacksAPI } from '../services/api';
 
 const FeedbackPopup = ({ open, onClose }) => {
   const [type, setType] = useState('suggest'); // like | dislike | suggest
   const [message, setMessage] = useState('');
+  const [email, setEmail] = useState('');
   const [includeScreenshot, setIncludeScreenshot] = useState(false);
   const [wantReply, setWantReply] = useState(false);
   const [file, setFile] = useState(null);
   const [submitting, setSubmitting] = useState(false);
   const [submitError, setSubmitError] = useState('');
   const [success, setSuccess] = useState('');
-  const user = useSelector(selectUser);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     setSubmitError('');
     setSuccess('');
-    if (!user) return; // guard
+    
     if (!message.trim()) {
       setSubmitError('Please enter feedback details');
       return;
     }
+    
+    if (!email.trim()) {
+      setSubmitError('Please enter your email address');
+      return;
+    }
+    
+    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email.trim())) {
+      setSubmitError('Please enter a valid email address');
+      return;
+    }
+    
     try {
       setSubmitting(true);
       await feedbacksAPI.submit({
         type,
         details: message.trim(),
-        user_email: user.email,
+        user_email: email.trim(),
         feedback_reply: wantReply,
         file: includeScreenshot ? file : null
       });
@@ -51,6 +60,7 @@ const FeedbackPopup = ({ open, onClose }) => {
       setTimeout(() => {
         onClose?.();
         setMessage('');
+        setEmail('');
         setFile(null);
         setIncludeScreenshot(false);
         setWantReply(false);
@@ -95,15 +105,10 @@ const FeedbackPopup = ({ open, onClose }) => {
         </Box>
 
         <Box component="form" onSubmit={handleSubmit} sx={{ px: 2.5, py: 2.5, overflowY: 'auto' }}>
-          {!user && (
-            <Alert severity="info" sx={{ mb: 2 }}>
-              Please log in first to submit feedback.
-            </Alert>
-          )}
-          {user && success && (
+          {success && (
             <Alert severity="success" sx={{ mb: 2 }}>{success}</Alert>
           )}
-          {user && submitError && (
+          {submitError && (
             <Alert severity="error" sx={{ mb: 2 }}>{submitError}</Alert>
           )}
           <Typography variant="body2" sx={{ mb: 2, color: 'text.secondary' }}>
@@ -127,13 +132,24 @@ const FeedbackPopup = ({ open, onClose }) => {
             multiline
             minRows={4}
             sx={{ my: 1 }}
-            disabled={!user}
+          />
+
+          {/* Email field */}
+          <TextField
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
+            placeholder="Your email address"
+            fullWidth
+            type="email"
+            required
+            sx={{ my: 1 }}
+            helperText="Email is required for all feedback submissions"
           />
 
           {/* Options */}
           <Box sx={{ display: 'flex', flexDirection: 'column', gap: 1 }}>
             <FormControlLabel
-              control={<Checkbox checked={includeScreenshot} onChange={(e) => { setIncludeScreenshot(e.target.checked); if (!e.target.checked) setFile(null); }} disabled={!user} />}
+              control={<Checkbox checked={includeScreenshot} onChange={(e) => { setIncludeScreenshot(e.target.checked); if (!e.target.checked) setFile(null); }} />}
               label="Include a screenshot"
             />
             {includeScreenshot && (
@@ -142,14 +158,13 @@ const FeedbackPopup = ({ open, onClose }) => {
                 component="label"
                 size="small"
                 sx={{ alignSelf: 'flex-start' }}
-                disabled={!user}
               >
                 {file ? file.name : 'Choose image'}
                 <input type="file" hidden accept="image/*" onChange={(e) => setFile(e.target.files?.[0] || null)} />
               </Button>
             )}
             <FormControlLabel
-              control={<Checkbox checked={wantReply} onChange={(e) => setWantReply(e.target.checked)} disabled={!user} />}
+              control={<Checkbox checked={wantReply} onChange={(e) => setWantReply(e.target.checked)} />}
               label={"I'd like to hear back about my feedback"}
             />
           </Box>
@@ -161,7 +176,7 @@ const FeedbackPopup = ({ open, onClose }) => {
               type="submit"
               variant="contained"
               color="primary"
-              disabled={!user || !message.trim() || submitting}
+              disabled={!message.trim() || !email.trim() || submitting}
               sx={{ borderRadius: 999, px: 5, boxShadow: '0 8px 18px rgba(0,0,0,0.12)' }}
             >
               {submitting ? 'Sending...' : 'Send'}

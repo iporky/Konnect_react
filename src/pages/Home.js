@@ -46,7 +46,7 @@ const categoryIcons = [
   { icon: `${imgBase}/images/home/9.%20Sejong.png`, label: 'Sejong', color: '#8888881A', url: 'https://www.sejong.go.kr/eng.do' },
   { icon: `${imgBase}/images/home/10.%20Gyeonggi.svg`, label: 'Gyeonggi', color: '#8888881A', url: 'https://english.gg.go.kr' },
   { icon: `${imgBase}/images/home/11.%20gangwon.png`, label: 'Gangwon', color: '#8888881A', url: 'https://state.gwd.go.kr/portal' },
-  { icon: `${imgBase}/images/home/14.%20North_Jeolla.svg`, label: 'North Jeolla', color: '#8888881A', url: 'https://www.jeonbuk.go.kr/eng/index.jeonbuk' },
+  { icon: `${imgBase}/images/home/14.%20North_Jeolla.svg`, label: 'N. Jeolla', color: '#8888881A', url: 'https://www.jeonbuk.go.kr/eng/index.jeonbuk' },
   { icon: `${imgBase}/images/home/15.%20South_Jeolla.svg`, label: 'S. Jeolla', color: '#8888881A', url: 'https://www.jeonbuk.go.kr/eng/index.jeonbuk' },
   { icon: `${imgBase}/images/home/18.%20Jeju.png`, label: 'Jeju', color: '#8888881A', url: 'https://www.jeju.go.kr' },
 ];
@@ -588,7 +588,7 @@ const Home = () => {
                           <Box component="img" src={category.icon} alt={category.label} sx={{ width: 36, height: 36 }} />
                         )}
                       </Box>
-                      <Typography variant="caption" sx={{ color: '#888888', fontSize: '13px', fontWeight: '600' }}>
+                      <Typography variant="caption" sx={{ color: '#888888', fontSize: '12px', fontWeight: '600' }}>
                         {category.label}
                       </Typography>
                     </Box>
@@ -663,7 +663,7 @@ const Home = () => {
                                 <Box component="img" src={category.icon} alt={category.label} sx={{ width: 36, height: 36 }} />
                               )}
                             </Box>
-                            <Typography variant="caption" sx={{ color: '#888888', fontSize: '11px', fontWeight: 'bold' }}>
+                            <Typography variant="caption" sx={{ color: '#888888', fontSize: '12px', fontWeight: 'bold' }}>
                               {category.label}
                             </Typography>
                           </Box>
@@ -753,7 +753,7 @@ const Home = () => {
                   <Box component="img" src={category.icon} alt={category.label} sx={{ width: 26, height: 26 }} />
                 )}
               </div>
-              <Typography variant="caption" sx={{ mt: 0.5, color: 'text.secondary', fontSize: '11px', lineHeight: 1.2 }}>
+              <Typography variant="caption" sx={{ mt: 0.5, color: 'text.secondary', fontSize: '12px', lineHeight: 1.2 }}>
                 {category.label}
               </Typography>
             </Box>
@@ -815,7 +815,7 @@ const Home = () => {
                     <Box component="img" src={category.icon} alt={category.label} sx={{ width: 26, height: 26 }} />
                   )}
                 </Paper>
-                <Typography variant="caption" sx={{ mt: 0.5, color: 'text.secondary', fontSize: '11px', lineHeight: 1.2 }}>
+                <Typography variant="caption" sx={{ mt: 0.5, color: 'text.secondary', fontSize: '12px', lineHeight: 1.2 }}>
                   {category.label}
                 </Typography>
               </Box>
