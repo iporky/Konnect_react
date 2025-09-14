@@ -176,7 +176,7 @@ const Buzz = () => {
               variant="rectangular" 
               width="100%" 
               height="45vh" 
-              sx={{ borderRadius: 3 }}
+              sx={{ borderRadius: 3, bgcolor: '#6F95BD' }}
             />
           </Box>
           
@@ -261,7 +261,7 @@ const Buzz = () => {
 
         {/* Post Image */}
         {post.url && (
-          <Box sx={{ px: 1, pb: 2 }}>
+          <Box sx={{ px: 1, pb: 2, bgcolor: '#6F95BD', borderRadius: 3, display: 'flex', justifyContent: 'center' }}>
             <CardMedia 
               component="img" 
               image={post.url} 
@@ -271,7 +271,8 @@ const Buzz = () => {
                 height: '50vh',
                 objectFit: 'contain',
                 borderRadius: 3,
-                boxShadow: '0 4px 20px rgba(0,0,0,0.1)'
+                boxShadow: '0 4px 20px rgba(0,0,0,0.1)',
+                backgroundColor: '#6F95BD'
               }} 
             />
           </Box>
