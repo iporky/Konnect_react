@@ -19,6 +19,66 @@ export const buzzImagesAPI = {
     const { data } = await api.get(`/buzz-images/?${searchParams.toString()}`);
     return data;
   },
+
+  /**
+   * Toggle like status for a buzz image
+   * @param {string} imageId - The ID of the buzz image
+   * @returns {Promise<Object>} Updated like status and count
+   */
+  async toggleLike(imageId) {
+    const { data } = await api.post(`/buzz-images/${imageId}/like`);
+    return data;
+  },
+
+  /**
+   * Get likes for a buzz image
+   * @param {string} imageId - The ID of the buzz image
+   * @returns {Promise<Object>} Like status and count
+   */
+  async getLikes(imageId) {
+    const { data } = await api.get(`/buzz-images/${imageId}/likes`);
+    return data;
+  },
+
+  /**
+   * Add a comment to a buzz image
+   * @param {string} imageId - The ID of the buzz image
+   * @param {string} content - The comment content
+   * @returns {Promise<Object>} Created comment object
+   */
+  async addComment(imageId, content) {
+    const { data } = await api.post(`/buzz-images/${imageId}/comments`, {
+      content
+    });
+    return data;
+  },
+
+  /**
+   * Get comments for a buzz image
+   * @param {string} imageId - The ID of the buzz image
+   * @param {Object} params
+   * @param {number} [params.skip=0] - Number of comments to skip
+   * @param {number} [params.limit=10] - Max number of comments to return
+   * @returns {Promise<Array>} Array of comment objects
+   */
+  async getComments(imageId, { skip = 0, limit = 10 } = {}) {
+    const searchParams = new URLSearchParams();
+    searchParams.set('skip', String(skip));
+    searchParams.set('limit', String(limit));
+    const { data } = await api.get(`/buzz-images/${imageId}/comments?${searchParams.toString()}`);
+    return data;
+  },
+
+  /**
+   * Delete a comment
+   * @param {string} imageId - The ID of the buzz image
+   * @param {string} commentId - The ID of the comment
+   * @returns {Promise<Object>} Deletion confirmation
+   */
+  async deleteComment(imageId, commentId) {
+    const { data } = await api.delete(`/buzz-images/${imageId}/comments/${commentId}`);
+    return data;
+  },
 };
 
 export default buzzImagesAPI;
