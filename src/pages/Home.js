@@ -1,5 +1,4 @@
 // Add outlined icons for search bar toggles
-import AddRounded from '@mui/icons-material/AddRounded';
 import AttachFileOutlined from '@mui/icons-material/AttachFileOutlined';
 import FeedbackOutlined from '@mui/icons-material/FeedbackOutlined';
 import GroupOutlined from '@mui/icons-material/GroupOutlined';
@@ -344,34 +343,7 @@ const Home = () => {
                   }
                 }}
               >
-                {/* Left plus icon */}
-                <Tooltip
-                  arrow
-                  enterDelay={300}
-                  placement="top"
-                  title={
-                    <Box sx={{ maxWidth: 240 }}>
-                      <Typography variant="subtitle2" sx={{ fontWeight: 700, mb: 0.5 }}>
-                        Post Wall
-                      </Typography>
-                      <Typography variant="caption" sx={{ opacity: 0.9 }}>
-                        Share your Korean journey with the community
-                      </Typography>
-                    </Box>
-                  }
-                >
-                  <IconButton
-                    aria-label="add"
-                    size="small"
-                    disableRipple
-                    disableFocusRipple
-                    onClick={() => setPostOpen(true)}
-                    sx={{ mr: 1, p: 0, '&:hover': { backgroundColor: 'transparent' } }}
-                  >
-                    <AddRounded sx={{ width: 20, height: 20, color: '#CD2028' }} />
-                  </IconButton>
-                </Tooltip>
-
+                {/* Removed left plus icon previously triggering CommunityPostDialog */}
                 {/* Input */}
                 <TextField
                   ref={searchInputRef}

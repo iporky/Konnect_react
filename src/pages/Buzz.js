@@ -1,6 +1,6 @@
 // Grid-based Buzz gallery: 3 cards per row (28vw each). Description at bottom, icons below image (Instagram style), lightbox on comment click.
 import React, { useEffect, useState } from 'react';
-import { ChatBubbleOutlineOutlined, FavoriteOutlined, Send } from '@mui/icons-material';
+import { ChatBubbleOutlineOutlined, FavoriteOutlined, Send, AddRounded } from '@mui/icons-material';
 import {
   Alert,
   Avatar,
@@ -17,6 +17,7 @@ import {
   Button
 } from '@mui/material';
 import BuzzLightbox from '../components/BuzzLightbox';
+import CommunityPostDialog from '../components/CommunityPostDialog';
 import { buzzImagesAPI } from '../services/api';
 import { useSelector } from 'react-redux';
 import { selectUser } from '../store';
@@ -48,6 +49,8 @@ const Buzz = () => {
   // Auth gating state
   const [authGateActive, setAuthGateActive] = useState(false); // true once we need login to continue
   const [authGateDismissed, setAuthGateDismissed] = useState(false); // user closed sheet without login
+  // Add state for community post dialog (plus icon)
+  const [postOpen, setPostOpen] = useState(false);
 
   useEffect(() => { fetchInitial(); }, []); // initial load
 
@@ -233,8 +236,27 @@ const Buzz = () => {
   return (
     <Box sx={{ color: theme.palette.text.primary, minHeight: '100vh', pb: 6, px: '10vw' }}>
       <Container maxWidth="xl" sx={{ py: 6 }}>
-        <Box sx={{ mb: 6, textAlign: { xs: 'left', md: 'left' } }}>
-          <Typography variant="h2" component="h1" sx={{ color: '#3289C9', fontFamily: 'Metropolis', fontWeight: 800, fontSize: { xs: '36px', md: '54px' }, lineHeight: 1, letterSpacing: { xs: '-0.4px', md: '-0.64px' }, mb: 0 }}>Buzz Gallery</Typography>
+        <Box sx={{ mb: 6, display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+          <Typography variant="h2" component="h1" sx={{ color: '#222', fontFamily: 'Metropolis', fontWeight: 800, fontSize: { xs: '40px', md: '54px' }, lineHeight: 1, letterSpacing: { xs: '-0.4px', md: '-0.64px' }, mb: 3, ml: 2.2 }}>
+            Buzz
+          </Typography>
+          <IconButton
+            aria-label="add community post"
+            onClick={() => setPostOpen(true)}
+            sx={{
+              width: 50,
+              height: 50,
+              borderRadius: '50%',
+              border: '2px solid #222',
+              color: '#222',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              '&:hover': { backgroundColor: '#f5f5f5' }
+            }}
+          >
+            <AddRounded sx={{ fontSize: 30 }} />
+          </IconButton>
         </Box>
         {error && (<Alert severity="error" sx={{ mb: 4, maxWidth: 900, mx: 'auto', borderRadius: 3, fontSize: '1.05rem' }}>{error}</Alert>)}
         {loading && <LoadingSkeleton />}
@@ -284,6 +306,7 @@ const Buzz = () => {
           onLogin={() => { navigate('/login'); }}
           onSignup={() => { navigate('/signup'); }}
         />
+        <CommunityPostDialog open={postOpen} onClose={() => setPostOpen(false)} onSubmit={(payload) => console.log('post payload', payload)} />
       </Container>
     </Box>
   );
