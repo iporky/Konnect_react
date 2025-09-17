@@ -2,7 +2,7 @@ import SendIcon from '@mui/icons-material/Send';
 import { Avatar, Box, CircularProgress, Divider, IconButton, InputBase, Paper, Tooltip, Typography } from '@mui/material';
 import { useCallback, useEffect, useRef, useState } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
-import { chatCompletion } from '../services/openaiClient';
+import SearchResultTemplate from '../components/templates/SearchResultTemplate';
 
 function useQueryParam(name) {
   const { search } = useLocation();
@@ -28,14 +28,118 @@ export default function SearchResults() {
     abortRef.current = controller;
     const currentRun = ++runIdRef.current;
     setActiveRunId(currentRun);
+    
     try {
-      const result = await chatCompletion({ prompt, signal: controller.signal });
+      // Mock response instead of calling OpenAI API
+      const mockResponse = {
+        searchQuestion: "Can I extend my ARC while in Korea?",
+        answer: {
+          general_answer: "Yes, you can extend your Alien Registration Card (ARC) while in Korea. The process can be done through the Korea Immigration Service.",
+          recommendations: [
+            {
+              name: "Korea Immigration Service – ARC Extension",
+              rating: "N/A",
+              category: "Immigration Service",
+              highlight: "Official processing / Loved by expats / Best on weekdays / Pet friendly: N/A",
+              summary: "The Korea Immigration Service handles ARC extension requests. It's recommended to start the process about 2 months before your current ARC expires.",
+              english_guidance: "Yes",
+              guidance_link: "https://www.hikorea.go.kr/pt/info/ResearchAppGuideInfoEn.pt",
+              expat_popularity: "High",
+              proximity_to_expat_area: "All major immigration offices nationwide",
+              recent_visitors: "Recently used by expats / Wheelchair accessible in most locations",
+              languages: "English, Korean",
+              operating_hours: "Mon–Fri 9:00–18:00",
+              accessibility: "Wheelchair accessible entrance and elevator at main offices",
+              how_to_reach: {
+                taxi: "Taxi to nearest immigration office",
+                bus: "Local buses",
+                metro: "Depends on city",
+                train: "Accessible via KTX/local trains"
+              },
+              tips_and_advice: "Prepare all necessary documents; start the process in advance. Consult a professional in Korea for official advice.",
+              booking_info: {
+                booking_link: "https://www.hikorea.go.kr/pt/MyPageR_en.pt?localeKey=en",
+                phone: "+82 1345"
+              },
+              documents_required: {
+                passport: "Valid passport",
+                current_ARC: "Current ARC",
+                application_form: "Application form for extension",
+                photos: "Passport-size photos",
+                other: "Other documents depending on visa types/status"
+              },
+              social_media: {
+                facebook: "https://www.facebook.com/HikoreaOfficial",
+                instagram: "https://www.instagram.com/hikorea_official",
+                youtube: "https://www.youtube.com/@HikoreaOfficial",
+                tiktok: "No channel"
+              },
+              contact_info: {
+                address: "Korea Immigration Service HQ, Sejong-ro, Jongno-gu, Seoul",
+                phone: "+82 1345",
+                email: "info@hikorea.go.kr",
+                website: "https://www.hikorea.go.kr"
+              },
+              map_links: {
+                naver_map: "https://map.naver.com/v5/search/%ED%95%9C%EA%B5%AD%EC%9E%85%EA%B5%AD%EC%84%9C",
+                google_map: "https://goo.gl/maps/HikoreaImmigration"
+              },
+              gallery: {
+                images: [
+                  "https://www.hikorea.go.kr/images/immigration_office.jpg"
+                ],
+                videos: [],
+                reels: []
+              },
+              reviews: [
+                "Efficient service if all documents are prepared",
+                "Helpful English guidance available online"
+              ],
+              amenities: {
+                toilet: "Yes",
+                parking: "Limited",
+                outdoor_seating: "No",
+                indoor_seating: "Yes"
+              },
+              main_image: {
+                alt_text: "Korea Immigration Service building",
+                url: "https://www.hikorea.go.kr/images/immigration_office.jpg"
+              }
+            }
+          ],
+          followup_questions: [
+            "What documents are required for ARC extension?",
+            "What's the processing time for ARC extension?",
+            "Can I apply for ARC extension online?"
+          ],
+          sources: [
+            {
+              name: "HiKorea Official Website – ARC Extension",
+              link: "https://www.hikorea.go.kr/pt/InfoDetailR_en.pt?categoryId=2&parentId=385&catSeq=401"
+            }
+          ]
+        }
+      };
+
+      // Simulate API delay
+      await new Promise(resolve => setTimeout(resolve, 1500));
+      
       if (currentRun !== runIdRef.current) return; // stale
-      if (result.error) {
-        setMessages(ms => ms.map(m => m.id === assistantMsgId ? { ...m, loading: false, error: result.error, content: '' } : m));
-        return;
-      }
-      setMessages(ms => ms.map(m => m.id === assistantMsgId ? { ...m, loading: false, content: result.content } : m));
+      
+      setMessages(ms => ms.map(m => m.id === assistantMsgId ? { 
+        ...m, 
+        loading: false, 
+        content: JSON.stringify(mockResponse) 
+      } : m));
+      
+      // Original OpenAI API call (commented out)
+      // const result = await chatCompletion({ prompt, signal: controller.signal });
+      // if (currentRun !== runIdRef.current) return; // stale
+      // if (result.error) {
+      //   setMessages(ms => ms.map(m => m.id === assistantMsgId ? { ...m, loading: false, error: result.error, content: '' } : m));
+      //   return;
+      // }
+      // setMessages(ms => ms.map(m => m.id === assistantMsgId ? { ...m, loading: false, content: result.content } : m));
     } catch (e) {
       if (currentRun !== runIdRef.current) return;
       const msg = e?.message || 'Unknown error';
@@ -89,6 +193,22 @@ export default function SearchResults() {
     params.set('q', prompt);
     navigate(`/search?${params.toString()}`, { replace: true });
     run(prompt, aid);
+  };
+
+  const handleFollowUpClick = (question) => {
+    setInput(question);
+    // Auto-submit the follow-up question
+    const uid = crypto.randomUUID();
+    const aid = crypto.randomUUID();
+    setMessages(ms => [
+      ...ms,
+      { id: uid, role: 'user', content: question },
+      { id: aid, role: 'assistant', content: '', loading: true }
+    ]);
+    const params = new URLSearchParams();
+    params.set('q', question);
+    navigate(`/search?${params.toString()}`, { replace: true });
+    run(question, aid);
   };
 
   // Auto-scroll to bottom on new messages
@@ -151,7 +271,16 @@ export default function SearchResults() {
                         <Typography variant="body2" color="error" sx={{ whiteSpace: 'pre-wrap', wordBreak: 'break-word' }}>{m.error}</Typography>
                       )}
                       {!m.loading && !m.error && m.content && (
-                        <Typography variant="body2" sx={{ whiteSpace: 'pre-wrap', lineHeight: 1.55, wordBreak: 'break-word' }}>{m.content}</Typography>
+                        <SearchResultTemplate 
+                          searchResult={(() => {
+                            try {
+                              return JSON.parse(m.content);
+                            } catch {
+                              return m.content;
+                            }
+                          })()} 
+                          onFollowUpClick={handleFollowUpClick}
+                        />
                       )}
                       {!m.loading && !m.error && !m.content && (
                         <Typography variant="caption" color="text.secondary">No answer.</Typography>
