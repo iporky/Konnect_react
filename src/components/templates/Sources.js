@@ -1,47 +1,45 @@
 import React from 'react';
-import { Box, Link, Typography, useTheme } from '@mui/material';
-import { Source, OpenInNew } from '@mui/icons-material';
+import { Box, Typography, Button } from '@mui/material';
 
-const Sources = ({ sources }) => {
-  const theme = useTheme();
-
+const Sources = ({ sources, onSourcesClick }) => {
   if (!sources || sources.length === 0) return null;
 
   return (
-    <Box sx={{ mt: 2, p: 2, backgroundColor: '#f8f9fa', borderRadius: 2, border: `1px solid ${theme.palette.divider}` }}>
-      <Box sx={{ display: 'flex', alignItems: 'center', gap: 1, mb: 2 }}>
-        <Source sx={{ color: '#666', fontSize: 20 }} />
-        <Typography variant="subtitle2" sx={{ fontWeight: 600, color: '#666' }}>
-          Sources
-        </Typography>
-      </Box>
-      <Box sx={{ display: 'flex', flexDirection: 'column', gap: 1.5 }}>
-        {sources.map((source, index) => (
-          <Box key={index} sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
-            <Typography variant="body2" sx={{ flex: 1 }}>
-              {source.name}
-            </Typography>
-            <Link
-              href={source.link}
-              target="_blank"
-              rel="noopener noreferrer"
-              sx={{
-                display: 'flex',
-                alignItems: 'center',
-                gap: 0.5,
-                color: '#3289C9',
-                textDecoration: 'none',
-                fontSize: '0.875rem',
-                '&:hover': { textDecoration: 'underline' }
-              }}
-            >
-              Visit
-              <OpenInNew sx={{ fontSize: 16 }} />
-            </Link>
-          </Box>
-        ))}
-      </Box>
-    </Box>
+    <Button
+      variant="outlined"
+      onClick={onSourcesClick}
+      sx={{
+        display: 'flex',
+        alignItems: 'center',
+        gap: 1,
+        px: 2,
+        py: 0.8,
+        borderRadius: '50px',
+        borderColor: '#e0e0e0',
+        backgroundColor: '#fff',
+        color: '#333',
+        textTransform: 'none',
+        minWidth: 'auto',
+        height: 32,
+        '&:hover': {
+          borderColor: '#3289C9',
+          backgroundColor: '#f0f7ff'
+        }
+      }}
+    >
+      {/* Korean Flag Icon */}
+      <Box
+        sx={{
+          width: 16,
+          height: 12,
+          background: 'linear-gradient(to bottom, #CD2E3A 50%, #0047A0 50%)',
+          borderRadius: 0.5
+        }}
+      />
+      <Typography variant="body2" sx={{ fontWeight: 500, fontSize: '0.875rem' }}>
+        Answer source
+      </Typography>
+    </Button>
   );
 };
 

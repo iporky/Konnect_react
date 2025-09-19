@@ -1,7 +1,8 @@
 import SendIcon from '@mui/icons-material/Send';
-import { Avatar, Box, CircularProgress, Divider, IconButton, InputBase, Paper, Tooltip, Typography } from '@mui/material';
+import { Box, CircularProgress, Divider, IconButton, InputBase, Paper, Tooltip, Typography } from '@mui/material';
 import { useCallback, useEffect, useRef, useState } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
+import SourcesPanel from '../components/SourcesPanel';
 import SearchResultTemplate from '../components/templates/SearchResultTemplate';
 
 function useQueryParam(name) {
@@ -16,6 +17,7 @@ export default function SearchResults() {
   const [input, setInput] = useState('');
   const [messages, setMessages] = useState([]); // {id, role:'user'|'assistant', content, loading?, error?}
   const [activeRunId, setActiveRunId] = useState(null);
+  const [isSourcesPanelOpen, setIsSourcesPanelOpen] = useState(false);
   // Removed unused global error state (handled per-message)
   // Password gating removed; all searches run immediately
   const abortRef = useRef();
@@ -211,6 +213,30 @@ export default function SearchResults() {
     run(question, aid);
   };
 
+  const handleRegenerateAnswer = (query) => {
+    if (!query) return;
+    
+    // Find the most recent assistant message and regenerate it
+    const lastAssistantIndex = messages.findLastIndex(m => m.role === 'assistant');
+    if (lastAssistantIndex === -1) return;
+    
+    const assistantMsgId = messages[lastAssistantIndex].id;
+    
+    // Reset the assistant message to loading state
+    setMessages(ms => ms.map(m => 
+      m.id === assistantMsgId 
+        ? { ...m, loading: true, content: '', error: null }
+        : m
+    ));
+    
+    // Re-run the query
+    run(query, assistantMsgId);
+  };
+
+  const handleSourcesPanelToggle = (isOpen) => {
+    setIsSourcesPanelOpen(isOpen);
+  };
+
   // Auto-scroll to bottom on new messages
   const scrollRef = useRef();
   useEffect(() => {
@@ -220,72 +246,142 @@ export default function SearchResults() {
   }, [messages]);
 
   return (
-    <Box sx={{ p: { xs: 1.5, md: 4 }, display: 'flex', flexDirection: 'column', height: '100%', background: (theme) => `linear-gradient(180deg, ${theme.palette.grey[50]} 0%, #ffffff 140%)` }}>
-      {/* Header */}
-      <Box sx={{ mb: 3, maxWidth: 760, width: '100%', mx: 'auto', px: { xs: 0.5, sm: 1, md: 0 } }}>
-        <Typography
-          variant="h2"
-          component="h1"
-          gutterBottom
-          sx={{
-            color: '#3289C9',
-            fontFamily: 'Metropolis',
-            fontWeight: 700,
-            fontSize: { xs: '26px', md: '48px' },
-            lineHeight: 1.1,
-            letterSpacing: { xs: '-0.32px', md: '-0.56px' },
+    <div>
+      {/* Main Content Layout */}
+      <Box sx={{ display: 'flex', height: '98.2vh', position: 'relative', gap: 3, overflow: 'hidden' }}>
+        {/* Main Content Area */}
+        <Box 
+          sx={{ 
+            width: isSourcesPanelOpen ? '58%' : '100%',
+            display: 'flex', 
+            flexDirection: 'column', 
+            height: '100%',
+            backgroundColor: '#fff',
+            transition: 'width 0.3s ease',
+            overflow: 'hidden',
+            borderRadius: 2,
           }}
         >
-          Search
-        </Typography>
-      </Box>
+        {/* Sticky Header */}
+        <Box sx={{ 
+          px: { xs: 1.5, sm: 2, md: 4 }, 
+          pt: { xs: 1.5, md: 4 }, 
+          pb: 2,
+          flexShrink: 0,
+          position: 'sticky',
+          top: 0,
+          zIndex: 10,
+          background: '#fff',
+          borderBottom: '1px solid #ececec'
+        }}>
+          <Typography
+            variant="h2"
+            component="h1"
+            sx={{
+              color: '#3289C9',
+              fontFamily: 'Metropolis',
+              fontWeight: 700,
+              fontSize: { xs: '26px', md: '48px' },
+              lineHeight: 1.1,
+              letterSpacing: { xs: '-0.32px', md: '-0.56px' },
+              userSelect: 'none'
+            }}
+          >
+            Search
+          </Typography>
+        </Box>
 
       {/* Chat Area */}
-      <Box ref={scrollRef} sx={{ flex: 1, overflowY: 'auto', pb: 2, scrollbarWidth: 'thin', '&::-webkit-scrollbar': { width: 8 }, '&::-webkit-scrollbar-thumb': { backgroundColor: 'rgba(0,0,0,0.18)', borderRadius: 4 } }}>
-        <Box sx={{ maxWidth: 760, width: '100%', mx: 'auto', px: { xs: 0.5, sm: 1, md: 0 }, pt: 0.5 }}>
+      <Box 
+        ref={scrollRef} 
+        sx={{ 
+          flex: 1, 
+            /* independent scroll area beneath sticky header */
+          overflowY: 'auto', 
+          px: { xs: 1.5, sm: 2, md: 4 },
+          pb: 2, 
+          scrollBehavior: 'smooth',
+          WebkitOverflowScrolling: 'touch',
+          scrollbarWidth: 'thin', 
+          '&::-webkit-scrollbar': { width: 8 }, 
+          '&::-webkit-scrollbar-thumb': { backgroundColor: 'rgba(0,0,0,0.18)', borderRadius: 4 } 
+        }}
+      >
+        <Box sx={{ maxWidth: 760, width: '100%', mx: 'auto', pt: 0.5 }}>
           {messages.length === 0 && (
             <Typography variant="body2" color="text.secondary" sx={{ mt: 2, textAlign: 'center' }}>Ask a question to get started.</Typography>
           )}
           {messages.map(m => (
             <Box key={m.id} sx={{ mb: 3, display: 'flex', flexDirection: 'column' }}>
               {m.role === 'user' && (
-                <Box sx={{ display: 'flex', gap: 1.25, alignItems: 'flex-start' }}>
-                  <Avatar sx={{ width: 34, height: 34, fontSize: 13, bgcolor: 'primary.main', mt: 0.5 }}>You</Avatar>
-                  <Paper elevation={2} sx={{ maxWidth: '100%', px: 2.25, py: 1.25, borderRadius: 4, background: 'linear-gradient(135deg,#f3f7fc,#e6eef8)', border: '1px solid', borderColor: 'divider' }}>
-                    <Typography variant="body2" sx={{ fontWeight: 600, whiteSpace: 'pre-wrap', wordBreak: 'break-word' }}>{m.content}</Typography>
-                  </Paper>
+                <Box sx={{ display: 'flex', justifyContent: 'flex-end', mb: 1 }}>
+                  <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+                    <Typography variant="caption" sx={{ color: 'text.secondary' }}>
+                      {new Date().toLocaleTimeString('en-US', { 
+                        hour: '2-digit',
+                        minute: '2-digit',
+                        hour12: false 
+                      })}
+                    </Typography>
+                    <Paper elevation={1} sx={{ px: 2.5, py: 1.5, borderRadius: 3, backgroundColor: '#f0f0f0', maxWidth: '70%' }}>
+                      <Typography variant="body2" sx={{ whiteSpace: 'pre-wrap', wordBreak: 'break-word', color: '#333' }}>{m.content}</Typography>
+                    </Paper>
+                  </Box>
                 </Box>
               )}
               {m.role === 'assistant' && (
-                <Box sx={{ display: 'flex', gap: 1.25, alignItems: 'flex-start', mt: 0.5 }}>
-                  <Avatar sx={{ width: 34, height: 34, fontSize: 13, bgcolor: 'success.main', mt: 0.5 }}>AI</Avatar>
-                  <Box sx={{ flex: 1, minWidth: 0 }}>
-                    <Paper variant="outlined" sx={{ px: 2, py: 1.5, borderRadius: 4, backgroundColor: '#fff' }}>
+                <Box sx={{ mt: 0.5 }}>
+                  {/* Header with logo above */}
+                  <Box sx={{ display: 'flex', alignItems: 'center', gap: 1.25, mb: 1 }}>
+                    <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+                      <Box
+                        component="img"
+                        src={`${process.env.PUBLIC_URL}/images/Konnect_k_logo.png`}
+                        alt="Konnect"
+                        sx={{
+                          width: 36,
+                          height: 36,
+                          borderRadius: '50%',
+                          objectFit: 'contain',
+                          boxShadow: '0 0 0 1px rgba(0,0,0,0.06)',
+                          marginLeft: -6
+                        }}
+                      />
+                      <Typography variant="subtitle2" sx={{ fontWeight: 600, color: '#444', letterSpacing: 0 }}>
+                        Konnect
+                      </Typography>
                       {m.loading && (
-                        <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
-                          <CircularProgress size={18} />
-                          <Typography variant="caption">Thinking...</Typography>
-                        </Box>
+                        <CircularProgress size={16} sx={{ ml: 0.5 }} />
                       )}
-                      {m.error && (
-                        <Typography variant="body2" color="error" sx={{ whiteSpace: 'pre-wrap', wordBreak: 'break-word' }}>{m.error}</Typography>
-                      )}
-                      {!m.loading && !m.error && m.content && (
-                        <SearchResultTemplate 
-                          searchResult={(() => {
-                            try {
-                              return JSON.parse(m.content);
-                            } catch {
-                              return m.content;
-                            }
-                          })()} 
-                          onFollowUpClick={handleFollowUpClick}
-                        />
-                      )}
-                      {!m.loading && !m.error && !m.content && (
-                        <Typography variant="caption" color="text.secondary">No answer.</Typography>
-                      )}
-                    </Paper>
+                    </Box>
+                  </Box>
+                  <Box sx={{ pl: { xs: 0, sm: 0 }, minWidth: 0 }}>
+                    {m.loading && (
+                      <Box sx={{ display: 'flex', alignItems: 'center', gap: 1, py: 1.5 }}>
+                        <Typography variant="caption">Thinking...</Typography>
+                      </Box>
+                    )}
+                    {m.error && (
+                      <Typography variant="body2" color="error" sx={{ whiteSpace: 'pre-wrap', wordBreak: 'break-word', py: 1.5 }}>{m.error}</Typography>
+                    )}
+                    {!m.loading && !m.error && m.content && (
+                      <SearchResultTemplate 
+                        searchResult={(() => {
+                          try {
+                            return JSON.parse(m.content);
+                          } catch {
+                            return m.content;
+                          }
+                        })()} 
+                        onFollowUpClick={handleFollowUpClick}
+                        onRegenerateAnswer={handleRegenerateAnswer}
+                        currentQuery={messages.find(msg => msg.role === 'user' && msg.id === messages[messages.findIndex(msg => msg.id === m.id) - 1]?.id)?.content}
+                        onSourcesPanelToggle={handleSourcesPanelToggle}
+                      />
+                    )}
+                    {!m.loading && !m.error && !m.content && (
+                      <Typography variant="caption" color="text.secondary" sx={{ py: 1.5 }}>No answer.</Typography>
+                    )}
                   </Box>
                 </Box>
               )}
@@ -296,42 +392,66 @@ export default function SearchResults() {
       </Box>
 
       {/* Input at bottom */}
-      <Paper
-        component="form"
-        onSubmit={submit}
-        elevation={6}
-        sx={{
-          p: 1.25,
+      <Box sx={{ px: { xs: 1.5, sm: 2, md: 4 }, pb: { xs: 1.5, md: 4 }, flexShrink: 0 }}>
+        <Paper
+          component="form"
+          onSubmit={submit}
+          elevation={6}
+          sx={{
+            p: 1.25,
             mt: 1,
-          display: 'flex',
-          alignItems: 'center',
-          gap: 1,
-          borderRadius: 999,
-          maxWidth: 760,
-          width: '100%',
-          mx: 'auto',
-          boxShadow: '0 4px 18px rgba(0,0,0,0.08), 0 1px 3px rgba(0,0,0,0.12)',
-          border: '1px solid',
-          borderColor: 'divider',
-          backdropFilter: 'blur(4px)',
-          background: 'rgba(255,255,255,0.9)'
-        }}
-      >
-        <InputBase
-          value={input}
-          onChange={(e) => setInput(e.target.value)}
-          placeholder="Ask anything about Korea"
-          sx={{ flex: 1, fontSize: 14, ml: 0.5 }}
-          disabled={!!activeRunId}
+            display: 'flex',
+            alignItems: 'center',
+            gap: 1,
+            borderRadius: 999,
+            maxWidth: 760,
+            width: '100%',
+            mx: 'auto',
+            boxShadow: '0 4px 18px rgba(0,0,0,0.08), 0 1px 3px rgba(0,0,0,0.12)',
+            border: '1px solid',
+            borderColor: 'divider',
+            backdropFilter: 'blur(4px)',
+            background: 'rgba(255,255,255,0.9)'
+          }}
+        >
+          <InputBase
+            value={input}
+            onChange={(e) => setInput(e.target.value)}
+            placeholder="Ask anything about Korea"
+            sx={{ flex: 1, fontSize: 14, ml: 0.5 }}
+            disabled={!!activeRunId}
+          />
+          <Tooltip title={activeRunId ? 'Waiting for answer' : 'Send'}>
+            <span>
+              <IconButton type="submit" color="primary" disabled={!!activeRunId || !input.trim()}>
+                <SendIcon fontSize="small" />
+              </IconButton>
+            </span>
+          </Tooltip>
+        </Paper>
+      </Box>
+      </Box>
+      
+      {/* Sources Panel - render inline when open */}
+      {isSourcesPanelOpen && (
+        <SourcesPanel
+          open={isSourcesPanelOpen}
+          onClose={() => setIsSourcesPanelOpen(false)}
+          sources={messages
+            .filter(m => m.role === 'assistant' && m.content)
+            .map(m => {
+              try {
+                const parsed = JSON.parse(m.content);
+                return parsed.answer?.sources;
+              } catch {
+                return null;
+              }
+            })
+            .find(sources => sources && sources.length > 0)
+          }
         />
-        <Tooltip title={activeRunId ? 'Waiting for answer' : 'Send'}>
-          <span>
-            <IconButton type="submit" color="primary" disabled={!!activeRunId || !input.trim()}>
-              <SendIcon fontSize="small" />
-            </IconButton>
-          </span>
-        </Tooltip>
-      </Paper>
-    </Box>
+      )}
+      </Box>
+    </div>
   );
 }
