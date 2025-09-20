@@ -150,7 +150,7 @@ const FeedbackPopup = ({ open, onClose }) => {
           <Box sx={{ display: 'flex', flexDirection: 'column', gap: 1 }}>
             <FormControlLabel
               control={<Checkbox checked={includeScreenshot} onChange={(e) => { setIncludeScreenshot(e.target.checked); if (!e.target.checked) setFile(null); }} />}
-              label="Include a screenshot"
+              label="Add a file"
             />
             {includeScreenshot && (
               <Button
