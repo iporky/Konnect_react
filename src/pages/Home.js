@@ -1,5 +1,7 @@
 // Add outlined icons for search bar toggles
 import AttachFileOutlined from '@mui/icons-material/AttachFileOutlined';
+import AddIcon from '@mui/icons-material/Add';
+import MenuBookIcon from '@mui/icons-material/MenuBook';
 import FeedbackOutlined from '@mui/icons-material/FeedbackOutlined';
 import GroupOutlined from '@mui/icons-material/GroupOutlined';
 import LanguageOutlined from '@mui/icons-material/LanguageOutlined';
@@ -57,6 +59,8 @@ const Home = () => {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const theme = useTheme();
   const searchInputRef = useRef(null);
+  const fileInputRef = useRef(null);
+  const [uploadedFiles, setUploadedFiles] = useState([]);
 
   // Right-side icons in the search bar: toggle to highlight active; hover also highlights
   const [searchToggles, setSearchToggles] = useState({
@@ -65,6 +69,7 @@ const Home = () => {
     globe: false,
     attach: false,
     mic: false,
+    assist: false,
   });
   // Mobile: toggle vertical actions menu from the three dots
   const [showMobileSearchActions, setShowMobileSearchActions] = useState(false);
@@ -147,6 +152,28 @@ const Home = () => {
       return;
     }
     console.log('Category clicked (no url):', category);
+  };
+
+  const handleFileUpload = () => {
+    fileInputRef.current?.click();
+  };
+
+  const handleFileChange = (event) => {
+    const files = Array.from(event.target.files || []);
+    const newFiles = files.map(file => ({
+      id: crypto.randomUUID(),
+      name: file.name,
+      size: file.size,
+      type: file.type,
+      file: file
+    }));
+    setUploadedFiles(prev => [...prev, ...newFiles]);
+    // Reset the input so the same file can be uploaded again if needed
+    event.target.value = '';
+  };
+
+  const removeFile = (fileId) => {
+    setUploadedFiles(prev => prev.filter(f => f.id !== fileId));
   };
 
   return (
@@ -323,13 +350,14 @@ const Home = () => {
                 elevation={6}
                 sx={{
                   display: 'flex',
-                  alignItems: 'center',
+                  flexDirection: 'column',
                   width: { xs: '90%', md: '660px' },
                   maxWidth: { xs: 600, md: 660 },
-                  height: 70,
+                  minHeight: uploadedFiles.length > 0 ? 'auto' : 70,
                   border: `2px solid ${theme.palette.divider}`,
-                  borderRadius: '50px',
-                  px: 3,
+                  borderRadius: uploadedFiles.length > 0 ? '24px' : '50px',
+                  p: uploadedFiles.length > 0 ? 2 : 0,
+                  px: uploadedFiles.length > 0 ? 2 : 3,
                   backgroundColor: '#fff',
                   boxShadow: '0 0 14.5px 0 rgba(0, 0, 0, 0.25)',
                   position: { xs: 'fixed', md: 'static' },
@@ -343,6 +371,116 @@ const Home = () => {
                   }
                 }}
               >
+                {/* Hidden file input */}
+                <input
+                  ref={fileInputRef}
+                  type="file"
+                  multiple
+                  style={{ display: 'none' }}
+                  onChange={handleFileChange}
+                  accept=".pdf,.doc,.docx,.txt,.png,.jpg,.jpeg"
+                />
+                
+                {/* Uploaded files section */}
+                {uploadedFiles.length > 0 && (
+                  <Box sx={{ mb: 2 }}>
+                    {uploadedFiles.map((file) => (
+                      <Box
+                        key={file.id}
+                        sx={{
+                          display: 'flex',
+                          alignItems: 'center',
+                          gap: 1,
+                          mb: 1,
+                          p: 1,
+                          backgroundColor: '#f7ededff',
+                          borderRadius: 3,
+                          fontSize: '14px'
+                        }}
+                      >
+                        <Box
+                          sx={{
+                            width: 20,
+                            height: 20,
+                            backgroundColor: '#CD2028',
+                            borderRadius: '4px',
+                            display: 'flex',
+                            alignItems: 'center',
+                            justifyContent: 'center',
+                            flexShrink: 0
+                          }}
+                        >
+                          <Typography variant="caption" sx={{ color: 'white', fontWeight: 'bold', fontSize: '10px' }}>
+                            {file.type.includes('pdf') ? 'PDF' : file.name.split('.').pop()?.toUpperCase()}
+                          </Typography>
+                        </Box>
+                        <Typography 
+                          sx={{ 
+                            maxWidth: '300px',
+                            overflow: 'hidden',
+                            textOverflow: 'ellipsis',
+                            whiteSpace: 'nowrap',
+                            fontSize: '14px', 
+                            color: '#333' 
+                          }}
+                          title={file.name}
+                        >
+                          {file.name}
+                        </Typography>
+                        <IconButton
+                          size="small"
+                          onClick={() => removeFile(file.id)}
+                          sx={{ color: '#666', p: 0.5 }}
+                        >
+                          ×
+                        </IconButton>
+                      </Box>
+                    ))}
+                  </Box>
+                )}
+
+                {/* Main input and controls section */}
+                <Box sx={{ 
+                  display: 'flex', 
+                  alignItems: 'center',
+                  minHeight: uploadedFiles.length > 0 ? 50 : 70,
+                  py: uploadedFiles.length > 0 ? 1 : 0
+                }}>
+                  {/* Left-side icons: Add + Assist mode */}
+                  <Box sx={{ display: 'flex', alignItems: 'center', mr: 1 }}>
+                    <Tooltip title="Add files & more" placement="top" arrow>
+                      <IconButton
+                        size="small"
+                        aria-label="add-files"
+                        onClick={handleFileUpload}
+                        sx={{ color: '#CD2028', '&:hover': { backgroundColor: 'transparent' } }}
+                      >
+                        <AddIcon fontSize="small" />
+                      </IconButton>
+                    </Tooltip>
+                    <Tooltip
+                      arrow
+                      placement="top"
+                      title={
+                        <Box sx={{ maxWidth: 230 }}>
+                          <Typography variant="subtitle2" sx={{ fontWeight: 700 }}>Assist mode</Typography>
+                          <Typography variant="caption" sx={{ display: 'block', mt: 0.25, lineHeight: 1.25 }}>
+                            Attach any application form and we will help you fill it out
+                          </Typography>
+                        </Box>
+                      }
+                    >
+                      <IconButton
+                        size="small"
+                        aria-label="assist-mode"
+                        onClick={() => toggleIcon('assist')}
+                        sx={{ ml: 0.5, color: searchToggles.assist ? '#6F95BD' : 'text.secondary', '&:hover': { backgroundColor: 'transparent' } }}
+                      >
+                        <MenuBookIcon sx={{ width: 20, height: 20 }} />
+                      </IconButton>
+                    </Tooltip>
+                  </Box>
+                  
                 {/* Removed left plus icon previously triggering CommunityPostDialog */}
                 {/* Input */}
                 <TextField
@@ -474,6 +612,7 @@ const Home = () => {
                       <MoreVert />
                     </IconButton>
                   </Tooltip>
+                </Box>
                 </Box>
               </Paper>
             </Box>

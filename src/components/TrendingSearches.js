@@ -75,11 +75,7 @@ const TrendingSearches = () => {
               justifyContent: 'space-between',
               py: 0.6,
               cursor: 'pointer',
-              // Minimal hover to keep colors but avoid layout shift
-              '&:hover': {
-                backgroundColor: 'action.hover',
-                borderRadius: 1,
-              },
+              borderRadius: 1
             }}
           >
             {/* Rank and Text */}
@@ -91,7 +87,8 @@ const TrendingSearches = () => {
                   color: item.rank <= 3 ? '#ff4757' : 'text.secondary',
                   mr: 1,
                   minWidth: '16px',
-                  fontSize: '12px',
+                  fontSize: '15px',
+                  
                 }}
               >
                 {item.rank}
@@ -100,9 +97,13 @@ const TrendingSearches = () => {
                 variant="body2"
                 sx={{
                   color: 'text.primary',
-                  fontSize: '12px',
+                  fontSize: '15px',
                   lineHeight: 1.3,
                   flex: 1,
+                  transition: 'all 0.2s ease-in-out',
+                  '&:hover': {
+                    color: '#b6a5a5ff',
+                  },
                 }}
               >
                 {item.text}
