@@ -507,7 +507,7 @@ export default function SearchResults() {
                         }}
                       />
                       <Typography variant="subtitle2" sx={{ fontWeight: 600, color: '#444', letterSpacing: 0 }}>
-                        Konnect
+                        Konnect AI
                       </Typography>
                       {m.loading && (
                         <CircularProgress size={16} sx={{ ml: 0.5 }} />
