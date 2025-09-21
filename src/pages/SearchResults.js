@@ -4,6 +4,7 @@ import { useCallback, useEffect, useRef, useState } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import SourcesPanel from '../components/SourcesPanel';
 import SearchResultTemplate from '../components/templates/SearchResultTemplate';
+import StreamingSearchTemplate from '../components/templates/StreamingSearchTemplate';
 
 function useQueryParam(name) {
   const { search } = useLocation();
@@ -15,7 +16,7 @@ export default function SearchResults() {
   const q = useQueryParam('q');
   const mode = 'standard';
   const [input, setInput] = useState('');
-  const [messages, setMessages] = useState([]); // {id, role:'user'|'assistant', content, loading?, error?}
+  const [messages, setMessages] = useState([]); // {id, role:'user'|'assistant', content, loading?, error?, chunks?}
   const [activeRunId, setActiveRunId] = useState(null);
   const [isSourcesPanelOpen, setIsSourcesPanelOpen] = useState(false);
   // Removed unused global error state (handled per-message)
@@ -32,122 +33,280 @@ export default function SearchResults() {
     setActiveRunId(currentRun);
     
     try {
-      // Mock response instead of calling OpenAI API
-      const mockResponse = {
-        searchQuestion: "Can I extend my ARC while in Korea?",
+      // Call the streaming API
+      const response = await fetch('https://ec2-43-202-144-82.ap-northeast-2.compute.amazonaws.com/api/v1/konnect/search', {
+        method: 'POST',
+        headers: {
+          'accept': 'application/json',
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          searchQuestion: prompt
+        }),
+        signal: controller.signal
+      });
+
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
+
+      // Check if response is streaming
+      const reader = response.body?.getReader();
+      if (!reader) {
+        throw new Error('Response body is not readable');
+      }
+
+      const decoder = new TextDecoder();
+      let buffer = '';
+      let chunks = new Map(); // Store chunks by chunk_id
+      let isComplete = false;
+      
+      // Structure to build the response
+      let responseStructure = {
+        searchQuestion: prompt,
         answer: {
-          general_answer: "Yes, you can extend your Alien Registration Card (ARC) while in Korea. The process can be done through the Korea Immigration Service.",
-          recommendations: [
-            {
-              name: "Korea Immigration Service – ARC Extension",
-              rating: "N/A",
-              category: "Immigration Service",
-              highlight: "Official processing / Loved by expats / Best on weekdays / Pet friendly: N/A",
-              summary: "The Korea Immigration Service handles ARC extension requests. It's recommended to start the process about 2 months before your current ARC expires.",
-              english_guidance: "Yes",
-              guidance_link: "https://www.hikorea.go.kr/pt/info/ResearchAppGuideInfoEn.pt",
-              expat_popularity: "High",
-              proximity_to_expat_area: "All major immigration offices nationwide",
-              recent_visitors: "Recently used by expats / Wheelchair accessible in most locations",
-              languages: "English, Korean",
-              operating_hours: "Mon–Fri 9:00–18:00",
-              accessibility: "Wheelchair accessible entrance and elevator at main offices",
-              how_to_reach: {
-                taxi: "Taxi to nearest immigration office",
-                bus: "Local buses",
-                metro: "Depends on city",
-                train: "Accessible via KTX/local trains"
-              },
-              tips_and_advice: "Prepare all necessary documents; start the process in advance. Consult a professional in Korea for official advice.",
-              booking_info: {
-                booking_link: "https://www.hikorea.go.kr/pt/MyPageR_en.pt?localeKey=en",
-                phone: "+82 1345"
-              },
-              documents_required: {
-                passport: "Valid passport",
-                current_ARC: "Current ARC",
-                application_form: "Application form for extension",
-                photos: "Passport-size photos",
-                other: "Other documents depending on visa types/status"
-              },
-              social_media: {
-                facebook: "https://www.facebook.com/HikoreaOfficial",
-                instagram: "https://www.instagram.com/hikorea_official",
-                youtube: "https://www.youtube.com/@HikoreaOfficial",
-                tiktok: "No channel"
-              },
-              contact_info: {
-                address: "Korea Immigration Service HQ, Sejong-ro, Jongno-gu, Seoul",
-                phone: "+82 1345",
-                email: "info@hikorea.go.kr",
-                website: "https://www.hikorea.go.kr"
-              },
-              map_links: {
-                naver_map: "https://map.naver.com/v5/search/%ED%95%9C%EA%B5%AD%EC%9E%85%EA%B5%AD%EC%84%9C",
-                google_map: "https://goo.gl/maps/HikoreaImmigration"
-              },
-              gallery: {
-                images: [
-                  "https://www.hikorea.go.kr/images/immigration_office.jpg"
-                ],
-                videos: [],
-                reels: []
-              },
-              reviews: [
-                "Efficient service if all documents are prepared",
-                "Helpful English guidance available online"
-              ],
-              amenities: {
-                toilet: "Yes",
-                parking: "Limited",
-                outdoor_seating: "No",
-                indoor_seating: "Yes"
-              },
-              main_image: {
-                alt_text: "Korea Immigration Service building",
-                url: "https://www.hikorea.go.kr/images/immigration_office.jpg"
-              }
-            }
-          ],
-          followup_questions: [
-            "What documents are required for ARC extension?",
-            "What's the processing time for ARC extension?",
-            "Can I apply for ARC extension online?"
-          ],
-          sources: [
-            {
-              name: "HiKorea Official Website – ARC Extension",
-              link: "https://www.hikorea.go.kr/pt/InfoDetailR_en.pt?categoryId=2&parentId=385&catSeq=401"
-            }
-          ]
+          general_answer: '',
+          recommendations: [],
+          followup_questions: [],
+          sources: []
         }
       };
+      
+      // Store chunks for progressive rendering
+      let currentChunks = {};
 
-      // Simulate API delay
-      await new Promise(resolve => setTimeout(resolve, 1500));
+      // Read the stream
+      while (true) {
+        const { done, value } = await reader.read();
+        
+        if (done) break;
+        if (currentRun !== runIdRef.current) return; // stale request
+        
+        // Decode the chunk
+        const chunk = decoder.decode(value, { stream: true });
+        buffer += chunk;
+        
+        // Since API sends complete JSON objects, try to parse each complete object
+        // Split on newlines or look for complete JSON objects
+        const jsonStrings = [];
+        let startIndex = 0;
+        
+        // Look for complete JSON objects in the buffer
+        while (startIndex < buffer.length) {
+          let braceCount = 0;
+          let inString = false;
+          let escapeNext = false;
+          let jsonStart = -1;
+          
+          for (let i = startIndex; i < buffer.length; i++) {
+            const char = buffer[i];
+            
+            if (escapeNext) {
+              escapeNext = false;
+              continue;
+            }
+            
+            if (char === '\\') {
+              escapeNext = true;
+              continue;
+            }
+            
+            if (char === '"') {
+              inString = !inString;
+              continue;
+            }
+            
+            if (!inString) {
+              if (char === '{') {
+                if (braceCount === 0) {
+                  jsonStart = i;
+                }
+                braceCount++;
+              } else if (char === '}') {
+                braceCount--;
+                if (braceCount === 0 && jsonStart !== -1) {
+                  // Found complete JSON object
+                  const jsonStr = buffer.substring(jsonStart, i + 1);
+                  jsonStrings.push(jsonStr);
+                  startIndex = i + 1;
+                  break;
+                }
+              }
+            }
+          }
+          
+          // If we didn't find a complete JSON object, break and wait for more data
+          if (braceCount > 0 || jsonStart === -1) {
+            // Keep the remaining incomplete data in buffer
+            buffer = buffer.substring(startIndex);
+            break;
+          }
+        }
+        
+        console.log('Found complete JSON objects:', jsonStrings.length);
+        
+        for (const jsonStr of jsonStrings) {
+          const trimmedJson = jsonStr.trim();
+          if (!trimmedJson) continue;
+          
+          try {
+            let jsonData;
+            
+            // Check if it's Server-Sent Events format
+            if (trimmedJson.startsWith('data: ')) {
+              const jsonStr = trimmedJson.substring(6);
+              if (jsonStr === '[DONE]') break;
+              jsonData = JSON.parse(jsonStr);
+            } else {
+              // Direct JSON streaming
+              jsonData = JSON.parse(trimmedJson);
+            }
+            
+            // Handle chunked streaming response format
+            if (jsonData.request_id && jsonData.chunk_id !== undefined) {
+              // Store this chunk
+              chunks.set(jsonData.chunk_id, jsonData);
+              
+              // Process the chunk based on ui_element type
+              const { ui_element, content } = jsonData;
+              
+              console.log('Processing chunk:', { chunk_id: jsonData.chunk_id, ui_element, content });
+              
+              // Store chunk for progressive rendering
+              if (ui_element === 'general_answer') {
+                currentChunks.general_answer = content;
+                responseStructure.answer.general_answer = content;
+              } else if (ui_element && ui_element.startsWith('recommendation_')) {
+                currentChunks[ui_element] = content;
+                const index = parseInt(ui_element.split('_')[1]);
+                responseStructure.answer.recommendations[index] = content;
+              } else if (ui_element === 'followup_questions') {
+                currentChunks.followup_questions = Array.isArray(content) ? content : [content];
+                responseStructure.answer.followup_questions = Array.isArray(content) ? content : [content];
+              } else if (ui_element === 'sources') {
+                currentChunks.sources = Array.isArray(content) ? content : [content];
+                responseStructure.answer.sources = Array.isArray(content) ? content : [content];
+              } else if (ui_element === 'is_last' && content === 'true') {
+                isComplete = true;
+              }
+              
+              console.log('Current chunks:', currentChunks);
+              console.log('Is complete:', isComplete);
+              
+              // Update UI immediately with current chunks for progressive rendering
+              const currentIsComplete = isComplete;
+              setMessages(ms => ms.map(m => m.id === assistantMsgId ? { 
+                ...m, 
+                loading: !currentIsComplete,
+                chunks: { ...currentChunks },
+                content: JSON.stringify(responseStructure)
+              } : m));
+              
+              // If we received the final chunk, we're done
+              if (isComplete) {
+                break;
+              }
+            } else {
+              // Handle other response formats (fallback)
+              setMessages(ms => ms.map(m => m.id === assistantMsgId ? { 
+                ...m, 
+                loading: false, 
+                content: typeof jsonData === 'string' ? jsonData : JSON.stringify(jsonData)
+              } : m));
+              break;
+            }
+            
+          } catch (parseError) {
+            console.warn('Failed to parse JSON chunk:', trimmedJson, parseError);
+          }
+        }
+        
+        // If we're complete, break out of the main loop
+        if (isComplete) {
+          break;
+        }
+        
+        // Optional: Add a small delay to prevent UI blocking
+        await new Promise(resolve => setTimeout(resolve, 10));
+      }
+      
+      // Handle any remaining buffer content
+      if (buffer.trim()) {
+        try {
+          const finalData = JSON.parse(buffer.trim());
+          if (finalData.request_id && finalData.chunk_id !== undefined) {
+            // Handle final chunk
+            chunks.set(finalData.chunk_id, finalData);
+            
+            const { ui_element, content } = finalData;
+            
+            if (ui_element === 'general_answer') {
+              currentChunks.general_answer = content;
+              responseStructure.answer.general_answer = content;
+            } else if (ui_element && ui_element.startsWith('recommendation_')) {
+              currentChunks[ui_element] = content;
+              const index = parseInt(ui_element.split('_')[1]);
+              responseStructure.answer.recommendations[index] = content;
+            } else if (ui_element === 'followup_questions') {
+              currentChunks.followup_questions = Array.isArray(content) ? content : [content];
+              responseStructure.answer.followup_questions = Array.isArray(content) ? content : [content];
+            } else if (ui_element === 'sources') {
+              currentChunks.sources = Array.isArray(content) ? content : [content];
+              responseStructure.answer.sources = Array.isArray(content) ? content : [content];
+            } else if (ui_element === 'is_last' && content === 'true') {
+              isComplete = true;
+            }
+            
+            setMessages(ms => ms.map(m => m.id === assistantMsgId ? { 
+              ...m, 
+              loading: false, 
+              chunks: { ...currentChunks },
+              content: JSON.stringify(responseStructure)
+            } : m));
+          } else {
+            // Handle as regular response
+            setMessages(ms => ms.map(m => m.id === assistantMsgId ? { 
+              ...m, 
+              loading: false, 
+              content: typeof finalData === 'string' ? finalData : JSON.stringify(finalData)
+            } : m));
+          }
+        } catch (parseError) {
+          console.warn('Failed to parse final buffer:', buffer, parseError);
+        }
+      }
       
       if (currentRun !== runIdRef.current) return; // stale
       
+      // If we haven't set a final response yet, finalize with what we have
+      if (!isComplete) {
+        console.log('Stream ended without is_last marker, finalizing response');
+        setMessages(ms => ms.map(m => m.id === assistantMsgId ? { 
+          ...m, 
+          loading: false, 
+          content: JSON.stringify(responseStructure)
+        } : m));
+      }
+      
+    } catch (e) {
+      if (currentRun !== runIdRef.current) return;
+      console.error('Streaming API error:', e);
+      const msg = e?.message || 'Unknown error occurred';
       setMessages(ms => ms.map(m => m.id === assistantMsgId ? { 
         ...m, 
         loading: false, 
-        content: JSON.stringify(mockResponse) 
+        error: msg 
       } : m));
-      
-      // Original OpenAI API call (commented out)
-      // const result = await chatCompletion({ prompt, signal: controller.signal });
-      // if (currentRun !== runIdRef.current) return; // stale
-      // if (result.error) {
-      //   setMessages(ms => ms.map(m => m.id === assistantMsgId ? { ...m, loading: false, error: result.error, content: '' } : m));
-      //   return;
-      // }
-      // setMessages(ms => ms.map(m => m.id === assistantMsgId ? { ...m, loading: false, content: result.content } : m));
-    } catch (e) {
-      if (currentRun !== runIdRef.current) return;
-      const msg = e?.message || 'Unknown error';
-      setMessages(ms => ms.map(m => m.id === assistantMsgId ? { ...m, loading: false, error: msg } : m));
     } finally {
-      if (currentRun === runIdRef.current) setActiveRunId(null);
+      console.log('Stream processing completed, cleaning up');
+      if (currentRun === runIdRef.current) {
+        setActiveRunId(null);
+        // Ensure loading is false
+        setMessages(ms => ms.map(m => m.id === assistantMsgId && m.loading ? { 
+          ...m, 
+          loading: false
+        } : m));
+      }
     }
   }, []);
 
@@ -356,7 +515,7 @@ export default function SearchResults() {
                     </Box>
                   </Box>
                   <Box sx={{ pl: { xs: 0, sm: 0 }, minWidth: 0 }}>
-                    {m.loading && (
+                    {m.loading && !m.chunks && (
                       <Box sx={{ display: 'flex', alignItems: 'center', gap: 1, py: 1.5 }}>
                         <Typography variant="caption">Thinking...</Typography>
                       </Box>
@@ -364,20 +523,35 @@ export default function SearchResults() {
                     {m.error && (
                       <Typography variant="body2" color="error" sx={{ whiteSpace: 'pre-wrap', wordBreak: 'break-word', py: 1.5 }}>{m.error}</Typography>
                     )}
-                    {!m.loading && !m.error && m.content && (
-                      <SearchResultTemplate 
-                        searchResult={(() => {
-                          try {
-                            return JSON.parse(m.content);
-                          } catch {
-                            return m.content;
-                          }
-                        })()} 
-                        onFollowUpClick={handleFollowUpClick}
-                        onRegenerateAnswer={handleRegenerateAnswer}
-                        currentQuery={messages.find(msg => msg.role === 'user' && msg.id === messages[messages.findIndex(msg => msg.id === m.id) - 1]?.id)?.content}
-                        onSourcesPanelToggle={handleSourcesPanelToggle}
-                      />
+                    {(m.content || m.chunks) && (
+                      <>
+                        {/* Use streaming template if chunks are available */}
+                        {m.chunks ? (
+                          <StreamingSearchTemplate 
+                            chunks={m.chunks}
+                            isLoading={m.loading}
+                            onFollowUpClick={handleFollowUpClick}
+                            onRegenerateAnswer={handleRegenerateAnswer}
+                            currentQuery={messages.find(msg => msg.role === 'user' && msg.id === messages[messages.findIndex(msg => msg.id === m.id) - 1]?.id)?.content}
+                            onSourcesPanelToggle={handleSourcesPanelToggle}
+                          />
+                        ) : (
+                          /* Fallback to original template for non-streaming responses */
+                          <SearchResultTemplate 
+                            searchResult={(() => {
+                              try {
+                                return JSON.parse(m.content);
+                              } catch {
+                                return m.content;
+                              }
+                            })()} 
+                            onFollowUpClick={handleFollowUpClick}
+                            onRegenerateAnswer={handleRegenerateAnswer}
+                            currentQuery={messages.find(msg => msg.role === 'user' && msg.id === messages[messages.findIndex(msg => msg.id === m.id) - 1]?.id)?.content}
+                            onSourcesPanelToggle={handleSourcesPanelToggle}
+                          />
+                        )}
+                      </>
                     )}
                     {!m.loading && !m.error && !m.content && (
                       <Typography variant="caption" color="text.secondary" sx={{ py: 1.5 }}>No answer.</Typography>
