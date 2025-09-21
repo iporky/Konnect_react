@@ -1,5 +1,5 @@
 import SendIcon from '@mui/icons-material/Send';
-import { Box, CircularProgress, Divider, IconButton, InputBase, Paper, Tooltip, Typography } from '@mui/material';
+import { Box, Divider, IconButton, InputBase, Paper, Tooltip, Typography } from '@mui/material';
 import { useCallback, useEffect, useRef, useState } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import SourcesPanel from '../components/SourcesPanel';
@@ -509,9 +509,6 @@ export default function SearchResults() {
                       <Typography variant="subtitle2" sx={{ fontWeight: 600, color: '#444', letterSpacing: 0 }}>
                         Konnect AI
                       </Typography>
-                      {m.loading && (
-                        <CircularProgress size={16} sx={{ ml: 0.5 }} />
-                      )}
                     </Box>
                   </Box>
                   <Box sx={{ pl: { xs: 0, sm: 0 }, minWidth: 0 }}>
