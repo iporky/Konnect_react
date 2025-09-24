@@ -5,7 +5,8 @@ import {
   DirectionsCar, 
   Wc, 
   ChairAlt,
-  WbSunny 
+  WbSunny,
+  AccessTime
 } from '@mui/icons-material';
 
 const Amenities = ({ amenities }) => {
@@ -19,12 +20,15 @@ const Amenities = ({ amenities }) => {
       parking: <DirectionsCar sx={{ fontSize: 16 }} />,
       outdoor_seating: <WbSunny sx={{ fontSize: 16 }} />,
       indoor_seating: <ChairAlt sx={{ fontSize: 16 }} />,
-      wheelchair_accessible: <Accessible sx={{ fontSize: 16 }} />
+      wheelchair_accessible: <Accessible sx={{ fontSize: 16 }} />,
+      wheelchair: <Accessible sx={{ fontSize: 16 }} />,
+      operating_hours: <AccessTime sx={{ fontSize: 16 }} />
     };
     return iconMap[key] || null;
   };
 
   const formatAmenityName = (key) => {
+    if (key === 'operating_hours') return 'Operating Hours';
     return key.replace(/_/g, ' ').replace(/\b\w/g, l => l.toUpperCase());
   };
 
@@ -36,6 +40,8 @@ const Amenities = ({ amenities }) => {
       <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 1 }}>
         {Object.entries(amenities).map(([key, value]) => {
           if (value === 'No' || value === false) return null;
+          // Handle operating_hours specially - always show if it exists
+          if (key === 'operating_hours' && (!value || value === 'N/A')) return null;
           
           return (
             <Chip

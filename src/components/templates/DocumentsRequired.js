@@ -3,7 +3,21 @@ import { Box, Typography, Chip } from '@mui/material';
 import { Description } from '@mui/icons-material';
 
 const DocumentsRequired = ({ documentsRequired }) => {
-  if (!documentsRequired || Object.keys(documentsRequired).length === 0) return null;
+  // Don't render if no data or if it's just a string 'N/A'
+  if (!documentsRequired || documentsRequired === 'N/A' || typeof documentsRequired === 'string') {
+    return null;
+  }
+  
+  // Don't render if it's an empty object
+  if (Object.keys(documentsRequired).length === 0) {
+    return null;
+  }
+  
+  // Don't render if ALL values are N/A or empty
+  const hasValidFields = Object.values(documentsRequired).some(val => val && val !== 'N/A' && val.trim() !== '');
+  if (!hasValidFields) {
+    return null;
+  }
 
   const formatDocumentName = (key) => {
     return key.replace(/_/g, ' ').replace(/\b\w/g, l => l.toUpperCase());
@@ -18,8 +32,14 @@ const DocumentsRequired = ({ documentsRequired }) => {
         </Typography>
       </Box>
       <Box sx={{ display: 'flex', flexDirection: 'column', gap: 1 }}>
-        {Object.entries(documentsRequired).map(([key, value]) => (
-          <Box key={key} sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+        {Object.entries(documentsRequired).map(([key, value]) => {
+          // Skip empty, null, undefined, or N/A values
+          if (!value || value === 'N/A' || (typeof value === 'string' && value.trim() === '')) {
+            return null;
+          }
+          
+          return (
+            <Box key={key} sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
             <Chip
               label={formatDocumentName(key)}
               size="small"
@@ -34,7 +54,8 @@ const DocumentsRequired = ({ documentsRequired }) => {
               {value}
             </Typography>
           </Box>
-        ))}
+          );
+        })}
       </Box>
     </Box>
   );

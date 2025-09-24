@@ -3,7 +3,6 @@ import { Box, Divider, IconButton, InputBase, Paper, Tooltip, Typography } from 
 import { useCallback, useEffect, useRef, useState } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import SourcesPanel from '../components/SourcesPanel';
-import SearchResultTemplate from '../components/templates/SearchResultTemplate';
 import StreamingSearchTemplate from '../components/templates/StreamingSearchTemplate';
 
 function useQueryParam(name) {
@@ -533,13 +532,26 @@ export default function SearchResults() {
                             onSourcesPanelToggle={handleSourcesPanelToggle}
                           />
                         ) : (
-                          /* Fallback to original template for non-streaming responses */
-                          <SearchResultTemplate 
-                            searchResult={(() => {
+                          /* Use StreamingSearchTemplate for all responses */
+                          <StreamingSearchTemplate
+                            chunks={(() => {
                               try {
-                                return JSON.parse(m.content);
+                                const parsed = JSON.parse(m.content);
+                                // Convert structured response to chunks format
+                                const chunks = {};
+                                if (parsed.answer) {
+                                  if (parsed.answer.general_answer) chunks.general_answer = parsed.answer.general_answer;
+                                  if (parsed.answer.recommendations) {
+                                    parsed.answer.recommendations.forEach((rec, idx) => {
+                                      chunks[`recommendation_${idx + 1}`] = rec;
+                                    });
+                                  }
+                                  if (parsed.answer.followup_questions) chunks.followup_questions = parsed.answer.followup_questions;
+                                }
+                                return chunks;
                               } catch {
-                                return m.content;
+                                // For plain text responses, put in general_answer
+                                return { general_answer: m.content };
                               }
                             })()} 
                             onFollowUpClick={handleFollowUpClick}
