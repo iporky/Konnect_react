@@ -311,7 +311,7 @@ const RecommendationTemplate = ({ content, index }) => {
         {/* Left Side - Larger Image */}
         <Box sx={{ 
           flexShrink: 0, 
-          width: { xs: '100%', sm: 250 }, // Increased width
+          width: { xs: '100%', sm: '100%', md: '250px'}, // Increased width
           alignSelf: { xs: 'center', sm: 'flex-start' }
         }}>
           <img 
@@ -323,7 +323,7 @@ const RecommendationTemplate = ({ content, index }) => {
               objectFit: 'cover',
               borderRadius: '8px',
               boxShadow: '0 2px 8px rgba(0,0,0,0.1)',
-              maxWidth: '250px'
+              maxWidth: { md: '250px' , sm: '90%' }
             }}
             onError={(e) => {
               // Fallback to Lorem Picsum if image fails
