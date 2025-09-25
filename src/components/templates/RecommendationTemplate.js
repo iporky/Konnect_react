@@ -633,7 +633,7 @@ const RecommendationTemplate = ({ content, index }) => {
 
       {/* Tab Content with Fixed Height */}
       <Box sx={{ 
-        height: 150, // Reduced from 300px to 200px
+        height: { md: 150, sm: 220 }, // Reduced from 300px to 200px
         overflow: 'auto', // Allow scrolling if content exceeds height
         mt: 1, // Small margin top
         mb: 1, // Margin bottom before divider
