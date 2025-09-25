@@ -1,18 +1,16 @@
-import React from 'react';
-import { Box, Chip, Typography, useTheme } from '@mui/material';
-import { 
-  Accessible, 
-  DirectionsCar, 
-  Wc, 
+import {
+  Accessible,
+  AccessTime,
   ChairAlt,
+  DirectionsCar,
   WbSunny,
-  AccessTime
+  Wc
 } from '@mui/icons-material';
+import { Box, Chip, Typography } from '@mui/material';
 
-const Amenities = ({ amenities }) => {
-  const theme = useTheme();
+const Amenities = ({ amenities, languages }) => {
 
-  if (!amenities || Object.keys(amenities).length === 0) return null;
+  if ((!amenities || Object.keys(amenities).length === 0) && (!languages || languages === 'N/A')) return null;
 
   const getAmenityIcon = (key) => {
     const iconMap = {
@@ -22,23 +20,25 @@ const Amenities = ({ amenities }) => {
       indoor_seating: <ChairAlt sx={{ fontSize: 16 }} />,
       wheelchair_accessible: <Accessible sx={{ fontSize: 16 }} />,
       wheelchair: <Accessible sx={{ fontSize: 16 }} />,
-      operating_hours: <AccessTime sx={{ fontSize: 16 }} />
+      operating_hours: <AccessTime sx={{ fontSize: 16 }} />,
+      languages: '🌐'
     };
     return iconMap[key] || null;
   };
 
   const formatAmenityName = (key) => {
     if (key === 'operating_hours') return 'Operating Hours';
+    if (key === 'languages') return 'Languages';
     return key.replace(/_/g, ' ').replace(/\b\w/g, l => l.toUpperCase());
   };
 
   return (
-    <Box sx={{ mt: 2, p: 2, backgroundColor: '#f8f9fa', borderRadius: 2, border: `1px solid ${theme.palette.divider}` }}>
-      <Typography variant="subtitle2" sx={{ fontWeight: 600, color: '#666', mb: 2 }}>
+    <Box sx={{ mt: 2, p: 0 }}>
+      <Typography variant="subtitle2" sx={{ fontWeight: 600, color: '#333', mb: 2 }}>
         Amenities
       </Typography>
       <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 1 }}>
-        {Object.entries(amenities).map(([key, value]) => {
+        {amenities && Object.entries(amenities).map(([key, value]) => {
           if (value === 'No' || value === false) return null;
           // Handle operating_hours specially - always show if it exists
           if (key === 'operating_hours' && (!value || value === 'N/A')) return null;
@@ -57,6 +57,20 @@ const Amenities = ({ amenities }) => {
             />
           );
         })}
+        
+        {/* Add Languages chip if provided */}
+        {languages && languages !== 'N/A' && (
+          <Chip
+            icon={getAmenityIcon('languages')}
+            label={`Languages: ${languages}`}
+            size="small"
+            variant="outlined"
+            sx={{
+              borderColor: '#e0e0e0',
+              '& .MuiChip-icon': { color: '#666' }
+            }}
+          />
+        )}
       </Box>
     </Box>
   );

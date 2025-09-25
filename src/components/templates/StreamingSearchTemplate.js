@@ -16,26 +16,33 @@ const StreamingSearchTemplate = ({
 }) => {
   console.log('StreamingSearchTemplate render:', { chunks, isLoading, chunksCount: Object.keys(chunks).length });
   
-  // Collect all sources from recommendations
+  // Collect all sources from all chunks (not just recommendations)
   const collectSources = () => {
     const allSources = [];
     const seenSources = new Set(); // To avoid duplicates
     
-    Object.keys(chunks)
-      .filter(key => key.startsWith('recommendation_'))
-      .forEach(key => {
-        const recommendation = chunks[key];
-        if (recommendation.sources) {
-          const sourceKey = `${recommendation.sources.name}-${recommendation.sources.link}`;
-          if (!seenSources.has(sourceKey)) {
-            allSources.push({
-              name: recommendation.sources.name,
-              link: recommendation.sources.link
-            });
-            seenSources.add(sourceKey);
+    // Check all chunks for sources
+    Object.keys(chunks).forEach(key => {
+      const chunk = chunks[key];
+      
+      if (chunk && chunk.sources) {
+        // Handle both single source object and array of sources
+        const sourcesToAdd = Array.isArray(chunk.sources) ? chunk.sources : [chunk.sources];
+        
+        sourcesToAdd.forEach(source => {
+          if (source && source.name && source.link) {
+            const sourceKey = `${source.name}-${source.link}`;
+            if (!seenSources.has(sourceKey)) {
+              allSources.push({
+                name: source.name,
+                link: source.link
+              });
+              seenSources.add(sourceKey);
+            }
           }
-        }
-      });
+        });
+      }
+    });
     
     return allSources;
   };

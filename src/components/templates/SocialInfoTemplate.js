@@ -46,11 +46,11 @@ const SocialInfoTemplate = ({ socialMedia }) => {
   };
 
   return (
-    <Box sx={{ mt: 3, p: 3, backgroundColor: '#f8f9fa', borderRadius: 2, border: `1px solid ${theme.palette.divider}` }}>
+    <Box sx={{ mt: 3, p: 0 }}>
       <Typography variant="subtitle2" sx={{ fontWeight: 600, mb: 2, color: '#333' }}>
         📱 Social Media
       </Typography>
-      <Box sx={{ display: 'flex', flexDirection: 'column', gap: 1 }}>
+      <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 1 }}>
         {Object.entries(socialMedia).map(([platform, url]) => {
           // Skip empty, null, undefined, N/A, or whitespace-only values
           if (!url || url === 'N/A' || (typeof url === 'string' && url.trim() === '')) {
@@ -69,7 +69,6 @@ const SocialInfoTemplate = ({ socialMedia }) => {
               sx={{
                 borderRadius: 3,
                 textTransform: 'none',
-                justifyContent: 'flex-start',
                 width: 'fit-content',
                 borderColor: '#e0e0e0',
                 color: '#666',

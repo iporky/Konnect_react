@@ -24,14 +24,14 @@ const DocumentsRequired = ({ documentsRequired }) => {
   };
 
   return (
-    <Box sx={{ mt: 2, p: 2, backgroundColor: '#fff8e1', borderRadius: 2, border: '1px solid #ffcc02' }}>
+    <Box sx={{ mt: 2, p: 0 }}>
       <Box sx={{ display: 'flex', alignItems: 'center', gap: 1, mb: 2 }}>
-        <Description sx={{ color: '#ff8f00', fontSize: 20 }} />
-        <Typography variant="subtitle2" sx={{ fontWeight: 600, color: '#ff8f00' }}>
+        <Description sx={{ color: '#666', fontSize: 20 }} />
+        <Typography variant="subtitle2" sx={{ fontWeight: 600, color: '#333' }}>
           Required Documents
         </Typography>
       </Box>
-      <Box sx={{ display: 'flex', flexDirection: 'column', gap: 1 }}>
+      <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 1 }}>
         {Object.entries(documentsRequired).map(([key, value]) => {
           // Skip empty, null, undefined, or N/A values
           if (!value || value === 'N/A' || (typeof value === 'string' && value.trim() === '')) {
@@ -39,21 +39,17 @@ const DocumentsRequired = ({ documentsRequired }) => {
           }
           
           return (
-            <Box key={key} sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
             <Chip
-              label={formatDocumentName(key)}
+              key={key}
+              icon={<Description sx={{ fontSize: 16 }} />}
+              label={`${formatDocumentName(key)}: ${value}`}
               size="small"
-              sx={{ 
-                backgroundColor: '#fff3e0', 
-                color: '#e65100',
-                fontWeight: 500,
-                minWidth: 120
+              variant="outlined"
+              sx={{
+                borderColor: '#e0e0e0',
+                '& .MuiChip-icon': { color: '#666' }
               }}
             />
-            <Typography variant="body2" sx={{ color: '#333' }}>
-              {value}
-            </Typography>
-          </Box>
           );
         })}
       </Box>

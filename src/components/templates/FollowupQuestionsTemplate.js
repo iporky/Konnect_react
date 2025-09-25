@@ -1,37 +1,58 @@
-import { Box, Chip, Typography } from '@mui/material';
+import { Box, Paper, Typography } from '@mui/material';
 
 const FollowupQuestionsTemplate = ({ content, onFollowUpClick }) => (
   <Box sx={{ mt: 4 }}>
     <Typography variant="h6" sx={{ mb: 3, color: '#333', fontWeight: 600 }}>
       Continue exploring
     </Typography>
-    <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 1.5 }}>
-      {content.map((question, index) => (
-        <Chip
+    <Box sx={{ 
+      display: 'flex', 
+      gap: 2, 
+      flexWrap: 'wrap',
+      '@media (max-width: 768px)': {
+        flexDirection: 'column'
+      }
+    }}>
+      {content.slice(0, 3).map((question, index) => (
+        <Paper
           key={index}
-          label={question}
+          elevation={1}
           onClick={() => onFollowUpClick(question)}
-          clickable
           sx={{
-            backgroundColor: '#f8f9fa',
-            color: '#333',
-            fontSize: '0.875rem',
-            fontWeight: 500,
-            border: '1px solid #e0e0e0',
-            borderRadius: '20px',
-            px: 2,
-            py: 1,
-            height: 'auto',
+            px: 2.5,
+            py: 1.5,
+            borderRadius: 3,
+            backgroundColor: '#f5f5f5',
+            cursor: 'pointer',
+            flex: '1 1 0',
+            minWidth: 0,
+            transition: 'all 0.2s ease',
             '&:hover': {
-              backgroundColor: '#3289C9',
-              color: 'white',
-              borderColor: '#3289C9'
+              backgroundColor: '#e0e0e0',
+              transform: 'translateY(-1px)',
+              boxShadow: '0 2px 8px rgba(0,0,0,0.1)'
             },
             '&:active': {
-              backgroundColor: '#2874a6'
+              transform: 'translateY(0)',
+              backgroundColor: '#d5d5d5'
             }
           }}
-        />
+        >
+          <Typography 
+            variant="body2" 
+            sx={{ 
+              color: '#333',
+              fontSize: '14px',
+              fontWeight: 500,
+              lineHeight: 1.4,
+              wordWrap: 'break-word',
+              overflowWrap: 'break-word',
+              hyphens: 'auto'
+            }}
+          >
+            {question}
+          </Typography>
+        </Paper>
       ))}
     </Box>
   </Box>

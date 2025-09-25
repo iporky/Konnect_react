@@ -406,7 +406,7 @@ export default function SearchResults() {
   return (
     <div>
       {/* Main Content Layout */}
-      <Box sx={{ display: 'flex', height: '98.2vh', position: 'relative', gap: 3, overflow: 'hidden' }}>
+      <Box sx={{ display: 'flex', height: '98.2vh', position: 'relative', gap: 1, overflow: 'hidden' }}>
         {/* Main Content Area */}
         <Box 
           sx={{ 
@@ -465,7 +465,7 @@ export default function SearchResults() {
           '&::-webkit-scrollbar-thumb': { backgroundColor: 'rgba(0,0,0,0.18)', borderRadius: 4 } 
         }}
       >
-        <Box sx={{ maxWidth: 760, width: '100%', mx: 'auto', pt: 0.5 }}>
+        <Box sx={{ maxWidth: { md: '44vw' }, width: '100%', mx: 'auto', pt: 0.5 }}>
           {messages.length === 0 && (
             <Typography variant="body2" color="text.secondary" sx={{ mt: 2, textAlign: 'center' }}>Ask a question to get started.</Typography>
           )}
@@ -481,8 +481,17 @@ export default function SearchResults() {
                         hour12: false 
                       })}
                     </Typography>
-                    <Paper elevation={1} sx={{ px: 2.5, py: 1.5, borderRadius: 3, backgroundColor: '#f0f0f0', maxWidth: '70%' }}>
-                      <Typography variant="body2" sx={{ whiteSpace: 'pre-wrap', wordBreak: 'break-word', color: '#333' }}>{m.content}</Typography>
+                    <Paper elevation={1} sx={{ px: 2.5, py: 1.5, borderRadius: 3, backgroundColor: '#f0f0f0', maxWidth: '100%' }}>
+                      <Typography variant="body2" sx={{ 
+                        whiteSpace: 'pre-wrap', 
+                        wordBreak: 'break-word', 
+                        color: '#333',
+                        maxWidth: '50ch', // Approximately 100 characters
+                        wordWrap: 'break-word',
+                        overflowWrap: 'break-word'
+                      }}>
+                        {m.content}
+                      </Typography>
                     </Paper>
                   </Box>
                 </Box>
