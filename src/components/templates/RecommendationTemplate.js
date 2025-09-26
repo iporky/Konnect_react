@@ -140,9 +140,6 @@ const RecommendationTemplate = ({ content, index }) => {
       case 'tips':
         return (
           <Box sx={{ mt: 1, p: 0 }}>
-            <Typography variant="subtitle2" sx={{ fontWeight: 600, mb: 2, color: '#333' }}>
-              💡 Tips & Advice
-            </Typography>
             {content.tips_and_advice && content.tips_and_advice !== 'N/A' && (
               <Typography variant="body2" sx={{ 
                 fontSize: '14px', 
@@ -694,7 +691,7 @@ const RecommendationTemplate = ({ content, index }) => {
         {/* Left Side - Empty space to match image width */}
         <Box sx={{ 
           flexShrink: 0, 
-          width: { xs: '0px', sm: '0px', md: '210px'}, 
+          width: { xs: '0px', sm: '0px', md: '230px'}, 
         }} />
         
         {/* Right Side - Tab Content aligned with above content */}
