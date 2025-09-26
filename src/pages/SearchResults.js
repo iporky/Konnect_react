@@ -420,35 +420,6 @@ export default function SearchResults() {
             borderRadius: 2,
           }}
         >
-        {/* Sticky Header */}
-        <Box sx={{ 
-          px: { xs: 1.5, sm: 2, md: 4 }, 
-          pt: { xs: 1.5, md: 4 }, 
-          pb: 2,
-          flexShrink: 0,
-          position: 'sticky',
-          top: 0,
-          zIndex: 10,
-          background: '#fff',
-          borderBottom: '1px solid #ececec'
-        }}>
-          <Typography
-            variant="h2"
-            component="h1"
-            sx={{
-              color: '#3289C9',
-              fontFamily: 'Metropolis',
-              fontWeight: 700,
-              fontSize: { xs: '26px', md: '48px' },
-              lineHeight: 1.1,
-              letterSpacing: { xs: '-0.32px', md: '-0.56px' },
-              userSelect: 'none'
-            }}
-          >
-            Search
-          </Typography>
-        </Box>
-
       {/* Chat Area */}
       <Box 
         ref={scrollRef} 
@@ -481,7 +452,7 @@ export default function SearchResults() {
                         hour12: false 
                       })}
                     </Typography>
-                    <Paper elevation={1} sx={{ px: 2.5, py: 1.5, borderRadius: 3, backgroundColor: '#f0f0f0', maxWidth: '100%' }}>
+                    <Paper elevation={1} sx={{ px: 2.5, py: 1.5, borderRadius: 5, backgroundColor: '#f0f0f0', maxWidth: '100%' }}>
                       <Typography variant="body2" sx={{ 
                         whiteSpace: 'pre-wrap', 
                         wordBreak: 'break-word', 

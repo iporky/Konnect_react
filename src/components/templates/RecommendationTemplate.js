@@ -1,5 +1,5 @@
-import { DirectionsBus, DirectionsCar, Star, Train } from '@mui/icons-material';
-import { Box, Button, Chip, Divider, Typography } from '@mui/material';
+import { ChevronLeft, ChevronRight, DirectionsBus, DirectionsCar, Star, Train } from '@mui/icons-material';
+import { Box, Button, Chip, Divider, IconButton, Typography } from '@mui/material';
 import { useState } from 'react';
 import Amenities from './Amenities';
 import DocumentsRequired from './DocumentsRequired';
@@ -7,6 +7,8 @@ import SocialInfoTemplate from './SocialInfoTemplate';
 
 const RecommendationTemplate = ({ content, index }) => {
   const [activeTab, setActiveTab] = useState('about');
+  const [tabStartIndex, setTabStartIndex] = useState(0);
+  const maxVisibleTabs = 4;
 
   // Helper function to get image URL with fallback
   const getImageUrl = () => {
@@ -17,11 +19,144 @@ const RecommendationTemplate = ({ content, index }) => {
     return `https://picsum.photos/200/150?random=${index || Math.random()}`;
   };
 
+  // Helper function to get all available tabs
+  const getAvailableTabs = () => {
+    const tabs = [
+      { id: 'about', label: 'About', condition: true }
+    ];
+
+    // Add location tab
+    if ((content.address && content.address !== 'N/A') || 
+        (content.google_map && content.google_map !== 'N/A') || 
+        (content.naver_map && content.naver_map !== 'N/A')) {
+      tabs.push({ id: 'location', label: 'Location', condition: true });
+    }
+
+    // Add tips tab
+    if (content.tips_and_advice && content.tips_and_advice !== 'N/A') {
+      tabs.push({ id: 'tips', label: 'Tips', condition: true });
+    }
+
+    // Add maps tab (keeping the old one for backward compatibility)
+    if ((content.address && content.address !== 'N/A') || 
+        (content.google_map && content.google_map !== 'N/A') || 
+        (content.naver_map && content.naver_map !== 'N/A')) {
+      tabs.push({ id: 'maps', label: 'Maps', condition: true });
+    }
+
+    // Add contact tab
+    if ((content.contact_info && (content.contact_info.phone !== 'N/A' || content.contact_info.email !== 'N/A' || content.contact_info.website !== 'N/A')) ||
+        (content.weblink && content.weblink !== 'N/A') ||
+        (content.guidance_link && content.guidance_link !== 'N/A')) {
+      tabs.push({ id: 'contact', label: 'Contact', condition: true });
+    }
+
+    // Add amenity tab
+    if ((content.amenities && Object.values(content.amenities).some(val => val === 'Yes')) ||
+        (content.accessibility && Object.values(content.accessibility).some(val => val === 'Yes')) ||
+        (content.operating_hours && content.operating_hours !== 'N/A')) {
+      tabs.push({ id: 'amenity', label: 'Amenity', condition: true });
+    }
+
+    // Add documents tab
+    if (content.documents_required && 
+        content.documents_required !== 'N/A' && 
+        typeof content.documents_required === 'object' &&
+        Object.keys(content.documents_required).length > 0 &&
+        Object.values(content.documents_required).some(val => val && val !== 'N/A' && val.trim() !== '')) {
+      tabs.push({ id: 'documents', label: 'Documents', condition: true });
+    }
+
+    // Add transport tab
+    if (content.how_to_reach && Object.values(content.how_to_reach).some(val => val && val !== 'N/A')) {
+      tabs.push({ id: 'transport', label: 'Transport', condition: true });
+    }
+
+    // Add social tab
+    if (content.social_media && Object.values(content.social_media).some(link => link && link !== 'N/A')) {
+      tabs.push({ id: 'social', label: 'Social', condition: true });
+    }
+
+    return tabs;
+  };
+
+  const availableTabs = getAvailableTabs();
+  const canScrollLeft = tabStartIndex > 0;
+  const canScrollRight = tabStartIndex + maxVisibleTabs < availableTabs.length;
+
+  const handleScrollLeft = () => {
+    if (canScrollLeft) {
+      setTabStartIndex(Math.max(0, tabStartIndex - 1));
+    }
+  };
+
+  const handleScrollRight = () => {
+    if (canScrollRight) {
+      setTabStartIndex(Math.min(availableTabs.length - maxVisibleTabs, tabStartIndex + 1));
+    }
+  };
+
   const renderTabContent = () => {
     switch (activeTab) {
+      case 'location':
+        return (
+          <Box sx={{ mt: 1, p: 0 }}>
+            <Typography variant="subtitle2" sx={{ fontWeight: 600, mb: 2, color: '#333' }}>
+              📍 Location & Maps
+            </Typography>
+            {content.address && content.address !== 'N/A' && (
+              <Box sx={{ mb: 2 }}>
+                <Typography variant="body2" sx={{ fontSize: '13px', color: '#666', mb: 1 }}>
+                  <strong>Address:</strong> {content.address}
+                </Typography>
+              </Box>
+            )}
+            <Box sx={{ display: 'flex', gap: 1, flexWrap: 'wrap' }}>
+              {content.google_map && content.google_map !== 'N/A' && (
+                <Button
+                  variant="outlined"
+                  size="small"
+                  href={content.google_map}
+                  target="_blank"
+                  sx={{ borderRadius: 3, textTransform: 'none' }}
+                >
+                  📍 Google Maps
+                </Button>
+              )}
+              {content.naver_map && content.naver_map !== 'N/A' && (
+                <Button
+                  variant="outlined"
+                  size="small"
+                  href={content.naver_map}
+                  target="_blank"
+                  sx={{ borderRadius: 3, textTransform: 'none' }}
+                >
+                  🗺️ Naver Maps
+                </Button>
+              )}
+            </Box>
+          </Box>
+        );
+      case 'tips':
+        return (
+          <Box sx={{ mt: 1, p: 0 }}>
+            <Typography variant="subtitle2" sx={{ fontWeight: 600, mb: 2, color: '#333' }}>
+              💡 Tips & Advice
+            </Typography>
+            {content.tips_and_advice && content.tips_and_advice !== 'N/A' && (
+              <Typography variant="body2" sx={{ 
+                fontSize: '14px', 
+                color: '#555', 
+                lineHeight: 1.6
+              }}>
+                {content.tips_and_advice}
+              </Typography>
+            )}
+          </Box>
+        );
       case 'maps':
         return (
-          <Box sx={{ mt: 3, p: 0 }}>
+          <Box sx={{ mt: 1, p: 0 }}>
             <Typography variant="subtitle2" sx={{ fontWeight: 600, mb: 2, color: '#333' }}>
               📍 Location & Maps
             </Typography>
@@ -60,10 +195,7 @@ const RecommendationTemplate = ({ content, index }) => {
         );
       case 'contact':
         return (
-          <Box sx={{ mt: 3, p: 0 }}>
-            <Typography variant="subtitle2" sx={{ fontWeight: 600, mb: 2, color: '#333' }}>
-              📞 Contact Information
-            </Typography>
+          <Box sx={{ mt: 1, p: 0 }}>
             <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 1 }}>
               {content.contact_info && (
                 <>
@@ -73,7 +205,8 @@ const RecommendationTemplate = ({ content, index }) => {
                       size="small"
                       variant="outlined"
                       sx={{
-                        borderColor: '#e0e0e0'
+                        borderColor: '#e0e0e0',
+                        height: 24
                       }}
                     />
                   )}
@@ -83,7 +216,8 @@ const RecommendationTemplate = ({ content, index }) => {
                       size="small"
                       variant="outlined"
                       sx={{
-                        borderColor: '#e0e0e0'
+                        borderColor: '#e0e0e0',
+                        height: 24
                       }}
                     />
                   )}
@@ -99,6 +233,7 @@ const RecommendationTemplate = ({ content, index }) => {
                       sx={{
                         borderColor: '#e0e0e0',
                         textDecoration: 'none',
+                        height: 24,
                         '&:hover': {
                           backgroundColor: 'rgba(25, 118, 210, 0.08)'
                         }
@@ -121,6 +256,7 @@ const RecommendationTemplate = ({ content, index }) => {
                   sx={{
                     borderColor: '#e0e0e0',
                     textDecoration: 'none',
+                    height: 24,
                     '&:hover': {
                       backgroundColor: 'rgba(25, 118, 210, 0.08)'
                     }
@@ -141,6 +277,7 @@ const RecommendationTemplate = ({ content, index }) => {
                   sx={{
                     borderColor: '#e0e0e0',
                     textDecoration: 'none',
+                    height: 24,
                     '&:hover': {
                       backgroundColor: 'rgba(25, 118, 210, 0.08)'
                     }
@@ -153,29 +290,22 @@ const RecommendationTemplate = ({ content, index }) => {
       case 'documents':
         return <DocumentsRequired documentsRequired={content.documents_required} />;
       case 'amenity':
-        // Combine all amenity-related data
+        // Combine amenity data excluding operating_hours
         const combinedAmenities = {
           ...(content.amenities || {}),
-          ...(content.accessibility || {}),
-          ...(content.operating_hours && content.operating_hours !== 'N/A' && {
-            operating_hours: content.operating_hours
-          })
+          ...(content.accessibility || {})
         };
         
         return (
           <Box>
             <Amenities 
               amenities={combinedAmenities} 
-              languages={content.languages}
             />
           </Box>
         );
       case 'transport':
         return (
-          <Box sx={{ mt: 3, p: 0 }}>
-            <Typography variant="subtitle2" sx={{ fontWeight: 600, mb: 2, color: '#333' }}>
-              🚗 How to Reach
-            </Typography>
+          <Box sx={{ mt: 1, p: 0 }}>
             <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 1 }}>
               {content.how_to_reach && (
                 <>
@@ -236,11 +366,61 @@ const RecommendationTemplate = ({ content, index }) => {
         return <SocialInfoTemplate socialMedia={content.social_media} />;
       default: // about
         return (
-          <Box sx={{ mt: 3 }}>
-            {content.summary && content.summary !== 'N/A' && (
-              <Typography variant="body2" sx={{ mb: 2, lineHeight: 1.6, color: '#555', fontSize: '14px' }}>
-                {content.summary}
-              </Typography>
+          <Box sx={{ mt: 1 }}>
+            {/* Operating Hours and Languages in separate rows */}
+            {((content.operating_hours && content.operating_hours !== 'N/A') || 
+              (content.languages && content.languages !== 'N/A')) && (
+              <Box sx={{ mb: 2 }}>
+                {/* Operating Hours Row */}
+                {content.operating_hours && content.operating_hours !== 'N/A' && (
+                  <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 1, alignItems: 'center', mb: 1 }}>
+                    <Typography variant="body2" sx={{ 
+                      fontWeight: 600, 
+                      color: '#333', 
+                      fontSize: '13px',
+                      mr: 1
+                    }}>
+                      🕒 Hours:
+                    </Typography>
+                    <Chip
+                      label={content.operating_hours}
+                      size="small"
+                      variant="outlined"
+                      sx={{
+                        borderColor: '#e0e0e0',
+                        height: 24
+                      }}
+                    />
+                  </Box>
+                )}
+                
+                {/* Languages Row */}
+                {content.languages && content.languages !== 'N/A' && (
+                  <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 1, alignItems: 'center' }}>
+                    <Typography variant="body2" sx={{ 
+                      fontWeight: 600, 
+                      color: '#333', 
+                      fontSize: '13px',
+                      mr: 1
+                    }}>
+                      🗣️ Languages:
+                    </Typography>
+                    {content.languages.split(',').map((language, index) => (
+                      <Chip
+                        key={index}
+                        label={language.trim()}
+                        size="small"
+                        variant="outlined"
+                        sx={{
+                          borderColor: '#e0e0e0',
+                          height: 24,
+                          mr: 0.5
+                        }}
+                      />
+                    ))}
+                  </Box>
+                )}
+              </Box>
             )}
             
             {/* Expat Information */}
@@ -249,17 +429,6 @@ const RecommendationTemplate = ({ content, index }) => {
                 p: 0, 
                 mb: 2
               }}>
-                <Typography variant="body2" sx={{ 
-                  fontWeight: 600, 
-                  color: '#333', 
-                  display: 'flex', 
-                  alignItems: 'center',
-                  gap: 1,
-                  mb: 1,
-                  fontSize: '13px'
-                }}>
-                  🌍 Expat Friendly
-                </Typography>
                 <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 1 }}>
                   {content.expat_popularity && content.expat_popularity !== 'N/A' && (
                     <Chip
@@ -267,7 +436,8 @@ const RecommendationTemplate = ({ content, index }) => {
                       size="small"
                       variant="outlined"
                       sx={{
-                        borderColor: '#e0e0e0'
+                        borderColor: '#e0e0e0',
+                        height: 24
                       }}
                     />
                   )}
@@ -277,7 +447,8 @@ const RecommendationTemplate = ({ content, index }) => {
                       size="small"
                       variant="outlined"
                       sx={{
-                        borderColor: '#e0e0e0'
+                        borderColor: '#e0e0e0',
+                        height: 24
                       }}
                     />
                   )}
@@ -287,7 +458,8 @@ const RecommendationTemplate = ({ content, index }) => {
                       size="small"
                       variant="outlined"
                       sx={{
-                        borderColor: '#e0e0e0'
+                        borderColor: '#e0e0e0',
+                        height: 24
                       }}
                     />
                   )}
@@ -304,14 +476,14 @@ const RecommendationTemplate = ({ content, index }) => {
       {/* Main Horizontal Layout - Image Left, Content and Tabs Right */}
       <Box sx={{ 
         display: 'flex', 
-        gap: 1, 
+        gap: 2, 
         mb: 1,
         flexDirection: { xs: 'column', sm: 'row' }
       }}>
         {/* Left Side - Larger Image */}
         <Box sx={{ 
           flexShrink: 0, 
-          width: { xs: '100%', sm: '100%', md: '250px'}, // Increased width
+          width: { xs: '100%', sm: '100%', md: '200px'}, // Increased width
           alignSelf: { xs: 'center', sm: 'flex-start' }
         }}>
           <img 
@@ -319,7 +491,7 @@ const RecommendationTemplate = ({ content, index }) => {
             alt={content.main_image?.alt_text || content.name || 'Restaurant'}
             style={{
               width: '100%',
-              height: '220px', // Increased height
+              height: '160px', // Increased height
               objectFit: 'cover',
               borderRadius: '8px',
               boxShadow: '0 2px 8px rgba(0,0,0,0.1)',
@@ -334,23 +506,12 @@ const RecommendationTemplate = ({ content, index }) => {
 
         {/* Right Side - Content and Tabs */}
         <Box sx={{ flex: 1, minWidth: 0, display: 'flex', flexDirection: 'column' }}>
-          {/* Title and Rating */}
+          {/* Title and Category */}
           <Box sx={{ display: 'flex', alignItems: 'flex-start', justifyContent: 'space-between', mb: 1 }}>
             <Typography variant="h6" sx={{ fontWeight: 700, color: '#1a1a1a', fontSize: '18px', mr: 2 }}>
               {content.name}
             </Typography>
             <Box sx={{ display: 'flex', alignItems: 'center', flexShrink: 0 }}>
-              <Star sx={{ fontSize: 16, color: '#ff6b35' }} />
-              <Typography variant="caption" sx={{ ml: 0.5, fontWeight: 600, color: '#666' }}>
-                {content.rating || 'N/A'}
-              </Typography>
-            </Box>
-          </Box>
-          
-          {/* Chips Row */}
-          <Box sx={{ display: 'flex', gap: 1, mb: 2, flexWrap: 'wrap', justifyContent: 'space-between', alignItems: 'center' }}>
-            {/* Left side chips */}
-            <Box sx={{ display: 'flex', gap: 1, flexWrap: 'wrap' }}>
               <Chip 
                 label={content.category} 
                 size="small" 
@@ -363,6 +524,19 @@ const RecommendationTemplate = ({ content, index }) => {
                   borderRadius: 4
                 }}
               />
+            </Box>
+          </Box>
+          
+          {/* Rating and Other Chips Row */}
+          <Box sx={{ display: 'flex', gap: 1, mb: 2, flexWrap: 'wrap', justifyContent: 'space-between', alignItems: 'center' }}>
+            {/* Left side chips */}
+            <Box sx={{ display: 'flex', gap: 1, flexWrap: 'wrap' }}>
+              <Box sx={{ display: 'flex', alignItems: 'center', backgroundColor: '#fff3e0', borderRadius: 4, px: 1, py: 0.5, height: 24 }}>
+                <Star sx={{ fontSize: 16, color: '#ff6b35' }} />
+                <Typography variant="caption" sx={{ ml: 0.5, fontWeight: 600, color: '#e65100', fontSize: '11px' }}>
+                  {content.rating || 'N/A'}
+                </Typography>
+              </Box>
               {/* Additional chips based on content */}
               {content.price_range && content.price_range !== 'N/A' && (
                 <Chip 
@@ -393,266 +567,160 @@ const RecommendationTemplate = ({ content, index }) => {
                 />
               )}
             </Box>
+            
+            {/* Right side - Highlight text */}
+            <Box sx={{ flex: 1, minWidth: 0, ml: 2 }}>
+              {content.highlight && content.highlight !== 'N/A' && (
+                <Typography variant="body2" sx={{ 
+                  color: '#666', 
+                  fontSize: '12px',
+                  fontWeight: 400,
+                  lineHeight: 1.4,
+                  display: '-webkit-box',
+                  WebkitLineClamp: 2,
+                  WebkitBoxOrient: 'vertical',
+                  overflow: 'hidden',
+                  textAlign: 'right'
+                }}>
+                  {content.highlight}
+                </Typography>
+              )}
+            </Box>
           </Box>
           
-          {/* Show tip text directly below chips if it exists */}
-          {content.tips_and_advice && content.tips_and_advice !== 'N/A' && (
+          {/* Summary section */}
+          {content.summary && content.summary !== 'N/A' && (
             <Typography variant="body2" sx={{ 
-              fontSize: '12px', 
-              color: '#1976d2', 
-              fontStyle: 'italic',
-              mb: 1,
-              lineHeight: 1.4
-            }}>
-              💡Tip: {content.tips_and_advice}
-            </Typography>
-          )}
-          
-          {/* Description */}
-          {content.highlight && content.highlight !== 'N/A' && (
-            <Typography variant="body2" sx={{ 
-              color: '#666', 
-              fontSize: '14px',
-              fontWeight: 400,
-              lineHeight: 1.5,
-              mb: 2,
+              mb: 2, 
+              lineHeight: 1.5, 
+              color: '#555', 
+              fontSize: '13px',
               display: '-webkit-box',
-              WebkitLineClamp: 2,
+              WebkitLineClamp: 3,
               WebkitBoxOrient: 'vertical',
               overflow: 'hidden'
             }}>
-              {content.highlight}
+              {content.summary}
             </Typography>
           )}
 
-          {/* Tab Navigation - Now positioned next to the image */}
-          <Box sx={{ display: 'flex', gap: 1, mb: 2, flexWrap: 'wrap' }}>
-            <Button
-              variant={activeTab === 'about' ? 'contained' : 'outlined'}
+          {/* Tab Navigation Carousel */}
+          <Box sx={{ display: 'flex', alignItems: 'center', gap: 0.5, mb: 2 }}>
+            {/* Left Arrow */}
+            <IconButton 
+              onClick={handleScrollLeft}
+              disabled={!canScrollLeft}
               size="small"
-              onClick={() => setActiveTab('about')}
               sx={{ 
-                borderRadius: 4,
-                textTransform: 'none',
-                fontWeight: 500,
-                minWidth: 70,
-                fontSize: '11px',
-                backgroundColor: activeTab === 'about' ? '#c2185b' : 'transparent',
-                color: activeTab === 'about' ? 'white' : '#c2185b',
-                borderColor: '#c2185b',
+                width: 24, 
+                height: 24, 
+                color: canScrollLeft ? '#6F95BD' : '#ccc',
                 '&:hover': {
-                  backgroundColor: activeTab === 'about' ? '#c2185b' : 'rgba(194, 24, 91, 0.1)',
-                  borderColor: '#c2185b'
+                  backgroundColor: canScrollLeft ? 'rgba(111, 149, 189, 0.1)' : 'transparent'
                 }
               }}
             >
-              About
-            </Button>
-            
-            {/* Only show Maps tab if address or map links exist */}
-            {(content.address && content.address !== 'N/A') || 
-             (content.google_map && content.google_map !== 'N/A') || 
-             (content.naver_map && content.naver_map !== 'N/A') ? (
-              <Button
-                variant={activeTab === 'maps' ? 'contained' : 'outlined'}
-                size="small"
-                onClick={() => setActiveTab('maps')}
-                sx={{ 
-                  borderRadius: 4,
-                  textTransform: 'none',
-                  fontWeight: 500,
-                  minWidth: 70,
-                  fontSize: '11px',
-                  backgroundColor: activeTab === 'maps' ? '#c2185b' : 'transparent',
-                  color: activeTab === 'maps' ? 'white' : '#c2185b',
-                  borderColor: '#c2185b',
-                  '&:hover': {
-                    backgroundColor: activeTab === 'maps' ? '#c2185b' : 'rgba(194, 24, 91, 0.1)',
-                    borderColor: '#c2185b'
-                  }
-                }}
-              >
-                Maps
-              </Button>
-            ) : null}
-            
-            {/* Only show Contact tab if contact info, weblink, or guidance_link exist */}
-            {((content.contact_info && (content.contact_info.phone !== 'N/A' || content.contact_info.email !== 'N/A' || content.contact_info.website !== 'N/A')) ||
-             (content.weblink && content.weblink !== 'N/A') ||
-             (content.guidance_link && content.guidance_link !== 'N/A')) ? (
-              <Button
-                variant={activeTab === 'contact' ? 'contained' : 'outlined'}
-                size="small"
-                onClick={() => setActiveTab('contact')}
-                sx={{ 
-                  borderRadius: 4,
-                  textTransform: 'none',
-                  fontWeight: 500,
-                  minWidth: 70,
-                  fontSize: '11px',
-                  backgroundColor: activeTab === 'contact' ? '#c2185b' : 'transparent',
-                  color: activeTab === 'contact' ? 'white' : '#c2185b',
-                  borderColor: '#c2185b',
-                  '&:hover': {
-                    backgroundColor: activeTab === 'contact' ? '#c2185b' : 'rgba(194, 24, 91, 0.1)',
-                    borderColor: '#c2185b'
-                  }
-                }}
-              >
-                Contact
-              </Button>
-            ) : null}
-            
-            {/* Only show Amenity tab if amenities, accessibility, or operating hours exist */}
-            {((content.amenities && Object.values(content.amenities).some(val => val === 'Yes')) ||
-             (content.accessibility && Object.values(content.accessibility).some(val => val === 'Yes')) ||
-             (content.operating_hours && content.operating_hours !== 'N/A')) ? (
-              <Button
-                variant={activeTab === 'amenity' ? 'contained' : 'outlined'}
-                size="small"
-                onClick={() => setActiveTab('amenity')}
-                sx={{ 
-                  borderRadius: 4,
-                  textTransform: 'none',
-                  fontWeight: 500,
-                  minWidth: 70,
-                  fontSize: '11px',
-                  backgroundColor: activeTab === 'amenity' ? '#c2185b' : 'transparent',
-                  color: activeTab === 'amenity' ? 'white' : '#c2185b',
-                  borderColor: '#c2185b',
-                  '&:hover': {
-                    backgroundColor: activeTab === 'amenity' ? '#c2185b' : 'rgba(194, 24, 91, 0.1)',
-                    borderColor: '#c2185b'
-                  }
-                }}
-              >
-                Amenity
-              </Button>
-            ) : null}
-            
-            {/* Only show Documents tab if documents_required data exists */}
-            {(content.documents_required && 
-             content.documents_required !== 'N/A' && 
-             typeof content.documents_required === 'object' &&
-             Object.keys(content.documents_required).length > 0 &&
-             Object.values(content.documents_required).some(val => val && val !== 'N/A' && val.trim() !== '')) ? (
-              <Button
-                variant={activeTab === 'documents' ? 'contained' : 'outlined'}
-                size="small"
-                onClick={() => setActiveTab('documents')}
-                sx={{ 
-                  borderRadius: 4,
-                  textTransform: 'none',
-                  fontWeight: 500,
-                  minWidth: 70,
-                  fontSize: '11px',
-                  backgroundColor: activeTab === 'documents' ? '#c2185b' : 'transparent',
-                  color: activeTab === 'documents' ? 'white' : '#c2185b',
-                  borderColor: '#c2185b',
-                  '&:hover': {
-                    backgroundColor: activeTab === 'documents' ? '#c2185b' : 'rgba(194, 24, 91, 0.1)',
-                    borderColor: '#c2185b'
-                  }
-                }}
-              >
-                Documents
-              </Button>
-            ) : null}
-            
-            {/* Only show Transport tab if how_to_reach data exists and has non-N/A values */}
-            {(content.how_to_reach && Object.values(content.how_to_reach).some(val => val && val !== 'N/A')) ? (
-              <Button
-                variant={activeTab === 'transport' ? 'contained' : 'outlined'}
-                size="small"
-                onClick={() => setActiveTab('transport')}
-                sx={{ 
-                  borderRadius: 4,
-                  textTransform: 'none',
-                  fontWeight: 500,
-                  minWidth: 70,
-                  fontSize: '11px',
-                  backgroundColor: activeTab === 'transport' ? '#c2185b' : 'transparent',
-                  color: activeTab === 'transport' ? 'white' : '#c2185b',
-                  borderColor: '#c2185b',
-                  '&:hover': {
-                    backgroundColor: activeTab === 'transport' ? '#c2185b' : 'rgba(194, 24, 91, 0.1)',
-                    borderColor: '#c2185b'
-                  }
-                }}
-              >
-                Transport
-              </Button>
-            ) : null}
-            
-            {/* Only show Social tab if social media links exist */}
-            {(content.social_media && Object.values(content.social_media).some(link => link && link !== 'N/A')) ? (
-              <Button
-                variant={activeTab === 'social' ? 'contained' : 'outlined'}
-                size="small"
-                onClick={() => setActiveTab('social')}
-                sx={{ 
-                  borderRadius: 4,
-                  textTransform: 'none',
-                  fontWeight: 500,
-                  minWidth: 70,
-                  fontSize: '11px',
-                  backgroundColor: activeTab === 'social' ? '#c2185b' : 'transparent',
-                  color: activeTab === 'social' ? 'white' : '#c2185b',
-                  borderColor: '#c2185b',
-                  '&:hover': {
-                    backgroundColor: activeTab === 'social' ? '#c2185b' : 'rgba(194, 24, 91, 0.1)',
-                    borderColor: '#c2185b'
-                  }
-                }}
-              >
-                Social
-              </Button>
-            ) : null}
-          </Box>
+              <ChevronLeft sx={{ fontSize: 16 }} />
+            </IconButton>
 
-          {/* Contact Info Chips - moved below tabs */}
-          <Box sx={{ display: 'flex', gap: 1, flexWrap: 'wrap', alignItems: 'center' }}>
-            {content.contact_info?.phone && content.contact_info.phone !== 'N/A' && (
-              <Typography variant="caption" sx={{ color: '#666', fontSize: '12px' }}>
-                📞 {content.contact_info.phone}
-              </Typography>
-            )}
-            {content.address && content.address !== 'N/A' && (
-              <Typography variant="caption" sx={{ color: '#666', fontSize: '12px' }}>
-                📍 {content.address.length > 30 ? content.address.substring(0, 30) + '...' : content.address}
-              </Typography>
-            )}
-            {content.operating_hours && content.operating_hours !== 'N/A' && (
-              <Typography variant="caption" sx={{ color: '#666', fontSize: '12px' }}>
-                🕒 {content.operating_hours}
-              </Typography>
-            )}
+            {/* Tab Container */}
+            <Box sx={{ 
+              display: 'flex', 
+              gap: 0.5, 
+              overflow: 'hidden',
+              flex: 1,
+              position: 'relative'
+            }}>
+              <Box sx={{
+                display: 'flex',
+                gap: 0.5,
+                transform: `translateX(-${tabStartIndex * (70 + 4)}px)`, // 70px minWidth + 4px gap
+                transition: 'transform 0.3s cubic-bezier(0.4, 0, 0.2, 1)',
+                minWidth: 'max-content'
+              }}>
+                {availableTabs.map((tab) => (
+                  <Button
+                    key={tab.id}
+                    variant={activeTab === tab.id ? 'contained' : 'outlined'}
+                    onClick={() => setActiveTab(tab.id)}
+                    sx={{ 
+                      borderRadius: 4,
+                      textTransform: 'none',
+                      fontWeight: 500,
+                      minWidth: 70,
+                      height: 24,
+                      fontSize: '11px',
+                      backgroundColor: activeTab === tab.id ? '#6F95BD' : 'transparent',
+                      color: activeTab === tab.id ? 'white' : '#6F95BD',
+                      borderColor: '#6F95BD',
+                      flexShrink: 0,
+                      '&:hover': {
+                        backgroundColor: activeTab === tab.id ? '#6F95BD' : 'rgba(111, 149, 189, 0.1)',
+                        borderColor: '#6F95BD'
+                      }
+                    }}
+                  >
+                    {tab.label}
+                  </Button>
+                ))}
+              </Box>
+            </Box>
+
+            {/* Right Arrow */}
+            <IconButton 
+              onClick={handleScrollRight}
+              disabled={!canScrollRight}
+              size="small"
+              sx={{ 
+                width: 24, 
+                height: 24, 
+                color: canScrollRight ? '#6F95BD' : '#ccc',
+                '&:hover': {
+                  backgroundColor: canScrollRight ? 'rgba(111, 149, 189, 0.1)' : 'transparent'
+                }
+              }}
+            >
+              <ChevronRight sx={{ fontSize: 16 }} />
+            </IconButton>
           </Box>
         </Box>
       </Box>
 
-      {/* Tab Content with Fixed Height */}
+      {/* Tab Content with Fixed Height - Positioned to align with right side content */}
       <Box sx={{ 
-        height: { md: 150, sm: 220 }, // Reduced from 300px to 200px
-        overflow: 'auto', // Allow scrolling if content exceeds height
-        mt: 1, // Small margin top
-        mb: 1, // Margin bottom before divider
-        '&::-webkit-scrollbar': {
-          width: '6px'
-        },
-        '&::-webkit-scrollbar-track': {
-          backgroundColor: '#f1f1f1',
-          borderRadius: '3px'
-        },
-        '&::-webkit-scrollbar-thumb': {
-          backgroundColor: '#c1c1c1',
-          borderRadius: '3px',
-          '&:hover': {
-            backgroundColor: '#a8a8a8'
-          }
-        }
+        display: 'flex',
+        gap: 0.5
       }}>
-        {renderTabContent()}
+        {/* Left Side - Empty space to match image width */}
+        <Box sx={{ 
+          flexShrink: 0, 
+          width: { xs: '0px', sm: '0px', md: '210px'}, 
+        }} />
+        
+        {/* Right Side - Tab Content aligned with above content */}
+        <Box sx={{ 
+          flex: 1,
+          height: { md: 150, sm: 220 },
+          overflow: 'auto',
+          mt: 1,
+          mb: 1,
+          '&::-webkit-scrollbar': {
+            width: '6px'
+          },
+          '&::-webkit-scrollbar-track': {
+            backgroundColor: '#f1f1f1',
+            borderRadius: '3px'
+          },
+          '&::-webkit-scrollbar-thumb': {
+            backgroundColor: '#c1c1c1',
+            borderRadius: '3px',
+            '&:hover': {
+              backgroundColor: '#a8a8a8'
+            }
+          }
+        }}>
+          {renderTabContent()}
+        </Box>
       </Box>
 
       {/* HR Line after each recommendation */}

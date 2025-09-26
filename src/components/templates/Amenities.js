@@ -6,7 +6,7 @@ import {
   WbSunny,
   Wc
 } from '@mui/icons-material';
-import { Box, Chip, Typography } from '@mui/material';
+import { Box, Chip } from '@mui/material';
 
 const Amenities = ({ amenities, languages }) => {
 
@@ -34,9 +34,6 @@ const Amenities = ({ amenities, languages }) => {
 
   return (
     <Box sx={{ mt: 2, p: 0 }}>
-      <Typography variant="subtitle2" sx={{ fontWeight: 600, color: '#333', mb: 2 }}>
-        Amenities
-      </Typography>
       <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 1 }}>
         {amenities && Object.entries(amenities).map(([key, value]) => {
           if (value === 'No' || value === false) return null;
@@ -57,20 +54,6 @@ const Amenities = ({ amenities, languages }) => {
             />
           );
         })}
-        
-        {/* Add Languages chip if provided */}
-        {languages && languages !== 'N/A' && (
-          <Chip
-            icon={getAmenityIcon('languages')}
-            label={`Languages: ${languages}`}
-            size="small"
-            variant="outlined"
-            sx={{
-              borderColor: '#e0e0e0',
-              '& .MuiChip-icon': { color: '#666' }
-            }}
-          />
-        )}
       </Box>
     </Box>
   );
