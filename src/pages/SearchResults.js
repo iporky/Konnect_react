@@ -406,7 +406,7 @@ export default function SearchResults() {
   return (
     <div>
       {/* Main Content Layout */}
-      <Box sx={{ display: 'flex', height: '98.2vh', position: 'relative', gap: 1, overflow: 'hidden' }}>
+      <Box sx={{ display: 'flex', height: '97vh', position: 'relative', gap: 1, overflow: 'hidden' }}>
         {/* Main Content Area */}
         <Box 
           sx={{ 
@@ -420,6 +420,86 @@ export default function SearchResults() {
             borderRadius: 2,
           }}
         >
+          {/* Header Section - Title and Date */}
+          {messages.length > 0 && (
+            <>
+              {/* Header with Title */}
+              <Box sx={{ 
+                px: { xs: 1.5, sm: 2, md: 4 }, 
+                height: '52px',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                borderBottom: '1px solid rgba(0,0,0,0.08)'
+              }}>
+                <Box sx={{ maxWidth: { md: '44vw' }, width: '100%', mx: 'auto', textAlign: 'center' }}>
+                  {/* Title - First 10 words of current question */}
+                  <Typography 
+                    variant="h5" 
+                    sx={{ 
+                      fontWeight: 700, 
+                      color: '#1a1a1a', 
+                      fontSize: { xs: '14px', md: '16px' },
+                      lineHeight: 1.2
+                    }}
+                  >
+                    {(() => {
+                      // Get the most recent user question
+                      const lastUserMessage = messages.filter(m => m.role === 'user').slice(-1)[0];
+                      if (lastUserMessage?.content) {
+                        const words = lastUserMessage.content.trim().split(' ');
+                        return words.slice(0, 10).join(' ') + (words.length > 10 ? '' : '');
+                      }
+                      return 'Search Results';
+                    })()}
+                  </Typography>
+                </Box>
+              </Box>
+              
+              {/* Date Section - Below the border */}
+              <Box sx={{ 
+                px: { xs: 1.5, sm: 2, md: 4 }, 
+                py: 2
+              }}>
+                <Box sx={{ maxWidth: { md: '44vw' }, width: '100%', mx: 'auto' }}>
+                  {/* Date with line */}
+                  <Box sx={{ 
+                    display: 'flex', 
+                    alignItems: 'center', 
+                    gap: 2
+                  }}>
+                    <Box sx={{ 
+                      flex: 1, 
+                      height: '1px', 
+                      backgroundColor: 'rgba(0,0,0,0.12)' 
+                    }} />
+                    <Typography 
+                      variant="body2" 
+                      sx={{ 
+                        color: 'text.secondary', 
+                        fontWeight: 400,
+                        fontSize: '12px',
+                        display: 'flex',
+                        alignItems: 'center',
+                        gap: 1
+                      }}
+                    >
+                      📅 {new Date().toLocaleDateString('en-US', { 
+                        year: 'numeric', 
+                        month: 'long', 
+                        day: 'numeric' 
+                      })}
+                    </Typography>
+                    <Box sx={{ 
+                      flex: 1, 
+                      height: '1px', 
+                      backgroundColor: 'rgba(0,0,0,0.12)' 
+                    }} />
+                  </Box>
+                </Box>
+              </Box>
+            </>
+          )}
       {/* Chat Area */}
       <Box 
         ref={scrollRef} 
@@ -436,7 +516,7 @@ export default function SearchResults() {
           '&::-webkit-scrollbar-thumb': { backgroundColor: 'rgba(0,0,0,0.18)', borderRadius: 4 } 
         }}
       >
-        <Box sx={{ maxWidth: { md: '44vw' }, width: '100%', mx: 'auto', pt: 0.5 }}>
+        <Box sx={{ maxWidth: { md: '55vw' }, width: '100%', mx: 'auto', pt: 0.5 }}>
           {messages.length === 0 && (
             <Typography variant="body2" color="text.secondary" sx={{ mt: 2, textAlign: 'center' }}>Ask a question to get started.</Typography>
           )}
@@ -444,8 +524,8 @@ export default function SearchResults() {
             <Box key={m.id} sx={{ mb: 3, display: 'flex', flexDirection: 'column' }}>
               {m.role === 'user' && (
                 <Box sx={{ display: 'flex', justifyContent: 'flex-end', mb: 1 }}>
-                  <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
-                    <Typography variant="caption" sx={{ color: 'text.secondary' }}>
+                  <Box sx={{ display: 'flex', alignItems: 'flex-end', gap: 1 }}>
+                    <Typography variant="caption" sx={{ color: 'text.secondary', alignSelf: 'flex-end' }}>
                       {new Date().toLocaleTimeString('en-US', { 
                         hour: '2-digit',
                         minute: '2-digit',
@@ -471,21 +551,21 @@ export default function SearchResults() {
                 <Box sx={{ mt: 0.5 }}>
                   {/* Header with logo above */}
                   <Box sx={{ display: 'flex', alignItems: 'center', gap: 1.25, mb: 1 }}>
-                    <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+                    <Box sx={{ display: 'flex', alignItems: 'center', gap: 1.5 }}>
                       <Box
                         component="img"
                         src={`${process.env.PUBLIC_URL}/images/Konnect_k_logo.png`}
                         alt="Konnect"
                         sx={{
-                          width: 36,
-                          height: 36,
+                          width: '26px',
+                          height: '26px',
                           borderRadius: '50%',
                           objectFit: 'contain',
                           boxShadow: '0 0 0 1px rgba(0,0,0,0.06)',
-                          marginLeft: -6
+                          marginLeft: -5
                         }}
                       />
-                      <Typography variant="subtitle2" sx={{ fontWeight: 600, color: '#444', letterSpacing: 0 }}>
+                      <Typography sx={{ fontWeight: 600, color: '#656565', letterSpacing: 0, fontSize: '14px' }}>
                         Konnect AI
                       </Typography>
                     </Box>
@@ -567,7 +647,7 @@ export default function SearchResults() {
             alignItems: 'center',
             gap: 1,
             borderRadius: 999,
-            maxWidth: 760,
+            maxWidth: { md: '55vw' },
             width: '100%',
             mx: 'auto',
             boxShadow: '0 4px 18px rgba(0,0,0,0.08), 0 1px 3px rgba(0,0,0,0.12)',

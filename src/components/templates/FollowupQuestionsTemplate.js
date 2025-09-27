@@ -2,9 +2,6 @@ import { Box, Paper, Typography } from '@mui/material';
 
 const FollowupQuestionsTemplate = ({ content, onFollowUpClick }) => (
   <Box sx={{ mt: 4 }}>
-    <Typography variant="h6" sx={{ mb: 3, color: '#333', fontWeight: 600 }}>
-      Continue exploring
-    </Typography>
     <Box sx={{ 
       display: 'flex', 
       gap: 2, 

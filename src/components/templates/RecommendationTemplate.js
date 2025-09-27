@@ -25,13 +25,6 @@ const RecommendationTemplate = ({ content, index }) => {
       { id: 'about', label: 'About', condition: true }
     ];
 
-    // Add location tab
-    if ((content.address && content.address !== 'N/A') || 
-        (content.google_map && content.google_map !== 'N/A') || 
-        (content.naver_map && content.naver_map !== 'N/A')) {
-      tabs.push({ id: 'location', label: 'Location', condition: true });
-    }
-
     // Add tips tab
     if (content.tips_and_advice && content.tips_and_advice !== 'N/A') {
       tabs.push({ id: 'tips', label: 'Tips', condition: true });
@@ -39,8 +32,8 @@ const RecommendationTemplate = ({ content, index }) => {
 
     // Add maps tab (keeping the old one for backward compatibility)
     if ((content.address && content.address !== 'N/A') || 
-        (content.google_map && content.google_map !== 'N/A') || 
-        (content.naver_map && content.naver_map !== 'N/A')) {
+        (content.map_links && content.map_links.google_map !== 'N/A') || 
+        (content.map_links && content.map_links.naver_map !== 'N/A')) {
       tabs.push({ id: 'maps', label: 'Maps', condition: true });
     }
 
@@ -98,45 +91,6 @@ const RecommendationTemplate = ({ content, index }) => {
 
   const renderTabContent = () => {
     switch (activeTab) {
-      case 'location':
-        return (
-          <Box sx={{ mt: 1, p: 0 }}>
-            <Typography variant="subtitle2" sx={{ fontWeight: 600, mb: 2, color: '#333' }}>
-              📍 Location & Maps
-            </Typography>
-            {content.address && content.address !== 'N/A' && (
-              <Box sx={{ mb: 2 }}>
-                <Typography variant="body2" sx={{ fontSize: '13px', color: '#666', mb: 1 }}>
-                  <strong>Address:</strong> {content.address}
-                </Typography>
-              </Box>
-            )}
-            <Box sx={{ display: 'flex', gap: 1, flexWrap: 'wrap' }}>
-              {content.google_map && content.google_map !== 'N/A' && (
-                <Button
-                  variant="outlined"
-                  size="small"
-                  href={content.google_map}
-                  target="_blank"
-                  sx={{ borderRadius: 3, textTransform: 'none' }}
-                >
-                  📍 Google Maps
-                </Button>
-              )}
-              {content.naver_map && content.naver_map !== 'N/A' && (
-                <Button
-                  variant="outlined"
-                  size="small"
-                  href={content.naver_map}
-                  target="_blank"
-                  sx={{ borderRadius: 3, textTransform: 'none' }}
-                >
-                  🗺️ Naver Maps
-                </Button>
-              )}
-            </Box>
-          </Box>
-        );
       case 'tips':
         return (
           <Box sx={{ mt: 1, p: 0 }}>
@@ -154,9 +108,6 @@ const RecommendationTemplate = ({ content, index }) => {
       case 'maps':
         return (
           <Box sx={{ mt: 1, p: 0 }}>
-            <Typography variant="subtitle2" sx={{ fontWeight: 600, mb: 2, color: '#333' }}>
-              📍 Location & Maps
-            </Typography>
             {content.address && content.address !== 'N/A' && (
               <Box sx={{ mb: 2 }}>
                 <Typography variant="body2" sx={{ fontSize: '13px', color: '#666', mb: 1 }}>
@@ -164,28 +115,56 @@ const RecommendationTemplate = ({ content, index }) => {
                 </Typography>
               </Box>
             )}
-            <Box sx={{ display: 'flex', gap: 1, flexWrap: 'wrap' }}>
-              {content.google_map && content.google_map !== 'N/A' && (
-                <Button
-                  variant="outlined"
-                  size="small"
-                  href={content.google_map}
-                  target="_blank"
-                  sx={{ borderRadius: 3, textTransform: 'none' }}
-                >
-                  📍 Google Maps
-                </Button>
+            <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
+              {content.map_links.google_map && content.map_links.google_map !== 'N/A' && (
+                <Box sx={{ display: 'flex', alignItems: 'center', gap: 1.5 }}>
+                  <Box
+                    component="img"
+                    src={`${process.env.PUBLIC_URL}/images/google_maps.webp`}
+                    alt="Google Maps"
+                    sx={{ width: 20, height: 20, objectFit: 'contain' }}
+                  />
+                  <Typography
+                    variant="body2"
+                    component="a"
+                    href={content.map_links.google_map}
+                    target="_blank"
+                    sx={{
+                      color: '#555',
+                      textDecoration: 'none',
+                      fontSize: '14px',
+                      fontWeight: 500,
+                      '&:hover': { textDecoration: 'underline' }
+                    }}
+                  >
+                    Google Maps
+                  </Typography>
+                </Box>
               )}
-              {content.naver_map && content.naver_map !== 'N/A' && (
-                <Button
-                  variant="outlined"
-                  size="small"
-                  href={content.naver_map}
-                  target="_blank"
-                  sx={{ borderRadius: 3, textTransform: 'none' }}
-                >
-                  🗺️ Naver Maps
-                </Button>
+              {content.map_links.naver_map && content.map_links.naver_map !== 'N/A' && (
+                <Box sx={{ display: 'flex', alignItems: 'center', gap: 1.5 }}>
+                  <Box
+                    component="img"
+                    src={`${process.env.PUBLIC_URL}/images/naver_maps.png`}
+                    alt="Naver Maps"
+                    sx={{ width: 20, height: 20, objectFit: 'contain' }}
+                  />
+                  <Typography
+                    variant="body2"
+                    component="a"
+                    href={content.map_links.naver_map}
+                    target="_blank"
+                    sx={{
+                      color: '#555',
+                      textDecoration: 'none',
+                      fontSize: '14px',
+                      fontWeight: 500,
+                      '&:hover': { textDecoration: 'underline' }
+                    }}
+                  >
+                    Naver Map
+                  </Typography>
+                </Box>
               )}
             </Box>
           </Box>
@@ -504,8 +483,8 @@ const RecommendationTemplate = ({ content, index }) => {
         {/* Right Side - Content and Tabs */}
         <Box sx={{ flex: 1, minWidth: 0, display: 'flex', flexDirection: 'column' }}>
           {/* Title and Category */}
-          <Box sx={{ display: 'flex', alignItems: 'flex-start', justifyContent: 'space-between', mb: 1 }}>
-            <Typography variant="h6" sx={{ fontWeight: 700, color: '#1a1a1a', fontSize: '18px', mr: 2 }}>
+          <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', mb: 1 }}>
+            <Typography variant="h6" sx={{ fontWeight: 700, color: '#1a1a1a', fontSize: '16px', mr: 2 }}>
               {content.name}
             </Typography>
             <Box sx={{ display: 'flex', alignItems: 'center', flexShrink: 0 }}>
