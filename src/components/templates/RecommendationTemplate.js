@@ -492,8 +492,8 @@ const RecommendationTemplate = ({ content, index }) => {
                 label={content.category} 
                 size="small" 
                 sx={{ 
-                  backgroundColor: '#fce4ec', 
-                  color: '#c2185b', 
+                  backgroundColor: '#6f95bd', 
+                  color: '#fff', 
                   fontSize: '11px',
                   fontWeight: 600,
                   height: 24,
