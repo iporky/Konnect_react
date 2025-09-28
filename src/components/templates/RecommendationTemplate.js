@@ -293,7 +293,8 @@ const RecommendationTemplate = ({ content, index }) => {
                       variant="outlined"
                       sx={{
                         borderColor: '#e0e0e0',
-                        '& .MuiChip-icon': { color: '#4caf50' }
+                        height: 24,
+                        '& .MuiChip-icon': { color: '#ff9800' } // Orange for taxi
                       }}
                     />
                   )}
@@ -305,7 +306,8 @@ const RecommendationTemplate = ({ content, index }) => {
                       variant="outlined"
                       sx={{
                         borderColor: '#e0e0e0',
-                        '& .MuiChip-icon': { color: '#4caf50' }
+                        height: 24,
+                        '& .MuiChip-icon': { color: '#2196f3' } // Blue for bus
                       }}
                     />
                   )}
@@ -317,7 +319,8 @@ const RecommendationTemplate = ({ content, index }) => {
                       variant="outlined"
                       sx={{
                         borderColor: '#e0e0e0',
-                        '& .MuiChip-icon': { color: '#4caf50' }
+                        height: 24,
+                        '& .MuiChip-icon': { color: '#4caf50' } // Green for metro
                       }}
                     />
                   )}
@@ -329,7 +332,8 @@ const RecommendationTemplate = ({ content, index }) => {
                       variant="outlined"
                       sx={{
                         borderColor: '#e0e0e0',
-                        '& .MuiChip-icon': { color: '#4caf50' }
+                        height: 24,
+                        '& .MuiChip-icon': { color: '#9c27b0' } // Purple for train
                       }}
                     />
                   )}

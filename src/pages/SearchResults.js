@@ -410,12 +410,11 @@ export default function SearchResults() {
         {/* Main Content Area */}
         <Box 
           sx={{ 
-            width: isSourcesPanelOpen ? '58%' : '100%',
+            width: '100%',
             display: 'flex', 
             flexDirection: 'column', 
             height: '100%',
             backgroundColor: '#fff',
-            transition: 'width 0.3s ease',
             overflow: 'hidden',
             borderRadius: 2,
           }}
@@ -660,7 +659,7 @@ export default function SearchResults() {
           <InputBase
             value={input}
             onChange={(e) => setInput(e.target.value)}
-            placeholder="Ask anything about Korea"
+            placeholder="Ask a Follow up"
             sx={{ flex: 1, fontSize: 14, ml: 0.5 }}
             disabled={!!activeRunId}
           />
@@ -675,25 +674,31 @@ export default function SearchResults() {
       </Box>
       </Box>
       
-      {/* Sources Panel - render inline when open */}
-      {isSourcesPanelOpen && (
-        <SourcesPanel
-          open={isSourcesPanelOpen}
-          onClose={() => setIsSourcesPanelOpen(false)}
-          sources={messages
+      {/* Sources Panel - render as drawer */}
+      <SourcesPanel
+        open={isSourcesPanelOpen}
+        onClose={() => setIsSourcesPanelOpen(false)}
+        sources={(() => {
+          const allSources = [];
+          messages
             .filter(m => m.role === 'assistant' && m.content)
-            .map(m => {
+            .forEach(m => {
               try {
                 const parsed = JSON.parse(m.content);
-                return parsed.answer?.sources;
-              } catch {
-                return null;
+                if (parsed.answer?.recommendations) {
+                  parsed.answer.recommendations.forEach(rec => {
+                    if (rec.sources && rec.sources.name && rec.sources.link) {
+                      allSources.push(rec.sources);
+                    }
+                  });
+                }
+              } catch (e) {
+                // Ignore parsing errors
               }
-            })
-            .find(sources => sources && sources.length > 0)
-          }
-        />
-      )}
+            });
+          return allSources;
+        })()} 
+      />
       </Box>
     </div>
   );

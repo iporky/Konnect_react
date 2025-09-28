@@ -26,6 +26,20 @@ const Amenities = ({ amenities, languages }) => {
     return iconMap[key] || null;
   };
 
+  const getAmenityColor = (key) => {
+    const colorMap = {
+      toilet: '#2196f3',          // Blue for toilet
+      parking: '#ff9800',         // Orange for parking
+      outdoor_seating: '#4caf50', // Green for outdoor seating
+      indoor_seating: '#795548',  // Brown for indoor seating
+      wheelchair_accessible: '#9c27b0', // Purple for accessibility
+      wheelchair: '#9c27b0',      // Purple for wheelchair
+      operating_hours: '#f44336', // Red for operating hours
+      languages: '#607d8b'        // Blue-grey for languages
+    };
+    return colorMap[key] || '#666';
+  };
+
   const formatAmenityName = (key) => {
     if (key === 'operating_hours') return 'Operating Hours';
     if (key === 'languages') return 'Languages';
@@ -49,7 +63,8 @@ const Amenities = ({ amenities, languages }) => {
               variant="outlined"
               sx={{
                 borderColor: '#e0e0e0',
-                '& .MuiChip-icon': { color: '#666' }
+                height: 24,
+                '& .MuiChip-icon': { color: getAmenityColor(key) }
               }}
             />
           );
