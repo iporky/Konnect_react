@@ -19,7 +19,7 @@
     background-color: rgba(207, 32, 42, 0.05); /* #CF202A0D */
     color: #0f172a;
     margin: 0;
-    line-height: 1.6;
+    line-height: 1;
     min-height: 100%;
     overflow-y: auto;
     overflow-x: auto; /* allow horizontal scroll globally */

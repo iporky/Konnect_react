@@ -1,4 +1,4 @@
-import { ChevronLeft, ChevronRight, DirectionsBus, DirectionsCar, Star, Train } from '@mui/icons-material';
+import { ChevronLeft, ChevronRight, DirectionsBus, DirectionsCar, Email, Language, Phone, Star, Train } from '@mui/icons-material';
 import { Box, Button, Chip, Divider, IconButton, Typography } from '@mui/material';
 import { useState } from 'react';
 import Amenities from './Amenities';
@@ -177,29 +177,34 @@ const RecommendationTemplate = ({ content, index }) => {
                 <>
                   {content.contact_info.phone && content.contact_info.phone !== 'N/A' && (
                     <Chip
-                      label={`📞 ${content.contact_info.phone}`}
+                      icon={<Phone sx={{ fontSize: 16 }} />}
+                      label={content.contact_info.phone}
                       size="small"
                       variant="outlined"
                       sx={{
                         borderColor: '#e0e0e0',
-                        height: 24
+                        height: 24,
+                        '& .MuiChip-icon': { color: '#4caf50' } // Green for phone
                       }}
                     />
                   )}
                   {content.contact_info.email && content.contact_info.email !== 'N/A' && (
                     <Chip
-                      label={`✉️ ${content.contact_info.email}`}
+                      icon={<Email sx={{ fontSize: 16 }} />}
+                      label={content.contact_info.email}
                       size="small"
                       variant="outlined"
                       sx={{
                         borderColor: '#e0e0e0',
-                        height: 24
+                        height: 24,
+                        '& .MuiChip-icon': { color: '#2196f3' } // Blue for email
                       }}
                     />
                   )}
                   {content.contact_info.website && content.contact_info.website !== 'N/A' && (
                     <Chip
-                      label="🌐 Website"
+                      icon={<Language sx={{ fontSize: 16 }} />}
+                      label="Website"
                       size="small"
                       variant="outlined"
                       component="a"
@@ -210,6 +215,7 @@ const RecommendationTemplate = ({ content, index }) => {
                         borderColor: '#e0e0e0',
                         textDecoration: 'none',
                         height: 24,
+                        '& .MuiChip-icon': { color: '#ff9800' }, // Orange for website
                         '&:hover': {
                           backgroundColor: 'rgba(25, 118, 210, 0.08)'
                         }
@@ -222,7 +228,8 @@ const RecommendationTemplate = ({ content, index }) => {
               {/* Website Link */}
               {content.weblink && content.weblink !== 'N/A' && (
                 <Chip
-                  label="🌐 Official Website"
+                  icon={<Language sx={{ fontSize: 16 }} />}
+                  label="Official Website"
                   size="small"
                   variant="outlined"
                   component="a"
@@ -233,6 +240,7 @@ const RecommendationTemplate = ({ content, index }) => {
                     borderColor: '#e0e0e0',
                     textDecoration: 'none',
                     height: 24,
+                    '& .MuiChip-icon': { color: '#9c27b0' }, // Purple for official website
                     '&:hover': {
                       backgroundColor: 'rgba(25, 118, 210, 0.08)'
                     }
@@ -243,7 +251,8 @@ const RecommendationTemplate = ({ content, index }) => {
               {/* Guidance Link */}
               {content.guidance_link && content.guidance_link !== 'N/A' && (
                 <Chip
-                  label="📋 Visitor Guide"
+                  icon={<Language sx={{ fontSize: 16 }} />}
+                  label="Visitor Guide"
                   size="small"
                   variant="outlined"
                   component="a"
@@ -254,6 +263,7 @@ const RecommendationTemplate = ({ content, index }) => {
                     borderColor: '#e0e0e0',
                     textDecoration: 'none',
                     height: 24,
+                    '& .MuiChip-icon': { color: '#f44336' }, // Red for visitor guide
                     '&:hover': {
                       backgroundColor: 'rgba(25, 118, 210, 0.08)'
                     }
@@ -350,10 +360,10 @@ const RecommendationTemplate = ({ content, index }) => {
             {/* Operating Hours and Languages in separate rows */}
             {((content.operating_hours && content.operating_hours !== 'N/A') || 
               (content.languages && content.languages !== 'N/A')) && (
-              <Box sx={{ mb: 2 }}>
+              <Box sx={{ mb: 1 }}>
                 {/* Operating Hours Row */}
                 {content.operating_hours && content.operating_hours !== 'N/A' && (
-                  <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 1, alignItems: 'center', mb: 1 }}>
+                  <Box sx={{ display: 'flex', alignItems: 'center', mb: 1 }}>
                     <Typography variant="body2" sx={{ 
                       fontWeight: 600, 
                       color: '#333', 
@@ -362,21 +372,18 @@ const RecommendationTemplate = ({ content, index }) => {
                     }}>
                       🕒 Hours:
                     </Typography>
-                    <Chip
-                      label={content.operating_hours}
-                      size="small"
-                      variant="outlined"
-                      sx={{
-                        borderColor: '#e0e0e0',
-                        height: 24
-                      }}
-                    />
+                    <Typography variant="body2" sx={{
+                      fontSize: '13px',
+                      color: '#555'
+                    }}>
+                      {content.operating_hours}
+                    </Typography>
                   </Box>
                 )}
                 
                 {/* Languages Row */}
                 {content.languages && content.languages !== 'N/A' && (
-                  <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 1, alignItems: 'center' }}>
+                  <Box sx={{ display: 'flex', alignItems: 'center' }}>
                     <Typography variant="body2" sx={{ 
                       fontWeight: 600, 
                       color: '#333', 
@@ -385,19 +392,12 @@ const RecommendationTemplate = ({ content, index }) => {
                     }}>
                       🗣️ Languages:
                     </Typography>
-                    {content.languages.split(',').map((language, index) => (
-                      <Chip
-                        key={index}
-                        label={language.trim()}
-                        size="small"
-                        variant="outlined"
-                        sx={{
-                          borderColor: '#e0e0e0',
-                          height: 24,
-                          mr: 0.5
-                        }}
-                      />
-                    ))}
+                    <Typography variant="body2" sx={{
+                      fontSize: '13px',
+                      color: '#555'
+                    }}>
+                      {content.languages}
+                    </Typography>
                   </Box>
                 )}
               </Box>
@@ -406,8 +406,6 @@ const RecommendationTemplate = ({ content, index }) => {
             {/* Expat Information */}
             {(content.expat_popularity || content.proximity_to_expat_area || content.recent_visitors) && (
               <Box sx={{ 
-                p: 0, 
-                mb: 2
               }}>
                 <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 1 }}>
                   {content.expat_popularity && content.expat_popularity !== 'N/A' && (
@@ -471,11 +469,11 @@ const RecommendationTemplate = ({ content, index }) => {
             alt={content.main_image?.alt_text || content.name || 'Restaurant'}
             style={{
               width: '100%',
-              height: '160px', // Increased height
+              height: '135px', // Increased height
               objectFit: 'cover',
               borderRadius: '8px',
               boxShadow: '0 2px 8px rgba(0,0,0,0.1)',
-              maxWidth: { md: '250px' , sm: '90%' }
+              maxWidth: { md: '180px' , sm: '90%' }
             }}
             onError={(e) => {
               // Fallback to Lorem Picsum if image fails
@@ -510,13 +508,27 @@ const RecommendationTemplate = ({ content, index }) => {
           {/* Rating and Other Chips Row */}
           <Box sx={{ display: 'flex', gap: 1, mb: 2, flexWrap: 'wrap', justifyContent: 'space-between', alignItems: 'center' }}>
             {/* Left side chips */}
-            <Box sx={{ display: 'flex', gap: 1, flexWrap: 'wrap' }}>
-              <Box sx={{ display: 'flex', alignItems: 'center', backgroundColor: '#fff3e0', borderRadius: 4, px: 1, py: 0.5, height: 24 }}>
-                <Star sx={{ fontSize: 16, color: '#ff6b35' }} />
-                <Typography variant="caption" sx={{ ml: 0.5, fontWeight: 600, color: '#e65100', fontSize: '11px' }}>
+            <Box sx={{ display: 'flex', gap: 1, flexWrap: 'wrap', alignItems: 'center' }}>
+              <Box sx={{ display: 'flex', alignItems: 'center', px: 0, py: 0.5, height: 24 }}>
+                <Star sx={{ fontSize: 16, color: '#6f95bd' }} />
+                <Typography variant="caption" sx={{ ml: 0.5, fontWeight: 600, color: '#6f95bd', fontSize: '16px' }}>
                   {content.rating || 'N/A'}
                 </Typography>
               </Box>
+              
+              {/* Highlight next to rating */}
+              {content.highlight && content.highlight !== 'N/A' && (
+                <Typography variant="body2" sx={{ 
+                  color: '#666', 
+                  fontSize: '16px',
+                  fontWeight: 400,
+                  lineHeight: 1.4,
+                  ml: 1
+                }}>
+                  {content.highlight}
+                </Typography>
+              )}
+              
               {/* Additional chips based on content */}
               {content.price_range && content.price_range !== 'N/A' && (
                 <Chip 
@@ -547,45 +559,23 @@ const RecommendationTemplate = ({ content, index }) => {
                 />
               )}
             </Box>
-            
-            {/* Right side - Highlight text */}
-            <Box sx={{ flex: 1, minWidth: 0, ml: 2 }}>
-              {content.highlight && content.highlight !== 'N/A' && (
-                <Typography variant="body2" sx={{ 
-                  color: '#666', 
-                  fontSize: '12px',
-                  fontWeight: 400,
-                  lineHeight: 1.4,
-                  display: '-webkit-box',
-                  WebkitLineClamp: 2,
-                  WebkitBoxOrient: 'vertical',
-                  overflow: 'hidden',
-                  textAlign: 'right'
-                }}>
-                  {content.highlight}
-                </Typography>
-              )}
-            </Box>
           </Box>
           
           {/* Summary section */}
           {content.summary && content.summary !== 'N/A' && (
-            <Typography variant="body2" sx={{ 
-              mb: 2, 
-              lineHeight: 1.5, 
-              color: '#555', 
-              fontSize: '13px',
-              display: '-webkit-box',
-              WebkitLineClamp: 3,
-              WebkitBoxOrient: 'vertical',
-              overflow: 'hidden'
-            }}>
-              {content.summary}
-            </Typography>
+            <Box sx={{ mb: 2 }}>
+              <Typography variant="body2" sx={{ 
+                lineHeight: 1.5, 
+                color: '#555', 
+                fontSize: '16px'
+              }}>
+                {content.summary}
+              </Typography>
+            </Box>
           )}
 
           {/* Tab Navigation Carousel */}
-          <Box sx={{ display: 'flex', alignItems: 'center', gap: 0.5, mb: 2 }}>
+          <Box sx={{ display: 'flex', alignItems: 'center', ml: -2 }}>
             {/* Left Arrow */}
             <IconButton 
               onClick={handleScrollLeft}
@@ -608,7 +598,9 @@ const RecommendationTemplate = ({ content, index }) => {
               display: 'flex', 
               gap: 0.5, 
               overflow: 'hidden',
-              flex: 1,
+              width: availableTabs.length <= maxVisibleTabs 
+                ? `${availableTabs.length * (70 + 14) + 100}px` 
+                : `${maxVisibleTabs * (70 + 14) + 100}px`,
               position: 'relative'
             }}>
               <Box sx={{
@@ -680,7 +672,7 @@ const RecommendationTemplate = ({ content, index }) => {
         {/* Right Side - Tab Content aligned with above content */}
         <Box sx={{ 
           flex: 1,
-          height: { md: 150, sm: 220 },
+          height: { md: 100, sm: 220 },
           overflow: 'auto',
           mt: 1,
           mb: 1,

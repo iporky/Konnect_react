@@ -1,9 +1,8 @@
-import { Box, Button, Typography } from '@mui/material';
-import Sources from './Sources';
+import { Box, IconButton, Tooltip, Typography } from '@mui/material';
 import GeneralAnswerTemplate from './GeneralAnswerTemplate';
-import RecommendationTemplate from './RecommendationTemplate';
-import FollowupQuestionsTemplate from './FollowupQuestionsTemplate';
 import LoadingTemplate from './LoadingTemplate';
+import RecommendationTemplate from './RecommendationTemplate';
+import Sources from './Sources';
 
 // Main streaming template component
 const StreamingSearchTemplate = ({ 
@@ -12,7 +11,8 @@ const StreamingSearchTemplate = ({
   onFollowUpClick,
   onRegenerateAnswer,
   currentQuery,
-  onSourcesPanelToggle 
+  onSourcesPanelToggle,
+  onReportClick
 }) => {
   console.log('StreamingSearchTemplate render:', { chunks, isLoading, chunksCount: Object.keys(chunks).length });
   
@@ -82,40 +82,63 @@ const StreamingSearchTemplate = ({
         </Box>
       )}
 
-      {/* Sources - show collected sources from all recommendations */}
+      {/* Sources and Action Buttons */}
       {sources.length > 0 && (
-        <Box sx={{ mb: 3 }}>
+        <Box sx={{ mb: 3, display: 'flex', alignItems: 'center', gap: 1 }}>
           <Sources 
             sources={sources} 
             onSourcesClick={() => onSourcesPanelToggle && onSourcesPanelToggle(true)}
           />
+          
+          {/* Copy Button */}
+          <IconButton
+            size="small"
+            onClick={() => {
+              const textToCopy = chunks.general_answer || 'Content copied from Konnect';
+              navigator.clipboard.writeText(textToCopy).then(() => {
+                // Could add a toast notification here
+                console.log('Content copied to clipboard');
+              }).catch(() => {
+                console.log('Failed to copy content');
+              });
+            }}
+            sx={{
+              width: 32,
+              height: 32,
+              borderRadius: '50%',
+              '&:hover': {
+                borderColor: '#3289C9',
+                backgroundColor: '#f0f7ff'
+              }
+            }}
+          >
+            <Tooltip title="Copy">
+              <Box sx={{ fontSize: '16px' }}>📋</Box>
+            </Tooltip>
+          </IconButton>
+          
+          {/* Report Button */}
+          <IconButton
+            size="small"
+            onClick={() => onReportClick && onReportClick()}
+            sx={{
+              width: 32,
+              height: 32,
+              borderRadius: '50%',
+              '&:hover': {
+                borderColor: '#3289C9',
+                backgroundColor: '#f0f7ff'
+              }
+            }}
+          >
+            <Tooltip title="Report">
+              <Box sx={{ fontSize: '16px' }}>🚩</Box>
+            </Tooltip>
+          </IconButton>
         </Box>
       )}
-
-      {/* Follow-up Questions */}
-      {chunks.followup_questions && (
-        <FollowupQuestionsTemplate 
-          content={chunks.followup_questions} 
-          onFollowUpClick={onFollowUpClick}
-        />
-      )}
-
       {/* Loading indicator */}
       {isLoading && <LoadingTemplate />}
-
-      {/* Regenerate option */}
-      {!isLoading && currentQuery && (
-        <Box sx={{ mt: 3, pt: 2, borderTop: '1px solid #e0e0e0' }}>
-          <Button
-            variant="text"
-            size="small"
-            onClick={() => onRegenerateAnswer(currentQuery)}
-            sx={{ color: '#666', textTransform: 'none' }}
-          >
-            🔄 Regenerate answer
-          </Button>
-        </Box>
-      )}
     </Box>
   );
 };

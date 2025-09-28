@@ -73,7 +73,40 @@ const SourcesPanel = ({ open, onClose, sources }) => {
                         <Box sx={{ width: '100%' }}>
                           {/* Source Icon & Name */}
                           <Box sx={{ display: 'flex', alignItems: 'center', gap: 1, mb: 1 }}>
-                            <Language sx={{ fontSize: 16, color: '#666' }} />
+                            <Box sx={{ width: 16, height: 16, position: 'relative', flexShrink: 0 }}>
+                              <Box
+                                component="img"
+                                src={`https://www.google.com/s2/favicons?domain=${(() => {
+                                  try {
+                                    return new URL(source.link).hostname;
+                                  } catch {
+                                    return 'example.com'; // fallback domain
+                                  }
+                                })()}&sz=16`}
+                                alt={`${source.name} favicon`}
+                                sx={{
+                                  width: 16,
+                                  height: 16,
+                                  borderRadius: 0.5,
+                                  backgroundColor: '#f5f5f5',
+                                  border: '1px solid #e0e0e0',
+                                  objectFit: 'contain'
+                                }}
+                                onError={(e) => {
+                                  // Fallback to Language icon
+                                  e.target.style.display = 'none';
+                                }}
+                              />
+                              {/* Fallback Language icon positioned behind */}
+                              <Language sx={{ 
+                                fontSize: 16, 
+                                color: '#666', 
+                                position: 'absolute', 
+                                top: 0, 
+                                left: 0,
+                                zIndex: -1
+                              }} />
+                            </Box>
                             <Typography variant="subtitle2" sx={{ fontWeight: 600, flex: 1 }}>
                               {source.name}
                             </Typography>

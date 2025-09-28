@@ -1,8 +1,11 @@
+import CloseIcon from '@mui/icons-material/Close';
 import SendIcon from '@mui/icons-material/Send';
 import { Box, Divider, IconButton, InputBase, Paper, Tooltip, Typography } from '@mui/material';
 import { useCallback, useEffect, useRef, useState } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
+import FeedbackPopup from '../components/FeedbackPopup';
 import SourcesPanel from '../components/SourcesPanel';
+import FollowupQuestionsTemplate from '../components/templates/FollowupQuestionsTemplate';
 import StreamingSearchTemplate from '../components/templates/StreamingSearchTemplate';
 
 function useQueryParam(name) {
@@ -18,8 +21,8 @@ export default function SearchResults() {
   const [messages, setMessages] = useState([]); // {id, role:'user'|'assistant', content, loading?, error?, chunks?}
   const [activeRunId, setActiveRunId] = useState(null);
   const [isSourcesPanelOpen, setIsSourcesPanelOpen] = useState(false);
-  // Removed unused global error state (handled per-message)
-  // Password gating removed; all searches run immediately
+  const [feedbackOpen, setFeedbackOpen] = useState(false);
+  const [showStickyQuestions, setShowStickyQuestions] = useState(true);
   const abortRef = useRef();
   const runIdRef = useRef(0);
 
@@ -340,6 +343,7 @@ export default function SearchResults() {
     const prompt = input.trim();
     if (!prompt) return;
     setInput('');
+    setShowStickyQuestions(true); // Reset sticky questions for new query
     // Append new user + assistant placeholder
     const uid = crypto.randomUUID();
     const aid = crypto.randomUUID();
@@ -357,6 +361,7 @@ export default function SearchResults() {
 
   const handleFollowUpClick = (question) => {
     setInput(question);
+    setShowStickyQuestions(true); // Reset sticky questions for new query
     // Auto-submit the follow-up question
     const uid = crypto.randomUUID();
     const aid = crypto.randomUUID();
@@ -431,7 +436,7 @@ export default function SearchResults() {
                 justifyContent: 'center',
                 borderBottom: '1px solid rgba(0,0,0,0.08)'
               }}>
-                <Box sx={{ maxWidth: { md: '44vw' }, width: '100%', mx: 'auto', textAlign: 'center' }}>
+                <Box sx={{ maxWidth: { md: '820px' }, width: '100%', mx: 'auto', textAlign: 'center' }}>
                   {/* Title - First 10 words of current question */}
                   <Typography 
                     variant="h5" 
@@ -460,7 +465,7 @@ export default function SearchResults() {
                 px: { xs: 1.5, sm: 2, md: 4 }, 
                 py: 2
               }}>
-                <Box sx={{ maxWidth: { md: '44vw' }, width: '100%', mx: 'auto' }}>
+                <Box sx={{ maxWidth: { md: '820px' }, width: '100%', mx: 'auto' }}>
                   {/* Date with line */}
                   <Box sx={{ 
                     display: 'flex', 
@@ -515,7 +520,7 @@ export default function SearchResults() {
           '&::-webkit-scrollbar-thumb': { backgroundColor: 'rgba(0,0,0,0.18)', borderRadius: 4 } 
         }}
       >
-        <Box sx={{ maxWidth: { md: '55vw' }, width: '100%', mx: 'auto', pt: 0.5 }}>
+        <Box sx={{ maxWidth: { md: '820px' }, width: '100%', mx: 'auto', pt: 0.5 }}>
           {messages.length === 0 && (
             <Typography variant="body2" color="text.secondary" sx={{ mt: 2, textAlign: 'center' }}>Ask a question to get started.</Typography>
           )}
@@ -589,6 +594,7 @@ export default function SearchResults() {
                             onRegenerateAnswer={handleRegenerateAnswer}
                             currentQuery={messages.find(msg => msg.role === 'user' && msg.id === messages[messages.findIndex(msg => msg.id === m.id) - 1]?.id)?.content}
                             onSourcesPanelToggle={handleSourcesPanelToggle}
+                            onReportClick={() => setFeedbackOpen(true)}
                           />
                         ) : (
                           /* Use StreamingSearchTemplate for all responses */
@@ -617,6 +623,7 @@ export default function SearchResults() {
                             onRegenerateAnswer={handleRegenerateAnswer}
                             currentQuery={messages.find(msg => msg.role === 'user' && msg.id === messages[messages.findIndex(msg => msg.id === m.id) - 1]?.id)?.content}
                             onSourcesPanelToggle={handleSourcesPanelToggle}
+                            onReportClick={() => setFeedbackOpen(true)}
                           />
                         )}
                       </>
@@ -635,6 +642,79 @@ export default function SearchResults() {
 
       {/* Input at bottom */}
       <Box sx={{ px: { xs: 1.5, sm: 2, md: 4 }, pb: { xs: 1.5, md: 4 }, flexShrink: 0 }}>
+        {/* Sticky Follow-up Questions */}
+        {showStickyQuestions && messages.length > 0 && (() => {
+          // Get the last assistant message with follow-up questions
+          const lastAssistantMessage = [...messages].reverse().find(m => m.role === 'assistant');
+          if (!lastAssistantMessage) return null;
+          
+          let followupQuestions = null;
+          
+          // Check if it's a streaming response with chunks
+          if (lastAssistantMessage.chunks && lastAssistantMessage.chunks.followup_questions) {
+            followupQuestions = lastAssistantMessage.chunks.followup_questions;
+          } else if (lastAssistantMessage.content) {
+            // Check if it's a structured JSON response
+            try {
+              const parsed = JSON.parse(lastAssistantMessage.content);
+              if (parsed.answer && parsed.answer.followup_questions) {
+                followupQuestions = parsed.answer.followup_questions;
+              }
+            } catch {
+              // Not JSON, no follow-up questions
+            }
+          }
+          
+          if (!followupQuestions || !Array.isArray(followupQuestions) || followupQuestions.length === 0) {
+            return null;
+          }
+          
+          return (
+            <Box
+              sx={{
+                position: 'sticky',
+                bottom: '80px', // Above the input area
+                zIndex: 10,
+                mb: 2,
+                maxWidth: { md: '768px' },
+                width: '100%',
+                mx: 'auto',
+                display: 'flex',
+                alignItems: 'center',
+                gap: 1
+              }}
+            >
+              {/* Close button on the left */}
+              <IconButton 
+                size="small" 
+                onClick={() => setShowStickyQuestions(false)}
+                sx={{ 
+                  width: 32, 
+                  height: 32,
+                  color: '#666',
+                  backgroundColor: 'rgba(255,255,255,0.9)',
+                  '&:hover': { 
+                    backgroundColor: 'rgba(255,255,255,1)',
+                    borderColor: '#ccc'
+                  }
+                }}
+              >
+                <CloseIcon fontSize="small" />
+              </IconButton>
+              
+              {/* Follow-up questions without background */}
+              <Box sx={{ flex: 1 }}>
+                <FollowupQuestionsTemplate
+                  content={followupQuestions}
+                  onFollowUpClick={(question) => {
+                    handleFollowUpClick(question);
+                    setShowStickyQuestions(false);
+                  }}
+                />
+              </Box>
+            </Box>
+          );
+        })()}
         <Paper
           component="form"
           onSubmit={submit}
@@ -646,7 +726,7 @@ export default function SearchResults() {
             alignItems: 'center',
             gap: 1,
             borderRadius: 999,
-            maxWidth: { md: '55vw' },
+            maxWidth: { md: '820px' },
             width: '100%',
             mx: 'auto',
             boxShadow: '0 4px 18px rgba(0,0,0,0.08), 0 1px 3px rgba(0,0,0,0.12)',
@@ -680,6 +760,8 @@ export default function SearchResults() {
         onClose={() => setIsSourcesPanelOpen(false)}
         sources={(() => {
           const allSources = [];
+          const seenSources = new Set(); // Track unique sources by name+link combination
+          
           messages
             .filter(m => m.role === 'assistant' && m.content)
             .forEach(m => {
@@ -687,8 +769,24 @@ export default function SearchResults() {
                 const parsed = JSON.parse(m.content);
                 if (parsed.answer?.recommendations) {
                   parsed.answer.recommendations.forEach(rec => {
-                    if (rec.sources && rec.sources.name && rec.sources.link) {
-                      allSources.push(rec.sources);
+                    if (rec.sources && Array.isArray(rec.sources)) {
+                      // Handle new array format
+                      rec.sources.forEach(source => {
+                        if (source && source.name && source.link) {
+                          const uniqueKey = `${source.name}|${source.link}`;
+                          if (!seenSources.has(uniqueKey)) {
+                            seenSources.add(uniqueKey);
+                            allSources.push(source);
+                          }
+                        }
+                      });
+                    } else if (rec.sources && rec.sources.name && rec.sources.link) {
+                      // Handle old single object format for backward compatibility
+                      const uniqueKey = `${rec.sources.name}|${rec.sources.link}`;
+                      if (!seenSources.has(uniqueKey)) {
+                        seenSources.add(uniqueKey);
+                        allSources.push(rec.sources);
+                      }
                     }
                   });
                 }
@@ -698,6 +796,12 @@ export default function SearchResults() {
             });
           return allSources;
         })()} 
+      />
+      
+      {/* Feedback Popup */}
+      <FeedbackPopup 
+        open={feedbackOpen} 
+        onClose={() => setFeedbackOpen(false)} 
       />
       </Box>
     </div>

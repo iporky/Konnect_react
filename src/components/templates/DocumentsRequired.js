@@ -1,6 +1,5 @@
-import React from 'react';
-import { Box, Typography, Chip } from '@mui/material';
 import { Description } from '@mui/icons-material';
+import { Box, Chip } from '@mui/material';
 
 const DocumentsRequired = ({ documentsRequired }) => {
   // Don't render if no data or if it's just a string 'N/A'
@@ -25,12 +24,6 @@ const DocumentsRequired = ({ documentsRequired }) => {
 
   return (
     <Box sx={{ mt: 2, p: 0 }}>
-      <Box sx={{ display: 'flex', alignItems: 'center', gap: 1, mb: 2 }}>
-        <Description sx={{ color: '#666', fontSize: 20 }} />
-        <Typography variant="subtitle2" sx={{ fontWeight: 600, color: '#333' }}>
-          Required Documents
-        </Typography>
-      </Box>
       <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 1 }}>
         {Object.entries(documentsRequired).map(([key, value]) => {
           // Skip empty, null, undefined, or N/A values

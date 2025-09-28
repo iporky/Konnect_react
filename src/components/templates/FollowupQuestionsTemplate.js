@@ -1,12 +1,12 @@
 import { Box, Paper, Typography } from '@mui/material';
 
 const FollowupQuestionsTemplate = ({ content, onFollowUpClick }) => (
-  <Box sx={{ mt: 4 }}>
+  <Box sx={{ mt: 2 }}>
     <Box sx={{ 
       display: 'flex', 
       gap: 2, 
       flexWrap: 'wrap',
-      '@media (max-width: 768px)': {
+      '@media (max-width: 700px)': {
         flexDirection: 'column'
       }
     }}>
@@ -16,7 +16,7 @@ const FollowupQuestionsTemplate = ({ content, onFollowUpClick }) => (
           elevation={1}
           onClick={() => onFollowUpClick(question)}
           sx={{
-            px: 2.5,
+            px: 1.5,
             py: 1.5,
             borderRadius: 3,
             backgroundColor: '#f5f5f5',
@@ -40,7 +40,7 @@ const FollowupQuestionsTemplate = ({ content, onFollowUpClick }) => (
             sx={{ 
               color: '#333',
               fontSize: '14px',
-              fontWeight: 500,
+              fontWeight: 400,
               lineHeight: 1.4,
               wordWrap: 'break-word',
               overflowWrap: 'break-word',
