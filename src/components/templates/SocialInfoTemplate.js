@@ -1,9 +1,7 @@
-import React from 'react';
-import { Box, Button, Typography, useTheme } from '@mui/material';
-import { Facebook, Instagram, YouTube, Twitter, LinkedIn } from '@mui/icons-material';
+import { Facebook, Instagram, LinkedIn, Twitter, YouTube } from '@mui/icons-material';
+import { Box, Typography } from '@mui/material';
 
 const SocialInfoTemplate = ({ socialMedia }) => {
-  const theme = useTheme();
 
   // Don't render if no data or if it's just a string 'N/A'
   if (!socialMedia || socialMedia === 'N/A' || typeof socialMedia === 'string') {
@@ -50,7 +48,7 @@ const SocialInfoTemplate = ({ socialMedia }) => {
       <Typography variant="subtitle2" sx={{ fontWeight: 600, mb: 2, color: '#333' }}>
         📱 Social Media
       </Typography>
-      <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 1 }}>
+      <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
         {Object.entries(socialMedia).map(([platform, url]) => {
           // Skip empty, null, undefined, N/A, or whitespace-only values
           if (!url || url === 'N/A' || (typeof url === 'string' && url.trim() === '')) {
@@ -58,28 +56,27 @@ const SocialInfoTemplate = ({ socialMedia }) => {
           }
           
           return (
-            <Button
-              key={platform}
-              variant="outlined"
-              size="small"
-              startIcon={getSocialIcon(platform)}
-              href={url}
-              target="_blank"
-              rel="noopener noreferrer"
-              sx={{
-                borderRadius: 3,
-                textTransform: 'none',
-                width: 'fit-content',
-                borderColor: '#e0e0e0',
-                color: '#666',
-                '&:hover': {
-                  backgroundColor: theme.palette.primary.main + '08',
-                  borderColor: theme.palette.primary.main
-                }
-              }}
-            >
-              {formatPlatformName(platform)}
-            </Button>
+            <Box key={platform} sx={{ display: 'flex', alignItems: 'center', gap: 1.5 }}>
+              <Box sx={{ width: 20, height: 20, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                {getSocialIcon(platform)}
+              </Box>
+              <Typography
+                variant="body2"
+                component="a"
+                href={url}
+                target="_blank"
+                rel="noopener noreferrer"
+                sx={{
+                  color: '#555',
+                  textDecoration: 'none',
+                  fontSize: '14px',
+                  fontWeight: 500,
+                  '&:hover': { textDecoration: 'underline' }
+                }}
+              >
+                {formatPlatformName(platform)}
+              </Typography>
+            </Box>
           );
         })}
       </Box>

@@ -462,14 +462,15 @@ const RecommendationTemplate = ({ content, index }) => {
         <Box sx={{ 
           flexShrink: 0, 
           width: { xs: '100%', sm: '100%', md: '200px'}, // Increased width
-          alignSelf: { xs: 'center', sm: 'flex-start' }
+          alignSelf: { xs: 'center', sm: 'flex-start' },
+          height: { md: '135px', sm: '150px', xs: '150px' }, // Increased height
         }}>
           <img 
             src={getImageUrl()}
             alt={content.main_image?.alt_text || content.name || 'Restaurant'}
             style={{
               width: '100%',
-              height: '135px', // Increased height
+              height: { md: '135px', sm: '150px', xs: '150px' }, // Increased height
               objectFit: 'cover',
               borderRadius: '8px',
               boxShadow: '0 2px 8px rgba(0,0,0,0.1)',
@@ -490,18 +491,16 @@ const RecommendationTemplate = ({ content, index }) => {
               {content.name}
             </Typography>
             <Box sx={{ display: 'flex', alignItems: 'center', flexShrink: 0 }}>
-              <Chip 
-                label={content.category} 
-                size="small" 
+              <Typography 
+                variant="body2"
                 sx={{ 
-                  backgroundColor: '#6f95bd', 
-                  color: '#fff', 
-                  fontSize: '11px',
+                  color: '#000', 
+                  fontSize: '12px',
                   fontWeight: 600,
-                  height: 24,
-                  borderRadius: 4
                 }}
-              />
+              >
+                {content.category}
+              </Typography>
             </Box>
           </Box>
           
@@ -672,7 +671,8 @@ const RecommendationTemplate = ({ content, index }) => {
         {/* Right Side - Tab Content aligned with above content */}
         <Box sx={{ 
           flex: 1,
-          height: { md: 100, sm: 220 },
+          height: { md: '25vh', sm: 220 },
+          maxHeight: { md: '125px', sm: 220 },
           overflow: 'auto',
           mt: 1,
           mb: 1,

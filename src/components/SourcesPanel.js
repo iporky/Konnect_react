@@ -32,8 +32,8 @@ const SourcesPanel = ({ open, onClose, sources }) => {
       onClose={onClose}
       sx={{
         '& .MuiDrawer-paper': {
-          width: '35vw',
-          maxWidth: '35vw'
+          width: { md: '25vw', sm: '50vw', xs: '90vw' },
+          maxWidth: { md: '25vw', sm: '50vw', xs: '90vw' }
         }
       }}
     >
@@ -145,13 +145,6 @@ const SourcesPanel = ({ open, onClose, sources }) => {
                     </Box>
                   ))}
                 </List>
-
-                {/* Footer Note */}
-                <Box sx={{ mt: 4, p: 2, backgroundColor: '#f8f9fa', borderRadius: 1 }}>
-                  <Typography variant="caption" sx={{ color: '#666', lineHeight: 1.4 }}>
-                    These sources provide additional information and official guidance. Always verify current requirements with official sources.
-                  </Typography>
-                </Box>
               </>
             )}
           </Box>

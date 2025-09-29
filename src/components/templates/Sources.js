@@ -76,28 +76,6 @@ const Sources = ({ sources, onSourcesClick }) => {
             }}
           />
         ))}
-        {/* If we have more than 3 sources, show a "+N" indicator */}
-        {sources.length > 3 && (
-          <Box sx={{
-            width: 16,
-            height: 16,
-            borderRadius: 0.5,
-            backgroundColor: '#f0f0f0',
-            border: '1px solid #e0e0e0',
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'center'
-          }}>
-            <Typography variant="caption" sx={{ 
-              fontSize: '10px', 
-              fontWeight: 600, 
-              color: '#666',
-              lineHeight: 1
-            }}>
-              +{sources.length}
-            </Typography>
-          </Box>
-        )}
       </Box>
       <Typography variant="body2" sx={{ fontWeight: 500, fontSize: '0.875rem' }}>
         Sources ({sources.length})

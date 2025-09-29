@@ -362,14 +362,28 @@ export default function SearchResults() {
   const handleFollowUpClick = (question) => {
     setInput(question);
     setShowStickyQuestions(true); // Reset sticky questions for new query
+    
     // Auto-submit the follow-up question
     const uid = crypto.randomUUID();
     const aid = crypto.randomUUID();
+    
+    // Append new question and response at the end (natural order)
     setMessages(ms => [
       ...ms,
       { id: uid, role: 'user', content: question },
       { id: aid, role: 'assistant', content: '', loading: true }
     ]);
+    
+    // Scroll to bottom but with some offset to show the new question near the top
+    setTimeout(() => {
+      if (scrollRef.current) {
+        // Scroll to bottom minus some offset to position the new question near the top
+        const scrollContainer = scrollRef.current;
+        const targetScroll = scrollContainer.scrollHeight - scrollContainer.clientHeight + 100;
+        scrollContainer.scrollTop = Math.max(0, targetScroll);
+      }
+    }, 100);
+    
     const params = new URLSearchParams();
     params.set('q', question);
     navigate(`/search?${params.toString()}`, { replace: true });
@@ -400,13 +414,7 @@ export default function SearchResults() {
     setIsSourcesPanelOpen(isOpen);
   };
 
-  // Auto-scroll to bottom on new messages
   const scrollRef = useRef();
-  useEffect(() => {
-    if (scrollRef.current) {
-      scrollRef.current.scrollTop = scrollRef.current.scrollHeight;
-    }
-  }, [messages]);
 
   return (
     <div>
@@ -673,10 +681,10 @@ export default function SearchResults() {
             <Box
               sx={{
                 position: 'sticky',
-                bottom: '80px', // Above the input area
+                bottom: '40px', // Above the input area
                 zIndex: 10,
-                mb: 2,
-                maxWidth: { md: '768px' },
+                mb: 1,
+                maxWidth: { md: '610px' },
                 width: '100%',
                 mx: 'auto',
                 display: 'flex',
@@ -720,14 +728,16 @@ export default function SearchResults() {
           onSubmit={submit}
           elevation={6}
           sx={{
-            p: 1.25,
+            p: 0,
+            px: 3,
             mt: 1,
             display: 'flex',
             alignItems: 'center',
             gap: 1,
-            borderRadius: 999,
-            maxWidth: { md: '820px' },
-            width: '100%',
+            borderRadius: '50px',
+            width: { xs: '90%', md: '660px' },
+            maxWidth: { xs: 600, md: 660 },
+            minHeight: 70,
             mx: 'auto',
             boxShadow: '0 4px 18px rgba(0,0,0,0.08), 0 1px 3px rgba(0,0,0,0.12)',
             border: '1px solid',
