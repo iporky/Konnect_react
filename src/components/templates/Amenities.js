@@ -3,10 +3,12 @@ import {
   AccessTime,
   ChairAlt,
   DirectionsCar,
+  Elevator,
+  Stairs,
   WbSunny,
   Wc
 } from '@mui/icons-material';
-import { Box, Chip } from '@mui/material';
+import { Box, Typography } from '@mui/material';
 
 const Amenities = ({ amenities, languages }) => {
 
@@ -20,6 +22,8 @@ const Amenities = ({ amenities, languages }) => {
       indoor_seating: <ChairAlt sx={{ fontSize: 16 }} />,
       wheelchair_accessible: <Accessible sx={{ fontSize: 16 }} />,
       wheelchair: <Accessible sx={{ fontSize: 16 }} />,
+      ramps: <Stairs sx={{ fontSize: 16, transform: 'rotate(180deg)' }} />,
+      elevators: <Elevator sx={{ fontSize: 16 }} />,
       operating_hours: <AccessTime sx={{ fontSize: 16 }} />,
       languages: '🌐'
     };
@@ -34,6 +38,10 @@ const Amenities = ({ amenities, languages }) => {
       indoor_seating: '#795548',  // Brown for indoor seating
       wheelchair_accessible: '#9c27b0', // Purple for accessibility
       wheelchair: '#9c27b0',      // Purple for wheelchair
+      ramp: '#9c27b0',           // Purple for ramps (accessibility)
+      ramps: '#9c27b0',          // Purple for ramps (accessibility)
+      elevator: '#607d8b',       // Blue-grey for elevators
+      elevators: '#607d8b',      // Blue-grey for elevators
       operating_hours: '#f44336', // Red for operating hours
       languages: '#607d8b'        // Blue-grey for languages
     };
@@ -48,25 +56,33 @@ const Amenities = ({ amenities, languages }) => {
 
   return (
     <Box sx={{ mt: 2, p: 0 }}>
-      <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 1 }}>
+      <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: '16px' }}>
         {amenities && Object.entries(amenities).map(([key, value]) => {
-          if (value === 'No' || value === false) return null;
-          // Handle operating_hours specially - always show if it exists
+          // Handle operating_hours specially - always show if it exists and not N/A
           if (key === 'operating_hours' && (!value || value === 'N/A')) return null;
           
+          const amenityName = formatAmenityName(key);
+          let displayValue;
+          
+          if (value === true || value === 'Yes') {
+            displayValue = '✓';
+          } else if (value === false || value === 'No') {
+            displayValue = '✗';
+          } else {
+            displayValue = value;
+          }
+          
           return (
-            <Chip
-              key={key}
-              icon={getAmenityIcon(key)}
-              label={`${formatAmenityName(key)}: ${value === true || value === 'Yes' ? '✓' : value}`}
-              size="small"
-              variant="outlined"
-              sx={{
-                borderColor: '#e0e0e0',
-                height: 24,
-                '& .MuiChip-icon': { color: getAmenityColor(key) }
-              }}
-            />
+            <Box key={key} sx={{ display: 'flex', alignItems: 'center', gap: 0.5 }}>
+              {getAmenityIcon(key) && (
+                <Box sx={{ color: getAmenityColor(key), fontSize: 16, display: 'flex', alignItems: 'center' }}>
+                  {getAmenityIcon(key)}
+                </Box>
+              )}
+              <Typography variant="body2" sx={{ fontSize: '13px', display: 'flex', alignItems: 'center' }}>
+                {amenityName}: {displayValue}
+              </Typography>
+            </Box>
           );
         })}
       </Box>

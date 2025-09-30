@@ -172,103 +172,69 @@ const RecommendationTemplate = ({ content, index }) => {
       case 'contact':
         return (
           <Box sx={{ mt: 1, p: 0 }}>
-            <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 1 }}>
+            <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: '16px' }}>
               {content.contact_info && (
                 <>
                   {content.contact_info.phone && content.contact_info.phone !== 'N/A' && (
-                    <Chip
-                      icon={<Phone sx={{ fontSize: 16 }} />}
-                      label={content.contact_info.phone}
-                      size="small"
-                      variant="outlined"
-                      sx={{
-                        borderColor: '#e0e0e0',
-                        height: 24,
-                        '& .MuiChip-icon': { color: '#4caf50' } // Green for phone
-                      }}
-                    />
+                    <Box sx={{ display: 'flex', alignItems: 'center', gap: 0.5 }}>
+                      <Phone sx={{ fontSize: 16, color: '#4caf50', display: 'flex', alignItems: 'center' }} />
+                      <Typography variant="body2" sx={{ fontSize: '13px', display: 'flex', alignItems: 'center' }}>
+                        {content.contact_info.phone}
+                      </Typography>
+                    </Box>
                   )}
                   {content.contact_info.email && content.contact_info.email !== 'N/A' && (
-                    <Chip
-                      icon={<Email sx={{ fontSize: 16 }} />}
-                      label={content.contact_info.email}
-                      size="small"
-                      variant="outlined"
-                      sx={{
-                        borderColor: '#e0e0e0',
-                        height: 24,
-                        '& .MuiChip-icon': { color: '#2196f3' } // Blue for email
-                      }}
-                    />
+                    <Box sx={{ display: 'flex', alignItems: 'center', gap: 0.5 }}>
+                      <Email sx={{ fontSize: 16, color: '#2196f3', display: 'flex', alignItems: 'center' }} />
+                      <Typography variant="body2" sx={{ fontSize: '13px', display: 'flex', alignItems: 'center' }}>
+                        {content.contact_info.email}
+                      </Typography>
+                    </Box>
                   )}
                   {content.contact_info.website && content.contact_info.website !== 'N/A' && (
-                    <Chip
-                      icon={<Language sx={{ fontSize: 16 }} />}
-                      label="Website"
-                      size="small"
-                      variant="outlined"
+                    <Box 
                       component="a"
                       href={content.contact_info.website}
                       target="_blank"
-                      clickable
-                      sx={{
-                        borderColor: '#e0e0e0',
+                      sx={{ 
+                        display: 'flex', 
+                        alignItems: 'center', 
+                        gap: 0.5, 
                         textDecoration: 'none',
-                        height: 24,
-                        '& .MuiChip-icon': { color: '#ff9800' }, // Orange for website
                         '&:hover': {
-                          backgroundColor: 'rgba(25, 118, 210, 0.08)'
+                          opacity: 0.8
                         }
                       }}
-                    />
+                    >
+                      <Language sx={{ fontSize: 16, color: '#ff9800', display: 'flex', alignItems: 'center' }} />
+                      <Typography variant="body2" sx={{ fontSize: '13px', display: 'flex', alignItems: 'center', color: '#2c3e50' }}>
+                        Website
+                      </Typography>
+                    </Box>
                   )}
                 </>
-              )}
-              
-              {/* Website Link */}
-              {content.weblink && content.weblink !== 'N/A' && (
-                <Chip
-                  icon={<Language sx={{ fontSize: 16 }} />}
-                  label="Official Website"
-                  size="small"
-                  variant="outlined"
-                  component="a"
-                  href={content.weblink}
-                  target="_blank"
-                  clickable
-                  sx={{
-                    borderColor: '#e0e0e0',
-                    textDecoration: 'none',
-                    height: 24,
-                    '& .MuiChip-icon': { color: '#9c27b0' }, // Purple for official website
-                    '&:hover': {
-                      backgroundColor: 'rgba(25, 118, 210, 0.08)'
-                    }
-                  }}
-                />
-              )}
-              
+              )}            
               {/* Guidance Link */}
               {content.guidance_link && content.guidance_link !== 'N/A' && (
-                <Chip
-                  icon={<Language sx={{ fontSize: 16 }} />}
-                  label="Visitor Guide"
-                  size="small"
-                  variant="outlined"
+                <Box 
                   component="a"
                   href={content.guidance_link}
                   target="_blank"
-                  clickable
-                  sx={{
-                    borderColor: '#e0e0e0',
+                  sx={{ 
+                    display: 'flex', 
+                    alignItems: 'center', 
+                    gap: 0.5, 
                     textDecoration: 'none',
-                    height: 24,
-                    '& .MuiChip-icon': { color: '#f44336' }, // Red for visitor guide
                     '&:hover': {
-                      backgroundColor: 'rgba(25, 118, 210, 0.08)'
+                      opacity: 0.8
                     }
                   }}
-                />
+                >
+                  <Language sx={{ fontSize: 16, color: '#f44336', display: 'flex', alignItems: 'center' }} />
+                  <Typography variant="body2" sx={{ fontSize: '13px', display: 'flex', alignItems: 'center', color: '#2c3e50' }}>
+                    Visitor Guide
+                  </Typography>
+                </Box>
               )}
             </Box>
           </Box>
@@ -292,60 +258,40 @@ const RecommendationTemplate = ({ content, index }) => {
       case 'transport':
         return (
           <Box sx={{ mt: 1, p: 0 }}>
-            <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 1 }}>
+            <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: '16px' }}>
               {content.how_to_reach && (
                 <>
                   {content.how_to_reach.taxi && content.how_to_reach.taxi !== 'N/A' && (
-                    <Chip
-                      icon={<DirectionsCar sx={{ fontSize: 16 }} />}
-                      label={`Taxi: ${content.how_to_reach.taxi}`}
-                      size="small"
-                      variant="outlined"
-                      sx={{
-                        borderColor: '#e0e0e0',
-                        height: 24,
-                        '& .MuiChip-icon': { color: '#ff9800' } // Orange for taxi
-                      }}
-                    />
+                    <Box sx={{ display: 'flex', alignItems: 'center', gap: 0.5 }}>
+                      <DirectionsCar sx={{ fontSize: 16, color: '#ff9800', display: 'flex', alignItems: 'center' }} />
+                      <Typography variant="body2" sx={{ fontSize: '13px', display: 'flex', alignItems: 'center' }}>
+                        Taxi: {content.how_to_reach.taxi}
+                      </Typography>
+                    </Box>
                   )}
                   {content.how_to_reach.bus && content.how_to_reach.bus !== 'N/A' && (
-                    <Chip
-                      icon={<DirectionsBus sx={{ fontSize: 16 }} />}
-                      label={`Bus: ${content.how_to_reach.bus}`}
-                      size="small"
-                      variant="outlined"
-                      sx={{
-                        borderColor: '#e0e0e0',
-                        height: 24,
-                        '& .MuiChip-icon': { color: '#2196f3' } // Blue for bus
-                      }}
-                    />
+                    <Box sx={{ display: 'flex', alignItems: 'center', gap: 0.5 }}>
+                      <DirectionsBus sx={{ fontSize: 16, color: '#2196f3', display: 'flex', alignItems: 'center' }} />
+                      <Typography variant="body2" sx={{ fontSize: '13px', display: 'flex', alignItems: 'center' }}>
+                        Bus: {content.how_to_reach.bus}
+                      </Typography>
+                    </Box>
                   )}
                   {content.how_to_reach.metro && content.how_to_reach.metro !== 'N/A' && (
-                    <Chip
-                      icon={<Train sx={{ fontSize: 16 }} />}
-                      label={`Metro: ${content.how_to_reach.metro}`}
-                      size="small"
-                      variant="outlined"
-                      sx={{
-                        borderColor: '#e0e0e0',
-                        height: 24,
-                        '& .MuiChip-icon': { color: '#4caf50' } // Green for metro
-                      }}
-                    />
+                    <Box sx={{ display: 'flex', alignItems: 'center', gap: 0.5 }}>
+                      <Train sx={{ fontSize: 16, color: '#4caf50', display: 'flex', alignItems: 'center' }} />
+                      <Typography variant="body2" sx={{ fontSize: '13px', display: 'flex', alignItems: 'center' }}>
+                        Metro: {content.how_to_reach.metro}
+                      </Typography>
+                    </Box>
                   )}
                   {content.how_to_reach.train && content.how_to_reach.train !== 'N/A' && (
-                    <Chip
-                      icon={<Train sx={{ fontSize: 16 }} />}
-                      label={`Train: ${content.how_to_reach.train}`}
-                      size="small"
-                      variant="outlined"
-                      sx={{
-                        borderColor: '#e0e0e0',
-                        height: 24,
-                        '& .MuiChip-icon': { color: '#9c27b0' } // Purple for train
-                      }}
-                    />
+                    <Box sx={{ display: 'flex', alignItems: 'center', gap: 0.5 }}>
+                      <Train sx={{ fontSize: 16, color: '#9c27b0', display: 'flex', alignItems: 'center' }} />
+                      <Typography variant="body2" sx={{ fontSize: '13px', display: 'flex', alignItems: 'center' }}>
+                        Train: {content.how_to_reach.train}
+                      </Typography>
+                    </Box>
                   )}
                 </>
               )}
@@ -405,43 +351,14 @@ const RecommendationTemplate = ({ content, index }) => {
             
             {/* Expat Information */}
             {(content.expat_popularity || content.proximity_to_expat_area || content.recent_visitors) && (
-              <Box sx={{ 
-              }}>
-                <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 1 }}>
-                  {content.expat_popularity && content.expat_popularity !== 'N/A' && (
-                    <Chip
-                      label={`Popularity: ${content.expat_popularity}`}
-                      size="small"
-                      variant="outlined"
-                      sx={{
-                        borderColor: '#e0e0e0',
-                        height: 24
-                      }}
-                    />
-                  )}
-                  {content.proximity_to_expat_area && content.proximity_to_expat_area !== 'N/A' && (
-                    <Chip
-                      label={`Location: ${content.proximity_to_expat_area}`}
-                      size="small"
-                      variant="outlined"
-                      sx={{
-                        borderColor: '#e0e0e0',
-                        height: 24
-                      }}
-                    />
-                  )}
-                  {content.recent_visitors && content.recent_visitors !== 'N/A' && (
-                    <Chip
-                      label={`Visitors: ${content.recent_visitors}`}
-                      size="small"
-                      variant="outlined"
-                      sx={{
-                        borderColor: '#e0e0e0',
-                        height: 24
-                      }}
-                    />
-                  )}
-                </Box>
+              <Box sx={{ mt: 1 }}>
+                <Typography variant="body2" sx={{ fontSize: '13px' }}>
+                  {[
+                    content.expat_popularity && content.expat_popularity !== 'N/A' ? `Popularity: ${content.expat_popularity}` : null,
+                    content.proximity_to_expat_area && content.proximity_to_expat_area !== 'N/A' ? `Location: ${content.proximity_to_expat_area}` : null,
+                    content.recent_visitors && content.recent_visitors !== 'N/A' ? `Visitors: ${content.recent_visitors}` : null
+                  ].filter(Boolean).join(', ')}
+                </Typography>
               </Box>
             )}
           </Box>
@@ -463,14 +380,14 @@ const RecommendationTemplate = ({ content, index }) => {
           flexShrink: 0, 
           width: { xs: '100%', sm: '100%', md: '200px'}, // Increased width
           alignSelf: { xs: 'center', sm: 'flex-start' },
-          height: { md: '135px', sm: '150px', xs: '150px' }, // Increased height
+          height: { md: '135px'}, // Increased height
         }}>
           <img 
             src={getImageUrl()}
             alt={content.main_image?.alt_text || content.name || 'Restaurant'}
             style={{
               width: '100%',
-              height: { md: '135px', sm: '150px', xs: '150px' }, // Increased height
+              height: { md: '135px'}, // Increased height
               objectFit: 'cover',
               borderRadius: '8px',
               boxShadow: '0 2px 8px rgba(0,0,0,0.1)',
@@ -509,8 +426,8 @@ const RecommendationTemplate = ({ content, index }) => {
             {/* Left side chips */}
             <Box sx={{ display: 'flex', gap: 1, flexWrap: 'wrap', alignItems: 'center' }}>
               <Box sx={{ display: 'flex', alignItems: 'center', px: 0, py: 0.5, height: 24 }}>
-                <Star sx={{ fontSize: 16, color: '#6f95bd' }} />
-                <Typography variant="caption" sx={{ ml: 0.5, fontWeight: 600, color: '#6f95bd', fontSize: '16px' }}>
+                <Star sx={{ fontSize: 14, color: '#6f95bd' }} />
+                <Typography variant="caption" sx={{ ml: 0.5, fontWeight: 600, color: '#6f95bd', fontSize: '12px' }}>
                   {content.rating || 'N/A'}
                 </Typography>
               </Box>
@@ -519,7 +436,7 @@ const RecommendationTemplate = ({ content, index }) => {
               {content.highlight && content.highlight !== 'N/A' && (
                 <Typography variant="body2" sx={{ 
                   color: '#666', 
-                  fontSize: '16px',
+                  fontSize: '12px',
                   fontWeight: 400,
                   lineHeight: 1.4,
                   ml: 1
@@ -573,86 +490,126 @@ const RecommendationTemplate = ({ content, index }) => {
             </Box>
           )}
 
-          {/* Tab Navigation Carousel */}
-          <Box sx={{ display: 'flex', alignItems: 'center', ml: -2 }}>
-            {/* Left Arrow */}
-            <IconButton 
-              onClick={handleScrollLeft}
-              disabled={!canScrollLeft}
+          {/* Book Chip and Tab Navigation Carousel */}
+          <Box sx={{ display: 'flex', alignItems: 'center', gap: 1, ml: 0 }}>
+            {/* Book Chip */}
+            <Chip
+              label="Book"
               size="small"
-              sx={{ 
-                width: 24, 
-                height: 24, 
-                color: canScrollLeft ? '#6F95BD' : '#ccc',
+              sx={{
+                backgroundColor: '#6F95BD',
+                color: 'white',
+                fontWeight: 500,
+                fontSize: '11px',
+                minWidth: 70,
+                height: 24,
+                borderRadius: 4,
                 '&:hover': {
-                  backgroundColor: canScrollLeft ? 'rgba(111, 149, 189, 0.1)' : 'transparent'
+                  backgroundColor: '#5a7ba3'
                 }
               }}
-            >
-              <ChevronLeft sx={{ fontSize: 16 }} />
-            </IconButton>
+            />
 
-            {/* Tab Container */}
-            <Box sx={{ 
-              display: 'flex', 
-              gap: 0.5, 
-              overflow: 'hidden',
-              width: availableTabs.length <= maxVisibleTabs 
-                ? `${availableTabs.length * (70 + 14) + 100}px` 
-                : `${maxVisibleTabs * (70 + 14) + 100}px`,
-              position: 'relative'
-            }}>
-              <Box sx={{
-                display: 'flex',
-                gap: 0.5,
-                transform: `translateX(-${tabStartIndex * (70 + 4)}px)`, // 70px minWidth + 4px gap
-                transition: 'transform 0.3s cubic-bezier(0.4, 0, 0.2, 1)',
-                minWidth: 'max-content'
+            {/* Tab Navigation Carousel */}
+            <Box sx={{ display: 'flex', alignItems: 'center', ml: -1 }}>
+              {/* Left Arrow - Hidden on mobile */}
+              <IconButton 
+                onClick={handleScrollLeft}
+                disabled={!canScrollLeft}
+                size="small"
+                sx={{ 
+                  display: { xs: 'none', md: 'flex' },
+                  width: 24, 
+                  height: 24, 
+                  color: canScrollLeft ? '#6F95BD' : '#ccc',
+                  '&:hover': {
+                    backgroundColor: canScrollLeft ? 'rgba(111, 149, 189, 0.1)' : 'transparent'
+                  }
+                }}
+              >
+                <ChevronLeft sx={{ fontSize: 16 }} />
+              </IconButton>
+
+              {/* Tab Container */}
+              <Box sx={{ 
+                display: 'flex', 
+                gap: 0.5, 
+                overflow: { xs: 'auto', md: 'hidden' },
+                width: { 
+                  xs: 'calc(100vw - 140px)', // Mobile: smaller overall width
+                  md: availableTabs.length <= maxVisibleTabs 
+                    ? `${availableTabs.length * (70 + 14) + 100}px` 
+                    : `${maxVisibleTabs * (70 + 14) + 100}px`
+                },
+                position: 'relative',
+                // Mobile touch scrolling
+                WebkitOverflowScrolling: 'touch',
+                scrollbarWidth: 'none',
+                '&::-webkit-scrollbar': {
+                  display: 'none'
+                }
               }}>
-                {availableTabs.map((tab) => (
-                  <Button
-                    key={tab.id}
-                    variant={activeTab === tab.id ? 'contained' : 'outlined'}
-                    onClick={() => setActiveTab(tab.id)}
-                    sx={{ 
-                      borderRadius: 4,
-                      textTransform: 'none',
-                      fontWeight: 500,
-                      minWidth: 70,
-                      height: 24,
-                      fontSize: '11px',
-                      backgroundColor: activeTab === tab.id ? '#6F95BD' : 'transparent',
-                      color: activeTab === tab.id ? 'white' : '#6F95BD',
-                      borderColor: '#6F95BD',
-                      flexShrink: 0,
-                      '&:hover': {
-                        backgroundColor: activeTab === tab.id ? '#6F95BD' : 'rgba(111, 149, 189, 0.1)',
-                        borderColor: '#6F95BD'
-                      }
-                    }}
-                  >
-                    {tab.label}
-                  </Button>
-                ))}
+                <Box sx={{
+                  display: 'flex',
+                  gap: 0.5,
+                  ml: 1,
+                  transform: { 
+                    xs: 'none', // No transform on mobile (native scroll)
+                    md: `translateX(-${tabStartIndex * (70 + 4)}px)` 
+                  },
+                  transition: { 
+                    xs: 'none',
+                    md: 'transform 0.3s cubic-bezier(0.4, 0, 0.2, 1)'
+                  },
+                  minWidth: 'max-content'
+                }}>
+                  {availableTabs.map((tab) => (
+                    <Button
+                      key={tab.id}
+                      variant={activeTab === tab.id ? 'contained' : 'outlined'}
+                      onClick={() => setActiveTab(tab.id)}
+                      sx={{ 
+                        borderRadius: 4,
+                        textTransform: 'none',
+                        fontWeight: 500,
+                        minWidth: 70,
+                        height: 24,
+                        fontSize: '11px',
+                        ml: 0,
+                        backgroundColor: activeTab === tab.id ? '#6F95BD' : 'transparent',
+                        color: activeTab === tab.id ? 'white' : '#6F95BD',
+                        borderColor: '#6F95BD',
+                        flexShrink: 0,
+                        '&:hover': {
+                          backgroundColor: activeTab === tab.id ? '#6F95BD' : 'rgba(111, 149, 189, 0.1)',
+                          borderColor: '#6F95BD'
+                        }
+                      }}
+                    >
+                      {tab.label}
+                    </Button>
+                  ))}
+                </Box>
               </Box>
-            </Box>
 
-            {/* Right Arrow */}
-            <IconButton 
-              onClick={handleScrollRight}
-              disabled={!canScrollRight}
-              size="small"
-              sx={{ 
-                width: 24, 
-                height: 24, 
-                color: canScrollRight ? '#6F95BD' : '#ccc',
-                '&:hover': {
-                  backgroundColor: canScrollRight ? 'rgba(111, 149, 189, 0.1)' : 'transparent'
-                }
-              }}
-            >
-              <ChevronRight sx={{ fontSize: 16 }} />
-            </IconButton>
+              {/* Right Arrow - Hidden on mobile */}
+              <IconButton 
+                onClick={handleScrollRight}
+                disabled={!canScrollRight}
+                size="small"
+                sx={{ 
+                  display: { xs: 'none', md: 'flex' },
+                  width: 24, 
+                  height: 24, 
+                  color: canScrollRight ? '#6F95BD' : '#ccc',
+                  '&:hover': {
+                    backgroundColor: canScrollRight ? 'rgba(111, 149, 189, 0.1)' : 'transparent'
+                  }
+                }}
+              >
+                <ChevronRight sx={{ fontSize: 16 }} />
+              </IconButton>
+            </Box>
           </Box>
         </Box>
       </Box>

@@ -1,6 +1,7 @@
+import AddIcon from '@mui/icons-material/Add';
 import CloseIcon from '@mui/icons-material/Close';
 import SendIcon from '@mui/icons-material/Send';
-import { Box, Divider, IconButton, InputBase, Paper, Tooltip, Typography } from '@mui/material';
+import { Box, Button, Divider, IconButton, InputBase, Paper, Tooltip, Typography } from '@mui/material';
 import { useCallback, useEffect, useRef, useState } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import FeedbackPopup from '../components/FeedbackPopup';
@@ -442,9 +443,16 @@ export default function SearchResults() {
                 display: 'flex',
                 alignItems: 'center',
                 justifyContent: 'center',
-                borderBottom: '1px solid rgba(0,0,0,0.08)'
+                borderBottom: '1px solid rgba(0,0,0,0.08)',
+                position: 'relative'
               }}>
-                <Box sx={{ maxWidth: { md: '820px' }, width: '100%', mx: 'auto', textAlign: 'center' }}>
+                <Box sx={{ 
+                  maxWidth: { md: '820px' }, 
+                  width: '100%', 
+                  mx: 'auto', 
+                  textAlign: 'center',
+                  pr: { xs: '140px', md: 0 } // Add right padding on mobile to avoid button overlap
+                }}>
                   {/* Title - First 10 words of current question */}
                   <Typography 
                     variant="h5" 
@@ -466,48 +474,63 @@ export default function SearchResults() {
                     })()}
                   </Typography>
                 </Box>
-              </Box>
-              
-              {/* Date Section - Below the border */}
-              <Box sx={{ 
-                px: { xs: 1.5, sm: 2, md: 4 }, 
-                py: 2
-              }}>
-                <Box sx={{ maxWidth: { md: '820px' }, width: '100%', mx: 'auto' }}>
-                  {/* Date with line */}
-                  <Box sx={{ 
-                    display: 'flex', 
-                    alignItems: 'center', 
-                    gap: 2
-                  }}>
-                    <Box sx={{ 
-                      flex: 1, 
-                      height: '1px', 
-                      backgroundColor: 'rgba(0,0,0,0.12)' 
-                    }} />
-                    <Typography 
-                      variant="body2" 
-                      sx={{ 
-                        color: 'text.secondary', 
-                        fontWeight: 400,
-                        fontSize: '12px',
-                        display: 'flex',
-                        alignItems: 'center',
-                        gap: 1
-                      }}
-                    >
-                      📅 {new Date().toLocaleDateString('en-US', { 
-                        year: 'numeric', 
-                        month: 'long', 
-                        day: 'numeric' 
-                      })}
-                    </Typography>
-                    <Box sx={{ 
-                      flex: 1, 
-                      height: '1px', 
-                      backgroundColor: 'rgba(0,0,0,0.12)' 
-                    }} />
-                  </Box>
+                
+                {/* Login/Signup buttons on the right */}
+                <Box
+                  sx={{
+                    position: 'absolute',
+                    right: { xs: 8, md: 45 },
+                    display: 'flex',
+                    gap: { xs: 0.5, md: 1 },
+                  }}
+                >
+                  <Button
+                    variant="contained"
+                    onClick={() => navigate('/signup')}
+                    sx={{
+                      borderRadius: '25px',
+                      px: { xs: 1.5, md: 2.5 },
+                      height: { xs: '28px', md: '36px' },
+                      textTransform: 'none',
+                      fontWeight: 600,
+                      fontFamily: 'Metropolis',
+                      fontStyle: 'normal',
+                      fontSize: { xs: '9px', md: '11px' },
+                      backgroundColor: '#121212',
+                      color: '#ffffff',
+                      border: '1px solid #121212',
+                      boxShadow: 'none',
+                      '&:hover': {
+                        backgroundColor: '#121212',
+                        boxShadow: 'none'
+                      }
+                    }}
+                  >
+                    Sign up for free
+                  </Button>
+                  <Button
+                    variant="outlined"
+                    onClick={() => navigate('/login')}
+                    sx={{
+                      borderRadius: '25px',
+                      px: { xs: 1.5, md: 2.5 },
+                      height: { xs: '28px', md: '36px' },
+                      textTransform: 'none',
+                      fontWeight: 600,
+                      fontFamily: 'Metropolis',
+                      fontStyle: 'normal',
+                      fontSize: { xs: '9px', md: '11px' },
+                      border: '1px solid #888888',
+                      color: '#888888',
+                      backgroundColor: 'transparent',
+                      boxShadow: 'none',
+                      '&:hover': {
+                        backgroundColor: 'transparent'
+                      }
+                    }}
+                  >
+                    Log in
+                  </Button>
                 </Box>
               </Box>
             </>
@@ -528,7 +551,46 @@ export default function SearchResults() {
           '&::-webkit-scrollbar-thumb': { backgroundColor: 'rgba(0,0,0,0.18)', borderRadius: 4 } 
         }}
       >
-        <Box sx={{ maxWidth: { md: '820px' }, width: '100%', mx: 'auto', pt: 0.5 }}>
+        <Box sx={{ maxWidth: { md: '820px' }, width: '100%', mx: 'auto', pt: 2 }}>
+          {/* Date Section - At top of chat area */}
+          {messages.length > 0 && (
+            <Box sx={{ mb: 2 }}>
+              {/* Date with line */}
+              <Box sx={{ 
+                display: 'flex', 
+                alignItems: 'center', 
+                gap: 2
+              }}>
+                <Box sx={{ 
+                  flex: 1, 
+                  height: '1px', 
+                  backgroundColor: 'rgba(0,0,0,0.12)' 
+                }} />
+                <Typography 
+                  variant="body2" 
+                  sx={{ 
+                    color: 'text.secondary', 
+                    fontWeight: 400,
+                    fontSize: '12px',
+                    display: 'flex',
+                    alignItems: 'center',
+                    gap: 1
+                  }}
+                >
+                  📅 {new Date().toLocaleDateString('en-US', { 
+                    year: 'numeric', 
+                    month: 'long', 
+                    day: 'numeric' 
+                  })}
+                </Typography>
+                <Box sx={{ 
+                  flex: 1, 
+                  height: '1px', 
+                  backgroundColor: 'rgba(0,0,0,0.12)' 
+                }} />
+              </Box>
+            </Box>
+          )}
           {messages.length === 0 && (
             <Typography variant="body2" color="text.secondary" sx={{ mt: 2, textAlign: 'center' }}>Ask a question to get started.</Typography>
           )}
@@ -544,7 +606,7 @@ export default function SearchResults() {
                         hour12: false 
                       })}
                     </Typography>
-                    <Paper elevation={1} sx={{ px: 2.5, py: 1.5, borderRadius: 5, backgroundColor: '#f0f0f0', maxWidth: '100%' }}>
+                    <Paper elevation={1} sx={{ px: 1.5, py: 1, borderRadius: 5, backgroundColor: '#f0f0f0', maxWidth: '100%', height: '36px' }}>
                       <Typography variant="body2" sx={{ 
                         whiteSpace: 'pre-wrap', 
                         wordBreak: 'break-word', 
@@ -746,6 +808,19 @@ export default function SearchResults() {
             background: 'rgba(255,255,255,0.9)'
           }}
         >
+          {/* Left-side icons: Book (first) + Add */}
+          <Box sx={{ display: 'flex', alignItems: 'center', mr: 1 }}>
+            <Tooltip title="Add files & more" placement="top" arrow>
+              <IconButton
+                size="small"
+                aria-label="add-files"
+                sx={{ ml: 0.5, color: '#CD2028', '&:hover': { backgroundColor: 'transparent' } }}
+              >
+                <AddIcon fontSize="small" />
+              </IconButton>
+            </Tooltip>
+          </Box>
+
           <InputBase
             value={input}
             onChange={(e) => setInput(e.target.value)}

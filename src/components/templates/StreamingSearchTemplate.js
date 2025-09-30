@@ -90,6 +90,28 @@ const StreamingSearchTemplate = ({
             onSourcesClick={() => onSourcesPanelToggle && onSourcesPanelToggle(true)}
           />
           
+          {/* Like Button */}
+          <IconButton
+            size="small"
+            onClick={() => {
+              // TODO: Add like functionality
+              console.log('Content liked');
+            }}
+            sx={{
+              width: 32,
+              height: 32,
+              borderRadius: '50%',
+              '&:hover': {
+                borderColor: '#3289C9',
+                backgroundColor: '#f0f7ff'
+              }
+            }}
+          >
+            <Tooltip title="Like">
+              <Box sx={{ fontSize: '16px' }}>�</Box>
+            </Tooltip>
+          </IconButton>
+          
           {/* Copy Button */}
           <IconButton
             size="small"
@@ -113,7 +135,7 @@ const StreamingSearchTemplate = ({
             }}
           >
             <Tooltip title="Copy">
-              <Box sx={{ fontSize: '16px' }}>📋</Box>
+              <Box sx={{ fontSize: '16px' }}>�</Box>
             </Tooltip>
           </IconButton>
           
@@ -132,7 +154,7 @@ const StreamingSearchTemplate = ({
             }}
           >
             <Tooltip title="Report">
-              <Box sx={{ fontSize: '16px' }}>🚩</Box>
+              <Box sx={{ fontSize: '16px' }}>�</Box>
             </Tooltip>
           </IconButton>
         </Box>

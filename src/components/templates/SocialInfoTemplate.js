@@ -45,9 +45,6 @@ const SocialInfoTemplate = ({ socialMedia }) => {
 
   return (
     <Box sx={{ mt: 3, p: 0 }}>
-      <Typography variant="subtitle2" sx={{ fontWeight: 600, mb: 2, color: '#333' }}>
-        📱 Social Media
-      </Typography>
       <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
         {Object.entries(socialMedia).map(([platform, url]) => {
           // Skip empty, null, undefined, N/A, or whitespace-only values

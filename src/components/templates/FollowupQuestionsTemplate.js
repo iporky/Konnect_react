@@ -1,7 +1,7 @@
 import { Box, Paper, Typography } from '@mui/material';
 
 const FollowupQuestionsTemplate = ({ content, onFollowUpClick }) => (
-  <Box sx={{ mt: 2 }}>
+  <Box sx={{ mt: 0 }}>
     <Box sx={{ 
       display: 'flex', 
       gap: 2, 
