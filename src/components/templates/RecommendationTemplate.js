@@ -200,20 +200,20 @@ const RecommendationTemplate = ({ content, index }) => {
             {/* Operating Hours and Languages in separate rows */}
             {((content.operating_hours && content.operating_hours !== 'N/A') || 
               (content.languages && content.languages !== 'N/A')) && (
-              <Box sx={{ mb: 1 }}>
+              <Box sx={{ mb: 0.5}}>
                 {/* Operating Hours Row */}
                 {content.operating_hours && content.operating_hours !== 'N/A' && (
-                  <Box sx={{ display: 'flex', alignItems: 'center', mb: 1 }}>
+                  <Box sx={{ display: 'flex', alignItems: 'center', mb: 0.5 }}>
                     <Typography variant="body2" sx={{ 
                       fontWeight: 600, 
                       color: '#333', 
-                      fontSize: '13px',
+                      fontSize: '12px',
                       mr: 1
                     }}>
                       🕒 Hours:
                     </Typography>
                     <Typography variant="body2" sx={{
-                      fontSize: '13px',
+                      fontSize: '12px',
                       color: '#555'
                     }}>
                       {content.operating_hours}
@@ -223,17 +223,17 @@ const RecommendationTemplate = ({ content, index }) => {
                 
                 {/* Languages Row */}
                 {content.languages && content.languages !== 'N/A' && (
-                  <Box sx={{ display: 'flex', alignItems: 'center' }}>
+                  <Box sx={{ display: 'flex', alignItems: 'center'}}>
                     <Typography variant="body2" sx={{ 
                       fontWeight: 600, 
                       color: '#333', 
-                      fontSize: '13px',
+                      fontSize: '12px',
                       mr: 1
                     }}>
                       🗣️ Languages:
                     </Typography>
                     <Typography variant="body2" sx={{
-                      fontSize: '13px',
+                      fontSize: '12px',
                       color: '#555'
                     }}>
                       {content.languages}
@@ -245,14 +245,66 @@ const RecommendationTemplate = ({ content, index }) => {
             
             {/* Expat Information */}
             {(content.expat_popularity || content.proximity_to_expat_area || content.recent_visitors) && (
-              <Box sx={{ mt: 1 }}>
-                <Typography variant="body2" sx={{ fontSize: '13px' }}>
-                  {[
-                    content.expat_popularity && content.expat_popularity !== 'N/A' ? `Popularity: ${content.expat_popularity}` : null,
-                    content.proximity_to_expat_area && content.proximity_to_expat_area !== 'N/A' ? `Location: ${content.proximity_to_expat_area}` : null,
-                    content.recent_visitors && content.recent_visitors !== 'N/A' ? `Visitors: ${content.recent_visitors}` : null
-                  ].filter(Boolean).join(', ')}
-                </Typography>
+              <Box sx={{ mt: 0.5 }}>
+                {/* Expat Popularity Row */}
+                {content.expat_popularity && content.expat_popularity !== 'N/A' && (
+                  <Box sx={{ display: 'flex', alignItems: 'center', mb: 0.5 }}>
+                    <Typography variant="body2" sx={{ 
+                      fontWeight: 600, 
+                      color: '#333', 
+                      fontSize: '12px',
+                      mr: 1
+                    }}>
+                      👥 Expat Popularity:
+                    </Typography>
+                    <Typography variant="body2" sx={{
+                      fontSize: '12px',
+                      color: '#555'
+                    }}>
+                      {content.expat_popularity}
+                    </Typography>
+                  </Box>
+                )}
+                
+                {/* Proximity to Expat Area Row */}
+                {content.proximity_to_expat_area && content.proximity_to_expat_area !== 'N/A' && (
+                  <Box sx={{ display: 'flex', alignItems: 'center', mb: 0.5 }}>
+                    <Typography variant="body2" sx={{ 
+                      fontWeight: 600, 
+                      color: '#333', 
+                      fontSize: '12px',
+                      mr: 1
+                    }}>
+                      📍 Proximity to Expat Area:
+                    </Typography>
+                    <Typography variant="body2" sx={{
+                      fontSize: '12px',
+                      color: '#555'
+                    }}>
+                      {content.proximity_to_expat_area}
+                    </Typography>
+                  </Box>
+                )}
+                
+                {/* Recent Visitors Row */}
+                {content.recent_visitors && content.recent_visitors !== 'N/A' && (
+                  <Box sx={{ display: 'flex', alignItems: 'center' }}>
+                    <Typography variant="body2" sx={{ 
+                      fontWeight: 600, 
+                      color: '#333', 
+                      fontSize: '12px',
+                      mr: 1
+                    }}>
+                      🚶 Recent Visitors:
+                    </Typography>
+                    <Typography variant="body2" sx={{
+                      fontSize: '12px',
+                      color: '#555'
+                    }}>
+                      {content.recent_visitors}
+                    </Typography>
+                  </Box>
+                )}
               </Box>
             )}
           </Box>
