@@ -808,13 +808,13 @@ export default function SearchResults() {
             background: 'rgba(255,255,255,0.9)'
           }}
         >
-          {/* Left-side icons: Book (first) + Add */}
+          {/* Left-side icons: + Add */}
           <Box sx={{ display: 'flex', alignItems: 'center', mr: 1 }}>
             <Tooltip title="Add files & more" placement="top" arrow>
               <IconButton
                 size="small"
                 aria-label="add-files"
-                sx={{ ml: 0.5, color: '#CD2028', '&:hover': { backgroundColor: 'transparent' } }}
+                sx={{ color: '#000', '&:hover': { backgroundColor: 'transparent' } }}
               >
                 <AddIcon fontSize="small" />
               </IconButton>

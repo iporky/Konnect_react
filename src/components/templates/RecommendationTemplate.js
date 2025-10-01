@@ -236,7 +236,7 @@ const RecommendationTemplate = ({ content, index }) => {
                       fontSize: '12px',
                       color: '#555'
                     }}>
-                      {content.languages}
+                      {Array.isArray(content.languages) ? content.languages.join(', ') : content.languages}
                     </Typography>
                   </Box>
                 )}
@@ -438,7 +438,7 @@ const RecommendationTemplate = ({ content, index }) => {
               label="Book"
               size="small"
               sx={{
-                backgroundColor: '#6F95BD',
+                backgroundColor: '#f39232',
                 color: 'white',
                 fontWeight: 500,
                 fontSize: '11px',
