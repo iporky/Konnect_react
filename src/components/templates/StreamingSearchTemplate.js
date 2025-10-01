@@ -1,3 +1,4 @@
+import { ContentCopy, Favorite, Report } from '@mui/icons-material';
 import { Box, IconButton, Tooltip, Typography } from '@mui/material';
 import GeneralAnswerTemplate from './GeneralAnswerTemplate';
 import LoadingTemplate from './LoadingTemplate';
@@ -84,7 +85,7 @@ const StreamingSearchTemplate = ({
 
       {/* Sources and Action Buttons */}
       {sources.length > 0 && (
-        <Box sx={{ mb: 3, display: 'flex', alignItems: 'center', gap: 1 }}>
+        <Box sx={{ mb: 3, display: 'flex', alignItems: 'center', gap: 0 }}>
           <Sources 
             sources={sources} 
             onSourcesClick={() => onSourcesPanelToggle && onSourcesPanelToggle(true)}
@@ -108,7 +109,7 @@ const StreamingSearchTemplate = ({
             }}
           >
             <Tooltip title="Like">
-              <Box sx={{ fontSize: '16px' }}>�</Box>
+              <Favorite sx={{ fontSize: 16, color: '#666' }} />
             </Tooltip>
           </IconButton>
           
@@ -135,7 +136,7 @@ const StreamingSearchTemplate = ({
             }}
           >
             <Tooltip title="Copy">
-              <Box sx={{ fontSize: '16px' }}>�</Box>
+              <ContentCopy sx={{ fontSize: 16, color: '#666' }} />
             </Tooltip>
           </IconButton>
           
@@ -154,7 +155,7 @@ const StreamingSearchTemplate = ({
             }}
           >
             <Tooltip title="Report">
-              <Box sx={{ fontSize: '16px' }}>�</Box>
+              <Report sx={{ fontSize: 16, color: '#666' }} />
             </Tooltip>
           </IconButton>
         </Box>

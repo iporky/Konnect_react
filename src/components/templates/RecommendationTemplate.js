@@ -1,9 +1,12 @@
-import { ChevronLeft, ChevronRight, DirectionsBus, DirectionsCar, Email, Language, Phone, Star, Train } from '@mui/icons-material';
+import { ChevronLeft, ChevronRight } from '@mui/icons-material';
 import { Box, Button, Chip, Divider, IconButton, Typography } from '@mui/material';
 import { useState } from 'react';
 import Amenities from './Amenities';
+import ContactTemplate from './ContactTemplate';
 import DocumentsRequired from './DocumentsRequired';
+import RatingTemplate from './RatingTemplate';
 import SocialInfoTemplate from './SocialInfoTemplate';
+import TransportTemplate from './TransportTemplate';
 
 const RecommendationTemplate = ({ content, index }) => {
   const [activeTab, setActiveTab] = useState('about');
@@ -170,75 +173,7 @@ const RecommendationTemplate = ({ content, index }) => {
           </Box>
         );
       case 'contact':
-        return (
-          <Box sx={{ mt: 1, p: 0 }}>
-            <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: '16px' }}>
-              {content.contact_info && (
-                <>
-                  {content.contact_info.phone && content.contact_info.phone !== 'N/A' && (
-                    <Box sx={{ display: 'flex', alignItems: 'center', gap: 0.5 }}>
-                      <Phone sx={{ fontSize: 16, color: '#4caf50', display: 'flex', alignItems: 'center' }} />
-                      <Typography variant="body2" sx={{ fontSize: '13px', display: 'flex', alignItems: 'center' }}>
-                        {content.contact_info.phone}
-                      </Typography>
-                    </Box>
-                  )}
-                  {content.contact_info.email && content.contact_info.email !== 'N/A' && (
-                    <Box sx={{ display: 'flex', alignItems: 'center', gap: 0.5 }}>
-                      <Email sx={{ fontSize: 16, color: '#2196f3', display: 'flex', alignItems: 'center' }} />
-                      <Typography variant="body2" sx={{ fontSize: '13px', display: 'flex', alignItems: 'center' }}>
-                        {content.contact_info.email}
-                      </Typography>
-                    </Box>
-                  )}
-                  {content.contact_info.website && content.contact_info.website !== 'N/A' && (
-                    <Box 
-                      component="a"
-                      href={content.contact_info.website}
-                      target="_blank"
-                      sx={{ 
-                        display: 'flex', 
-                        alignItems: 'center', 
-                        gap: 0.5, 
-                        textDecoration: 'none',
-                        '&:hover': {
-                          opacity: 0.8
-                        }
-                      }}
-                    >
-                      <Language sx={{ fontSize: 16, color: '#ff9800', display: 'flex', alignItems: 'center' }} />
-                      <Typography variant="body2" sx={{ fontSize: '13px', display: 'flex', alignItems: 'center', color: '#2c3e50' }}>
-                        Website
-                      </Typography>
-                    </Box>
-                  )}
-                </>
-              )}            
-              {/* Guidance Link */}
-              {content.guidance_link && content.guidance_link !== 'N/A' && (
-                <Box 
-                  component="a"
-                  href={content.guidance_link}
-                  target="_blank"
-                  sx={{ 
-                    display: 'flex', 
-                    alignItems: 'center', 
-                    gap: 0.5, 
-                    textDecoration: 'none',
-                    '&:hover': {
-                      opacity: 0.8
-                    }
-                  }}
-                >
-                  <Language sx={{ fontSize: 16, color: '#f44336', display: 'flex', alignItems: 'center' }} />
-                  <Typography variant="body2" sx={{ fontSize: '13px', display: 'flex', alignItems: 'center', color: '#2c3e50' }}>
-                    Visitor Guide
-                  </Typography>
-                </Box>
-              )}
-            </Box>
-          </Box>
-        );
+        return <ContactTemplate contactInfo={content.contact_info} guidanceLink={content.guidance_link} />;
       case 'documents':
         return <DocumentsRequired documentsRequired={content.documents_required} />;
       case 'amenity':
@@ -256,48 +191,7 @@ const RecommendationTemplate = ({ content, index }) => {
           </Box>
         );
       case 'transport':
-        return (
-          <Box sx={{ mt: 1, p: 0 }}>
-            <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: '16px' }}>
-              {content.how_to_reach && (
-                <>
-                  {content.how_to_reach.taxi && content.how_to_reach.taxi !== 'N/A' && (
-                    <Box sx={{ display: 'flex', alignItems: 'center', gap: 0.5 }}>
-                      <DirectionsCar sx={{ fontSize: 16, color: '#ff9800', display: 'flex', alignItems: 'center' }} />
-                      <Typography variant="body2" sx={{ fontSize: '13px', display: 'flex', alignItems: 'center' }}>
-                        Taxi: {content.how_to_reach.taxi}
-                      </Typography>
-                    </Box>
-                  )}
-                  {content.how_to_reach.bus && content.how_to_reach.bus !== 'N/A' && (
-                    <Box sx={{ display: 'flex', alignItems: 'center', gap: 0.5 }}>
-                      <DirectionsBus sx={{ fontSize: 16, color: '#2196f3', display: 'flex', alignItems: 'center' }} />
-                      <Typography variant="body2" sx={{ fontSize: '13px', display: 'flex', alignItems: 'center' }}>
-                        Bus: {content.how_to_reach.bus}
-                      </Typography>
-                    </Box>
-                  )}
-                  {content.how_to_reach.metro && content.how_to_reach.metro !== 'N/A' && (
-                    <Box sx={{ display: 'flex', alignItems: 'center', gap: 0.5 }}>
-                      <Train sx={{ fontSize: 16, color: '#4caf50', display: 'flex', alignItems: 'center' }} />
-                      <Typography variant="body2" sx={{ fontSize: '13px', display: 'flex', alignItems: 'center' }}>
-                        Metro: {content.how_to_reach.metro}
-                      </Typography>
-                    </Box>
-                  )}
-                  {content.how_to_reach.train && content.how_to_reach.train !== 'N/A' && (
-                    <Box sx={{ display: 'flex', alignItems: 'center', gap: 0.5 }}>
-                      <Train sx={{ fontSize: 16, color: '#9c27b0', display: 'flex', alignItems: 'center' }} />
-                      <Typography variant="body2" sx={{ fontSize: '13px', display: 'flex', alignItems: 'center' }}>
-                        Train: {content.how_to_reach.train}
-                      </Typography>
-                    </Box>
-                  )}
-                </>
-              )}
-            </Box>
-          </Box>
-        );
+        return <TransportTemplate howToReach={content.how_to_reach} />;
       case 'social':
         return <SocialInfoTemplate socialMedia={content.social_media} />;
       default: // about
@@ -425,12 +319,7 @@ const RecommendationTemplate = ({ content, index }) => {
           <Box sx={{ display: 'flex', gap: 1, mb: 2, flexWrap: 'wrap', justifyContent: 'space-between', alignItems: 'center' }}>
             {/* Left side chips */}
             <Box sx={{ display: 'flex', gap: 1, flexWrap: 'wrap', alignItems: 'center' }}>
-              <Box sx={{ display: 'flex', alignItems: 'center', px: 0, py: 0.5, height: 24 }}>
-                <Star sx={{ fontSize: 14, color: '#6f95bd' }} />
-                <Typography variant="caption" sx={{ ml: 0.5, fontWeight: 600, color: '#6f95bd', fontSize: '12px' }}>
-                  {content.rating || 'N/A'}
-                </Typography>
-              </Box>
+              <RatingTemplate rating={content.rating} />
               
               {/* Highlight next to rating */}
               {content.highlight && content.highlight !== 'N/A' && (
