@@ -453,7 +453,7 @@ const Home = () => {
                         size="small"
                         aria-label="add-files"
                         onClick={handleFileUpload}
-                        sx={{ color: '#CD2028', '&:hover': { backgroundColor: 'transparent' } }}
+                        sx={{ color: '#000', '&:hover': { backgroundColor: 'transparent' } }}
                       >
                         <AddIcon fontSize="small" />
                       </IconButton>
@@ -583,16 +583,6 @@ const Home = () => {
                       <LanguageOutlined sx={{ width: 20, height: 20, color: searchToggles.globe ? '#6F95BD' : undefined }} />
                     </IconButton>
                   </Tooltip>
-                  <Tooltip title="Attach file" arrow enterDelay={300} placement="top">
-                    <IconButton
-                      size="small"
-                      aria-label="attach"
-                      onClick={() => toggleIcon('attach')}
-                      sx={{ mx: 0.5, color: theme.palette.text.secondary, '&:hover': { backgroundColor: 'transparent' }, '&:hover svg': { color: '#6F95BD' } }}
-                    >
-                      <AttachFileOutlined sx={{ width: 20, height: 20, color: searchToggles.attach ? '#6F95BD' : undefined }} />
-                    </IconButton>
-                  </Tooltip>
                   <Tooltip title="Voice" arrow enterDelay={300} placement="top">
                     <IconButton
                       size="small"
@@ -684,7 +674,9 @@ const Home = () => {
                           display: 'flex',
                           alignItems: 'center',
                           justifyContent: 'center',
-                          backgroundColor: '#8888881A',
+                          backgroundColor: theme.palette.background.paper,
+                          boxShadow: '0 4px 10px rgba(0,0,0,0.08)',
+                          cursor: 'pointer',
                           transition: 'box-shadow 0.35s, background-color 0.35s',
                           mb: 1,
                           '&:hover': {
@@ -720,7 +712,7 @@ const Home = () => {
                           boxShadow: '0 4px 10px rgba(0,0,0,0.08)',
                           cursor: 'pointer',
                           mb: 1,
-                          transition: 'background-color 0.3s, box-shadow 0.3s',
+                          transition: 'background-color 0.35s, box-shadow 0.35s',
                           '&:hover': { 
                             background: '#FCF4F4',
                             boxShadow: '0 0 5.2px 1px rgba(0, 0, 0, 0.25)',
@@ -760,7 +752,7 @@ const Home = () => {
                                 justifyContent: 'center',
                                 backgroundColor: theme.palette.background.paper,
                                 boxShadow: '0 4px 10px rgba(0,0,0,0.08)',
-                                transition: 'box-shadow 0.25s, background-color 0.25s',
+                                transition: 'box-shadow 0.35s, background-color 0.35s',
                                 mb: 1,
                                 '&:hover': { 
                                   background: '#FCF4F4',
@@ -795,7 +787,7 @@ const Home = () => {
                               boxShadow: '0 4px 10px rgba(0,0,0,0.08)',
                               cursor: 'pointer',
                               mb: 1,
-                              transition: 'background-color 0.3s, box-shadow 0.3s',
+                              transition: 'background-color 0.35s, box-shadow 0.35s',
                               '&:hover': { 
                                 background: '#FCF4F4',
                                 boxShadow: '0 0 5.2px 1px rgba(0, 0, 0, 0.25)',
