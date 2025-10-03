@@ -525,7 +525,7 @@ export default function SearchResults() {
                 bottom: '40px', // Above the input area
                 zIndex: 10,
                 mb: 1,
-                maxWidth: { md: '610px' },
+                maxWidth: { md: '630px' },
                 width: '100%',
                 mx: 'auto',
                 display: 'flex',
@@ -538,6 +538,7 @@ export default function SearchResults() {
                 size="small" 
                 onClick={() => setShowStickyQuestions(false)}
                 sx={{ 
+                  ml: -3.5,
                   width: 32, 
                   height: 32,
                   color: '#666',
@@ -552,7 +553,7 @@ export default function SearchResults() {
               </IconButton>
               
               {/* Follow-up questions without background */}
-              <Box sx={{ flex: 1 }}>
+              <Box sx={{ flex: 1, ml: -1 }}>
                 <FollowupQuestionsTemplate
                   content={followupQuestions}
                   onFollowUpClick={(question) => {

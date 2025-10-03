@@ -253,7 +253,7 @@ const Home = () => {
                   sx={{
                     borderRadius: '25px',
                     px: 2.5,
-                    height: '45px',
+                    height: '36px',
                     textTransform: 'none',
                     fontWeight: 600,
                     fontFamily: 'Metropolis',
@@ -277,7 +277,7 @@ const Home = () => {
                   sx={{
                     borderRadius: '25px',
                     px: 2.5,
-                    height: '45px',
+                    height: '36px',
                     textTransform: 'none',
                     fontWeight: 600,
                     fontFamily: 'Metropolis',
