@@ -258,7 +258,7 @@ export default function SearchResults() {
                 <Box
                   sx={{
                     position: 'absolute',
-                    right: { xs: 8, md: 45 },
+                    right: { xs: 8, md: 10 },
                     display: 'flex',
                     gap: { xs: 0.5, md: 1 },
                   }}
@@ -415,7 +415,7 @@ export default function SearchResults() {
                           borderRadius: '50%',
                           objectFit: 'contain',
                           boxShadow: '0 0 0 1px rgba(0,0,0,0.06)',
-                          marginLeft: -5
+                          marginLeft: -0.2
                         }}
                       />
                       <Typography sx={{ fontWeight: 600, color: '#656565', letterSpacing: 0, fontSize: '14px' }}>
