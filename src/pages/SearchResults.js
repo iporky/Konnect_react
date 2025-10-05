@@ -4,6 +4,8 @@ import SendIcon from '@mui/icons-material/Send';
 import { Box, Button, Divider, IconButton, InputBase, Paper, Tooltip, Typography } from '@mui/material';
 import { useCallback, useEffect, useRef, useState } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
+import BookingModal from '../components/BookingModal';
+import BookingSuccessNotification from '../components/BookingSuccessNotification';
 import FeedbackPopup from '../components/FeedbackPopup';
 import SourcesPanel from '../components/SourcesPanel';
 import FollowupQuestionsTemplate from '../components/templates/FollowupQuestionsTemplate';
@@ -25,8 +27,42 @@ export default function SearchResults() {
   const [isSourcesPanelOpen, setIsSourcesPanelOpen] = useState(false);
   const [feedbackOpen, setFeedbackOpen] = useState(false);
   const [showStickyQuestions, setShowStickyQuestions] = useState(true);
+  const [visibleRecs, setVisibleRecs] = useState(2); // This state controls how many recommendation items are shown (2 at a time)
+  const [bookingModalOpen, setBookingModalOpen] = useState(false);
+  const [selectedRecommendation, setSelectedRecommendation] = useState(null);
+  const [bookedRecommendations, setBookedRecommendations] = useState(new Set());
+  const [showSuccessNotification, setShowSuccessNotification] = useState(false);
+  const [lastBookingDetails, setLastBookingDetails] = useState(null);
   const abortRef = useRef();
   const runIdRef = useRef(0);
+
+  // Effect to show sticky questions when a response is complete and has follow-up questions
+  useEffect(() => {
+    const lastAssistantMessage = [...messages].reverse().find(m => m.role === 'assistant');
+    if (!lastAssistantMessage || lastAssistantMessage.loading) return;
+    
+    let hasFollowupQuestions = false;
+    
+    // Check if the last assistant message has follow-up questions
+    if (lastAssistantMessage.chunks && lastAssistantMessage.chunks.followup_questions) {
+      hasFollowupQuestions = Array.isArray(lastAssistantMessage.chunks.followup_questions) && 
+                            lastAssistantMessage.chunks.followup_questions.length > 0;
+    } else if (lastAssistantMessage.content) {
+      try {
+        const parsed = JSON.parse(lastAssistantMessage.content);
+        if (parsed.answer && parsed.answer.followup_questions) {
+          hasFollowupQuestions = Array.isArray(parsed.answer.followup_questions) && 
+                                parsed.answer.followup_questions.length > 0;
+        }
+      } catch {
+        // Not JSON, no follow-up questions
+      }
+    }
+    
+    if (hasFollowupQuestions) {
+      setShowStickyQuestions(true);
+    }
+  }, [messages]);
 
   const run = useCallback(async (prompt, assistantMsgId) => {
     if (!prompt.trim()) return;
@@ -123,7 +159,8 @@ export default function SearchResults() {
     const prompt = input.trim();
     if (!prompt) return;
     setInput('');
-    setShowStickyQuestions(true); // Reset sticky questions for new query
+    setShowStickyQuestions(false); // Hide current sticky questions when asking new question
+    setVisibleRecs(2); // Reset visible recommendations for new query
     // Append new user + assistant placeholder
     const uid = crypto.randomUUID();
     const aid = crypto.randomUUID();
@@ -140,8 +177,8 @@ export default function SearchResults() {
   };
 
   const handleFollowUpClick = (question) => {
-    setInput(question);
-    setShowStickyQuestions(true); // Reset sticky questions for new query
+    setShowStickyQuestions(false); // Hide current sticky questions when asking follow-up
+    setVisibleRecs(2); // Reset visible recommendations for new query
     
     // Auto-submit the follow-up question
     const uid = crypto.randomUUID();
@@ -192,6 +229,32 @@ export default function SearchResults() {
 
   const handleSourcesPanelToggle = (isOpen) => {
     setIsSourcesPanelOpen(isOpen);
+  };
+
+  const handleBookingOpen = (recommendation) => {
+    setSelectedRecommendation(recommendation);
+    setBookingModalOpen(true);
+  };
+
+  const handleBookingClose = () => {
+    setBookingModalOpen(false);
+    setSelectedRecommendation(null);
+  };
+
+  const handleBookingSuccess = (bookingDetails) => {
+    // Mark this recommendation as booked
+    if (selectedRecommendation) {
+      setBookedRecommendations(prev => new Set([...prev, selectedRecommendation.title || selectedRecommendation.name || Math.random()]));
+    }
+    
+    // Show success notification
+    setLastBookingDetails(bookingDetails);
+    setShowSuccessNotification(true);
+    
+    // Auto-hide notification after 5 seconds
+    setTimeout(() => {
+      setShowSuccessNotification(false);
+    }, 5000);
   };
 
   const scrollRef = useRef();
@@ -444,6 +507,10 @@ export default function SearchResults() {
                             currentQuery={messages.find(msg => msg.role === 'user' && msg.id === messages[messages.findIndex(msg => msg.id === m.id) - 1]?.id)?.content}
                             onSourcesPanelToggle={handleSourcesPanelToggle}
                             onReportClick={() => setFeedbackOpen(true)}
+                            visibleRecs={visibleRecs}
+                            setVisibleRecs={setVisibleRecs}
+                            onBookingClick={handleBookingOpen}
+                            bookedRecommendations={bookedRecommendations}
                           />
                         ) : (
                           /* Use StreamingSearchTemplate for all responses */
@@ -473,6 +540,10 @@ export default function SearchResults() {
                             currentQuery={messages.find(msg => msg.role === 'user' && msg.id === messages[messages.findIndex(msg => msg.id === m.id) - 1]?.id)?.content}
                             onSourcesPanelToggle={handleSourcesPanelToggle}
                             onReportClick={() => setFeedbackOpen(true)}
+                            visibleRecs={visibleRecs}
+                            setVisibleRecs={setVisibleRecs}
+                            onBookingClick={handleBookingOpen}
+                            bookedRecommendations={bookedRecommendations}
                           />
                         )}
                       </>
@@ -494,7 +565,7 @@ export default function SearchResults() {
         {/* Sticky Follow-up Questions */}
         {showStickyQuestions && messages.length > 0 && (() => {
           // Get the last assistant message with follow-up questions
-          const lastAssistantMessage = [...messages].reverse().find(m => m.role === 'assistant');
+          const lastAssistantMessage = [...messages].reverse().find(m => m.role === 'assistant' && !m.loading);
           if (!lastAssistantMessage) return null;
           
           let followupQuestions = null;
@@ -558,7 +629,7 @@ export default function SearchResults() {
                   content={followupQuestions}
                   onFollowUpClick={(question) => {
                     handleFollowUpClick(question);
-                    setShowStickyQuestions(false);
+                    // Don't immediately hide, let the effect handle it
                   }}
                 />
               </Box>
@@ -668,6 +739,22 @@ export default function SearchResults() {
         open={feedbackOpen} 
         onClose={() => setFeedbackOpen(false)} 
       />
+      
+      {/* Booking Modal */}
+      <BookingModal
+        open={bookingModalOpen}
+        onClose={handleBookingClose}
+        onBookingSuccess={handleBookingSuccess}
+        recommendation={selectedRecommendation}
+      />
+      
+      {/* Success Notification */}
+      <BookingSuccessNotification
+        open={showSuccessNotification}
+        onClose={() => setShowSuccessNotification(false)}
+        bookingDetails={lastBookingDetails}
+      />
+      
       </Box>
     </div>
   );

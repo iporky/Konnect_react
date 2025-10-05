@@ -8,7 +8,7 @@ import RatingTemplate from './RatingTemplate';
 import SocialInfoTemplate from './SocialInfoTemplate';
 import TransportTemplate from './TransportTemplate';
 
-const RecommendationTemplate = ({ content, index }) => {
+const RecommendationTemplate = ({ content, index, onBookingClick, isBooked = false }) => {
   const [activeTab, setActiveTab] = useState('about');
   const [tabStartIndex, setTabStartIndex] = useState(0);
   const maxVisibleTabs = 4;
@@ -435,18 +435,20 @@ const RecommendationTemplate = ({ content, index }) => {
           <Box sx={{ display: 'flex', alignItems: 'center', gap: 1, ml: 0 }}>
             {/* Book Chip */}
             <Chip
-              label="Book"
+              label={isBooked ? "Booked" : "Book"}
               size="small"
+              onClick={() => !isBooked && onBookingClick && onBookingClick()}
               sx={{
-                backgroundColor: '#f39232',
+                backgroundColor: isBooked ? '#4caf50' : '#f39232',
                 color: 'white',
                 fontWeight: 500,
                 fontSize: '11px',
                 minWidth: 70,
                 height: 24,
                 borderRadius: 4,
+                cursor: isBooked ? 'default' : 'pointer',
                 '&:hover': {
-                  backgroundColor: '#5a7ba3'
+                  backgroundColor: isBooked ? '#4caf50' : '#5a7ba3'
                 }
               }}
             />
