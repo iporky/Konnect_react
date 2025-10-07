@@ -2,7 +2,7 @@
  * Search API service for handling streaming search requests
  */
 
-const SEARCH_API_URL = 'https://ec2-43-202-144-82.ap-northeast-2.compute.amazonaws.com/api/v1/konnect/search';
+const SEARCH_API_URL = `${process.env.REACT_APP_API_BASE_URL}/konnect/search`;
 
 /**
  * Creates an abort controller for search requests
