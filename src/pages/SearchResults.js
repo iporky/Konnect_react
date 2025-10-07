@@ -132,8 +132,18 @@ export default function SearchResults() {
   useEffect(() => {
     if (messages.length > 0) return; // already initialized
     if (q) {
-      const uid = crypto.randomUUID();
-      const aid = crypto.randomUUID();
+      // Fallback UUID generator for environments without crypto.randomUUID
+      function generateUUID() {
+        // RFC4122 version 4 compliant UUID (not cryptographically secure)
+        return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function(c) {
+          const r = Math.random() * 16 | 0;
+          const v = c === 'x' ? r : ((r & 0x3) | 0x8); // Add parentheses to clarify precedence
+          return v.toString(16);
+        });
+      }
+
+      const uid = (window.crypto && window.crypto.randomUUID) ? window.crypto.randomUUID() : generateUUID();
+      const aid = (window.crypto && window.crypto.randomUUID) ? window.crypto.randomUUID() : generateUUID();
       setMessages([
         { id: uid, role: 'user', content: q },
         { id: aid, role: 'assistant', content: '', loading: true }

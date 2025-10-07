@@ -354,16 +354,27 @@ const RecommendationTemplate = ({ content, index, onBookingClick, isBooked = fal
               {content.name}
             </Typography>
             <Box sx={{ display: 'flex', alignItems: 'center', flexShrink: 0 }}>
-              <Typography 
-                variant="body2"
-                sx={{ 
-                  color: '#000', 
-                  fontSize: '12px',
+              <Button
+                variant="contained"
+                sx={{
+                  backgroundColor: '#000',
+                  color: '#fff',
+                  borderRadius: 3,
+                  height: '24px',
+                  minWidth: '60px',
+                  fontSize: '11px',
                   fontWeight: 600,
+                  textTransform: 'none',
+                  px: 1,
+                  boxShadow: 'none',
+                  '&:hover': {
+                    backgroundColor: '#2f3336ff',
+                    boxShadow: 'none'
+                  }
                 }}
               >
-                {content.category}
-              </Typography>
+                Save
+              </Button>
             </Box>
           </Box>
           
