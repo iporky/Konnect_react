@@ -1,5 +1,6 @@
-import { ContentCopy, Favorite, Report } from '@mui/icons-material';
+import { ContentCopy, Favorite, FavoriteBorder, Report } from '@mui/icons-material';
 import { Box, IconButton, Tooltip, Typography } from '@mui/material';
+import { useState } from 'react';
 import GeneralAnswerTemplate from './GeneralAnswerTemplate';
 import LoadingTemplate from './LoadingTemplate';
 import RecommendationTemplate from './RecommendationTemplate';
@@ -13,9 +14,15 @@ const StreamingSearchTemplate = ({
   onRegenerateAnswer,
   currentQuery,
   onSourcesPanelToggle,
-  onReportClick
+  onReportClick,
+  visibleRecs = 2,
+  setVisibleRecs,
+  onBookingClick,
+  bookedRecommendations = new Set()
 }) => {
   console.log('StreamingSearchTemplate render:', { chunks, isLoading, chunksCount: Object.keys(chunks).length });
+  
+  const [isLiked, setIsLiked] = useState(false);
   
   // Collect all sources from all chunks (not just recommendations)
   const collectSources = () => {
@@ -70,16 +77,42 @@ const StreamingSearchTemplate = ({
               const bIndex = parseInt(b.split('_')[1]);
               return aIndex - bIndex;
             })
+            .slice(0, visibleRecs)
             .map(key => {
               const index = parseInt(key.split('_')[1]);
+              const recommendation = chunks[key];
+              const isBooked = bookedRecommendations.has(recommendation?.title || recommendation?.name || '');
+              
               return (
                 <RecommendationTemplate
                   key={key}
-                  content={chunks[key]}
+                  content={recommendation}
                   index={index}
+                  onBookingClick={() => onBookingClick && onBookingClick(recommendation)}
+                  isBooked={isBooked}
                 />
               );
             })}
+          
+          {/* Load More Button */}
+          {Object.keys(chunks).filter(key => key.startsWith('recommendation_')).length > visibleRecs && (
+            <Box sx={{ display: 'flex', justifyContent: 'center', mt: 2 }}>
+              <button
+                onClick={() => setVisibleRecs && setVisibleRecs(prev => prev + 2)}
+                style={{
+                  background: 'none',
+                  border: 'none',
+                  color: '#3289C9',
+                  cursor: 'pointer',
+                  fontSize: '14px',
+                  fontWeight: 500,
+                  padding: '8px 16px'
+                }}
+              >
+                + Show More
+              </button>
+            </Box>
+          )}
         </Box>
       )}
 
@@ -95,8 +128,8 @@ const StreamingSearchTemplate = ({
           <IconButton
             size="small"
             onClick={() => {
-              // TODO: Add like functionality
-              console.log('Content liked');
+              setIsLiked(!isLiked);
+              console.log('Content liked:', !isLiked);
             }}
             sx={{
               width: 32,
@@ -108,8 +141,12 @@ const StreamingSearchTemplate = ({
               }
             }}
           >
-            <Tooltip title="Like">
-              <Favorite sx={{ fontSize: 16, color: '#666' }} />
+            <Tooltip title={isLiked ? "Unlike" : "Like"}>
+              {isLiked ? (
+                <Favorite sx={{ fontSize: 16, color: '#e91e63' }} />
+              ) : (
+                <FavoriteBorder sx={{ fontSize: 16, color: '#666' }} />
+              )}
             </Tooltip>
           </IconButton>
           

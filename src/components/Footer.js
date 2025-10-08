@@ -33,7 +33,7 @@ const Footer = ({ floating = false, stickToBottom = true }) => {
   // Memoized footer container styles
   const footerStyles = useMemo(() => ({
     backgroundColor: theme.palette.background.default,
-    py: 2,
+    py: .5,
     ...(floating ? {
       position: 'absolute',
       bottom: 0,
