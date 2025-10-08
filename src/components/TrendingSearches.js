@@ -87,7 +87,7 @@ const TrendingSearches = () => {
                   color: item.rank <= 3 ? '#ff4757' : 'text.secondary',
                   mr: 1,
                   minWidth: '16px',
-                  fontSize: '15px',
+                  fontSize: '14px',
                   
                 }}
               >
@@ -97,7 +97,7 @@ const TrendingSearches = () => {
                 variant="body2"
                 sx={{
                   color: 'text.primary',
-                  fontSize: '15px',
+                  fontSize: '14px',
                   lineHeight: 1.3,
                   flex: 1,
                   transition: 'all 0.2s ease-in-out',
