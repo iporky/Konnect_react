@@ -6,7 +6,7 @@ const FollowupQuestionsTemplate = ({ content, onFollowUpClick }) => (
       display: 'flex', 
       gap: 2, 
       flexWrap: 'wrap',
-      '@media (max-width: 600px)': {
+      '@media (max-width: 650px)': {
         flexDirection: 'column'
       }
     }}>
