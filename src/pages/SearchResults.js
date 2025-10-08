@@ -37,7 +37,7 @@ export default function SearchResults() {
     
     try {
       // Call the streaming API
-      const response = await fetch('https://ec2-43-202-144-82.ap-northeast-2.compute.amazonaws.com/api/v1/konnect/search', {
+      const response = await fetch('https://api.krwtmoney.com/api/v1/konnect/search', {
         method: 'POST',
         headers: {
           'accept': 'application/json',

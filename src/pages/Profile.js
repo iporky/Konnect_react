@@ -1,361 +1,431 @@
 import {
-  Delete,
-  Edit,
-  Email,
-  LocationOn,
-  Logout,
-  Notifications,
-  Person,
-  Phone,
-  Security
-} from '@mui/icons-material';
-import {
-  Alert,
   Avatar,
   Box,
   Button,
-  Card,
-  CardContent,
-  Chip,
   Container,
   Divider,
-  Grid,
-  List,
-  ListItem,
-  ListItemIcon,
-  ListItemSecondaryAction,
-  ListItemText,
   Switch,
   TextField,
-  Typography
-} from '@mui/material';
-import { useState } from 'react';
-import { useDispatch } from 'react-redux';
-import { clearUser } from '../store';
-// ThemeToggle removed per request
+  Typography,
+  Select,
+  MenuItem,
+  FormControl,
+  InputLabel,
+} from "@mui/material";
+import { Delete, Logout } from "@mui/icons-material";
+import { useDispatch } from "react-redux";
+import { clearUser } from "../store";
+import { useState } from "react";
 
 const Profile = ({ user }) => {
   const dispatch = useDispatch();
-  const [isEditing, setIsEditing] = useState(false);
-  const [profileData, setProfileData] = useState({
-    name: user?.name || 'John Doe',
-    email: user?.email || 'john.doe@email.com',
-    phone: '+82-10-1234-5678',
-    location: 'Seoul, South Korea',
-    bio: 'Digital nomad exploring Korean culture and technology.',
-    status: 'Student',
-    visa: 'D-2 Student Visa',
-    language: 'English',
-  });
-
-  const [settings, setSettings] = useState({
-    notifications: true,
-    darkMode: false,
-    emailUpdates: true,
-    smsNotifications: false,
-  });
-
-  const handleProfileChange = (field, value) => {
-    setProfileData(prev => ({
-      ...prev,
-      [field]: value,
-    }));
-  };
-
-  const handleSettingChange = (setting) => {
-    setSettings(prev => ({
-      ...prev,
-      [setting]: !prev[setting],
-    }));
-  };
-
-  const handleSaveProfile = () => {
-    // Here you would typically save to your backend
-    console.log('Saving profile:', profileData);
-    setIsEditing(false);
-  };
-
-  const profileSections = [
-    {
-      title: 'Personal Information',
-      icon: <Person />,
-      fields: [
-        { key: 'name', label: 'Full Name', value: profileData.name, type: 'text' },
-        { key: 'email', label: 'Email', value: profileData.email, type: 'email' },
-        { key: 'phone', label: 'Phone', value: profileData.phone, type: 'tel' },
-        { key: 'location', label: 'Location', value: profileData.location, type: 'text' },
-        { key: 'bio', label: 'Bio', value: profileData.bio, type: 'text', multiline: true },
-      ],
-    },
-    {
-      title: 'Korea Information',
-      icon: <LocationOn />,
-      fields: [
-        { key: 'status', label: 'Status', value: profileData.status, type: 'text' },
-        { key: 'visa', label: 'Visa Type', value: profileData.visa, type: 'text' },
-        { key: 'language', label: 'Primary Language', value: profileData.language, type: 'text' },
-      ],
-    },
-  ];
-
-  const settingsItems = [
-    {
-      icon: <Notifications />,
-      title: 'Push Notifications',
-      description: 'Receive notifications about updates and messages',
-      setting: 'notifications',
-    },
-    {
-      icon: <Email />,
-      title: 'Email Updates',
-      description: 'Get weekly updates about Korean news and events',
-      setting: 'emailUpdates',
-    },
-    {
-      icon: <Phone />,
-      title: 'SMS Notifications',
-      description: 'Receive important alerts via SMS',
-      setting: 'smsNotifications',
-    },
-  ];
-
+  const [appearance, setAppearance] = useState("System (light)");
+  const [language, setLanguage] = useState("Default");
+  const [responseLang, setResponseLang] = useState("Automatic (detect input)");
+  const [autosuggest, setAutosuggest] = useState(true);
+  const [intro, setIntro] = useState("");
+  const [location, setLocation] = useState("");
   if (!user) {
     return (
-      <Container maxWidth="lg" sx={{ py: 4 }}>
-        <Alert severity="warning">
-          Please log in to view your profile.
-        </Alert>
+      <Container maxWidth="sm" sx={{ py: 4 }}>
+        <Typography>Please log in to view your profile.</Typography>
       </Container>
     );
   }
+  // console.log(user.username)
 
   return (
-    <>
-      {/* Theme toggle removed */}
-      <Box sx={{ ml: { xs: 0, md: '80px' }, display: 'flex', justifyContent: { xs: 'center', md: 'flex-start' } }}> {/* center on mobile */}
-  <Container maxWidth="lg" sx={{ py: 4, display: 'flex', flexDirection: 'column', alignItems: { xs: 'center', md: 'stretch' } }}>
-      {/* Header */}
-      <Box sx={{ mb: 4 }}>
-        <Typography variant="h3" component="h1" gutterBottom sx={{ fontWeight: 'bold' }}>
-          Profile
-        </Typography>
+    <Container maxWidth="sm" sx={{ py: 4 }}>
+      {/* -------- Account Section -------- */}
+      <Typography variant="h6" sx={{ fontWeight: "bold", mb: 2 }}>
+        Account
+      </Typography>
+
+      {/* Top Profile */}
+      <Box
+        sx={{
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "space-between",
+          mb: 3,
+        }}
+      >
+        <Box sx={{ display: "flex", alignItems: "center" }}>
+          <Avatar src={user.picture} sx={{ width: 64, height: 64, mr: 2 }}>
+            {user.name?.charAt(0)}
+          </Avatar>
+          <Box>
+            <Typography variant="body1">{user.name}</Typography>
+            <Typography variant="caption" color="text.secondary">
+              {user.username}
+            </Typography>
+          </Box>
+        </Box>
+        <Button size="small" variant="outlined">
+          Change avatar
+        </Button>
       </Box>
 
-  <Grid container spacing={4} justifyContent={{ xs: 'center', md: 'flex-start' }} sx={{ maxWidth: { xs: 430, md: '100%' }, mx: { xs: 'auto', md: 0 } }}>
-        {/* Profile Summary */}
-        <Grid item xs={12} md={4}>
-          <Card>
-            <CardContent sx={{ textAlign: 'center', p: 4 }}>
-              <Avatar
-                src={user.picture}
-                sx={{
-                  width: 120,
-                  height: 120,
-                  mx: 'auto',
-                  mb: 2,
-                  border: 4,
-                  borderColor: 'primary.main',
-                }}
-              >
-                {profileData.name.charAt(0)}
-              </Avatar>
-              
-              <Typography variant="h5" component="h2" gutterBottom sx={{ fontWeight: 'bold' }}>
-                {profileData.name}
-              </Typography>
-              
-              <Chip
-                label={profileData.status}
-                color="primary"
-                variant="outlined"
-                sx={{ mb: 2 }}
-              />
-              
-              <Typography variant="body2" color="text.secondary" paragraph>
-                {profileData.bio}
-              </Typography>
-              
-              <Typography variant="body2" color="text.secondary">
-                <LocationOn sx={{ fontSize: 16, mr: 0.5, verticalAlign: 'middle' }} />
-                {profileData.location}
-              </Typography>
-              
-              <Button
-                variant="outlined"
-                startIcon={<Edit />}
-                onClick={() => setIsEditing(!isEditing)}
-                sx={{ mt: 2 }}
-                fullWidth
-              >
-                {isEditing ? 'Cancel Edit' : 'Edit Profile'}
-              </Button>
-            </CardContent>
-          </Card>
-        </Grid>
+      {/* Full Name */}
+      <Box
+        sx={{
+          display: "flex",
+          justifyContent: "space-between",
+          alignItems: "center",
+          mb: 2,
+        }}
+      >
+        <Box>
+          <Typography variant="subtitle2" color="text.secondary">
+            Full Name
+          </Typography>
+          <Typography variant="body1">{user.name}</Typography>
+        </Box>
+        <Button size="small" variant="outlined">
+          Change full name
+        </Button>
+      </Box>
 
-        {/* Profile Details */}
-        <Grid item xs={12} md={8}>
-          <Grid container spacing={3}>
-            {/* Profile Information Sections */}
-            {profileSections.map((section, sectionIndex) => (
-              <Grid item xs={12} key={sectionIndex}>
-                <Card>
-                  <CardContent>
-                    <Box sx={{ display: 'flex', alignItems: 'center', mb: 3 }}>
-                      <Box sx={{ color: 'primary.main', mr: 2 }}>
-                        {section.icon}
-                      </Box>
-                      <Typography variant="h6" sx={{ fontWeight: 'bold' }}>
-                        {section.title}
-                      </Typography>
-                    </Box>
-                    
-                    <Grid container spacing={2}>
-                      {section.fields.map((field) => (
-                        <Grid item xs={12} sm={field.multiline ? 12 : 6} key={field.key}>
-                          <TextField
-                            fullWidth
-                            label={field.label}
-                            type={field.type}
-                            multiline={field.multiline}
-                            rows={field.multiline ? 3 : 1}
-                            value={field.value}
-                            onChange={(e) => handleProfileChange(field.key, e.target.value)}
-                            disabled={!isEditing}
-                            variant={isEditing ? 'outlined' : 'filled'}
-                          />
-                        </Grid>
-                      ))}
-                    </Grid>
-                  </CardContent>
-                </Card>
-              </Grid>
-            ))}
+      {/* Username */}
+      <Box
+        sx={{
+          display: "flex",
+          justifyContent: "space-between",
+          alignItems: "center",
+          mb: 2,
+        }}
+      >
+        <Box>
+          <Typography variant="subtitle2" color="text.secondary">
+            Username
+          </Typography>
+          <Typography variant="body1">{user.username}</Typography>
+        </Box>
+        <Button size="small" variant="outlined">
+          Change username
+        </Button>
+      </Box>
 
-            {/* Settings Section */}
-            <Grid item xs={12}>
-              <Card>
-                <CardContent>
-                  <Box sx={{ display: 'flex', alignItems: 'center', mb: 3 }}>
-                    <Box sx={{ color: 'primary.main', mr: 2 }}>
-                      <Security />
-                    </Box>
-                    <Typography variant="h6" sx={{ fontWeight: 'bold' }}>
-                      Settings
-                    </Typography>
-                  </Box>
-                  
-                  <List>
-                    {settingsItems.map((item, index) => (
-                      <ListItem key={index}>
-                        <ListItemIcon>
-                          {item.icon}
-                        </ListItemIcon>
-                        <ListItemText
-                          primary={item.title}
-                          secondary={item.description}
-                        />
-                        <ListItemSecondaryAction>
-                          <Switch
-                            checked={settings[item.setting]}
-                            onChange={() => handleSettingChange(item.setting)}
-                            color="primary"
-                          />
-                        </ListItemSecondaryAction>
-                      </ListItem>
-                    ))}
-                  </List>
-                </CardContent>
-              </Card>
-            </Grid>
+      {/* Email */}
+      <Box sx={{ mb: 4 }}>
+        <Typography variant="subtitle2" color="text.secondary">
+          Email
+        </Typography>
+        <Typography variant="body1">{user.email}</Typography>
+      </Box>
 
-            {/* Action Buttons */}
-            <Grid item xs={12}>
-              <Card>
-                <CardContent>
-                  <Typography variant="h6" gutterBottom sx={{ fontWeight: 'bold' }}>
-                    Account Actions
-                  </Typography>
-                  
-                  {isEditing && (
-                    <Box sx={{ mb: 2 }}>
-                      <Button
-                        variant="contained"
-                        onClick={handleSaveProfile}
-                        sx={{ mr: 2 }}
-                      >
-                        Save Changes
-                      </Button>
-                      <Button
-                        variant="outlined"
-                        onClick={() => setIsEditing(false)}
-                      >
-                        Cancel
-                      </Button>
-                    </Box>
-                  )}
-                  
-                  <Divider sx={{ my: 2 }} />
-                  
-                  <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
-                    <Button
-                      variant="contained"
-                      color="primary"
-                      startIcon={<Logout />}
-                      fullWidth
-                      onClick={() => {
-                        try {
-                          // Attempt Google logout if GIS loaded
-                          if (window.google && window.google.accounts && window.google.accounts.id) {
-                            // This clears the session for One Tap / future prompts
-                            window.google.accounts.id.disableAutoSelect();
-                          }
-                        } catch (e) {
-                          // ignore
-                        }
-                        localStorage.removeItem('token');
-                        localStorage.removeItem('user');
-                        dispatch(clearUser());
-                        // Redirect to home
-                        window.location.hash = '#/';
-                      }}
-                    >
-                      Logout
-                    </Button>
-                    <Button
-                      variant="outlined"
-                      startIcon={<Security />}
-                      fullWidth
-                    >
-                      Change Password
-                    </Button>
-                    
-                    <Button
-                      variant="outlined"
-                      startIcon={<Logout />}
-                      fullWidth
-                    >
-                      Clear History
-                    </Button>
-                    
-                    <Button
-                      variant="outlined"
-                      color="error"
-                      startIcon={<Delete />}
-                      fullWidth
-                    >
-                      Delete Account
-                    </Button>
-                  </Box>
-                </CardContent>
-              </Card>
-            </Grid>
-          </Grid>
-        </Grid>
-      </Grid>
+      <Divider sx={{ my: 3 }} />
+
+      {/* -------- Preferences Section -------- */}
+      <Typography variant="h6" sx={{ fontWeight: "bold", mb: 2 }}>
+        Preferences
+      </Typography>
+
+      {/* Appearance */}
+      <Box sx={{
+          display: "flex",
+          justifyContent: "space-between",
+          alignItems: "center",
+          mb: 2,
+        }}>
+        <Typography variant="subtitle2" color="text.secondary">
+          <strong>Appearance</strong>
+          <p style={{ marginTop: 0, marginBottom: 0 }}>How Perplexity looks on your device</p>
+
+        </Typography>
+        <FormControl size="small" sx={{ mt: 1 }}>
+          <Select
+            value={appearance}
+            onChange={(e) => setAppearance(e.target.value)}
+          >
+            <MenuItem value="System (light)">System (light)</MenuItem>
+            <MenuItem value="Dark">Dark</MenuItem>
+            <MenuItem value="Light">Light</MenuItem>
+          </Select>
+        </FormControl>
+      </Box>
+
+      {/* Language */}
+      <Box sx={{
+          display: "flex",
+          justifyContent: "space-between",
+          alignItems: "center",
+          mb: 2,
+        }}>
+        <Typography variant="subtitle2" color="text.secondary">
+          <strong>Language</strong>
+          <p style={{ marginTop: 0, marginBottom: 0 }}>The language used in the user interface</p>
+        </Typography>
+        <FormControl size="small" sx={{ mt: 1 }}>
+          <Select
+            value={language}
+            onChange={(e) => setLanguage(e.target.value)}
+          >
+            <MenuItem value="Default">Default</MenuItem>
+            <MenuItem value="English">English</MenuItem>
+            <MenuItem value="Hindi">Hindi</MenuItem>
+          </Select>
+        </FormControl>
+      </Box>
+
+      {/* Preferred response language */}
+      <Box sx={{
+          display: "flex",
+          justifyContent: "space-between",
+          alignItems: "center",
+          mb: 2,
+        }}>
+        <Typography variant="subtitle2" color="text.secondary">
+          <strong>Preferred response language</strong>
+          <p style={{ marginTop: 0, marginBottom: 0 }}>The language used for AI responses</p>
+        </Typography>
+        <FormControl size="small" sx={{ mt: 1 }}>
+          <Select
+            value={responseLang}
+            onChange={(e) => setResponseLang(e.target.value)}
+          >
+            <MenuItem value="Automatic (detect input)">
+              Automatic (detect input)
+            </MenuItem>
+            <MenuItem value="English">English</MenuItem>
+            <MenuItem value="Hindi">Hindi</MenuItem>
+          </Select>
+        </FormControl>
+      </Box>
+
+      {/* Autosuggest */}
+      <Box
+        sx={{
+          display: "flex",
+          justifyContent: "space-between",
+          alignItems: "center",
+          mb: 3,
+        }}
+      >
+        <Typography variant="subtitle2" color="text.secondary">
+          <strong>Autosuggest</strong>
+          <p style={{ marginTop: 0, marginBottom: 0 }}>Enable dropdown and tab-complete suggestions while typing a query</p>
+        </Typography>
+        <Switch
+          checked={autosuggest}
+          onChange={() => setAutosuggest(!autosuggest)}
+        />
+      </Box>
+      <Box
+        sx={{
+          display: "flex",
+          justifyContent: "space-between",
+          alignItems: "center",
+          mb: 3,
+        }}
+      >
+        <Typography variant="subtitle2" color="text.secondary">
+        <strong>Homepage widgets</strong>
+        <p style={{ marginTop: 0, marginBottom: 0 }}>Enable personalized widgets on the homepage</p>
+        </Typography>
+        <Switch
+          checked={autosuggest}
+          onChange={() => setAutosuggest(!autosuggest)}
+        />
+      </Box>
+
+      <Divider sx={{ my: 3 }} />
+
+      {/* -------- Personalization Section -------- */}
+      <Typography variant="h6" sx={{ fontWeight: "bold", mb: 2 }}>
+        Personalization
+      </Typography>
+
+      <Typography variant="subtitle2" color="text.secondary" sx={{ mb: 1 }}>
+        <strong>Introduce yourself</strong>
+      </Typography>
+
+      <TextField
+        fullWidth
+        multiline
+        rows={2}
+        value={intro}
+        onChange={(e) => setIntro(e.target.value)}
+        placeholder="I’m a software engineer who likes to play guitar and go hiking."
+        sx={{ mb: 2 }}
+      />
+
+      <Box sx={{ display: "flex", gap: 2, justifyContent: "end" }}>
+        <Button
+          variant="outlined"
+          onClick={() => setIntro("")}
+        >
+          Clear
+        </Button>
+        <Button variant="contained" color="primary">
+          Save
+        </Button>
+      </Box>
+
+      <Box
+        sx={{
+          display: "flex",
+          justifyContent: "space-between",
+          alignItems: "center",
+          mb: 3,
+        }}
+      >
+        <Typography variant="subtitle2" color="text.secondary">
+          <strong>Location</strong>
+          <p style={{ marginTop: 0, marginBottom: 0 }}>Enter a location or enable precise location to get more accurate weather and sports</p>
+
+        </Typography>
+        <Switch
+          checked={autosuggest}
+          onChange={() => setAutosuggest(!autosuggest)}
+        />
+      </Box>
+
+      <TextField
+        fullWidth
+        multiline
+        rows={1}
+        value={location}
+        onChange={(e) => setLocation(e.target.value)}
+        placeholder="Enter Location"
+        sx={{ mb: 2 }}
+      />
+
+      <Box sx={{ display: "flex", gap: 2, justifyContent: "end" }}>
+        
+        <Button variant="contained" color="primary">
+          Save
+        </Button>
+      </Box>
+
+      <Divider sx={{ my: 3 }} />
+
+      {/* -------- Watchlists Section -------- */}
+      <Typography variant="h6" sx={{ mb: 2 }}>
+        <strong>Watchlists</strong>
+        <p style={{ marginTop: 0, marginBottom: 0 }}>this is watchlist</p>
+      </Typography>
+      
+
+
+      {/* Sports Watchlist */}
+      <Box
+        sx={{
+          display: "flex",
+          justifyContent: "space-between",
+          alignItems: "center",
+          mb: 2,
+        }}
+      >
+        <div>
+          <Typography variant="body1"><strong>Sports</strong></Typography>
+          <p style={{ marginTop: 0, marginBottom: 0 }}>this is watchlist</p>
+        </div>
+
+
+        <Button size="small" variant="outlined">
+          Manage
+        </Button>
+
+      </Box>
+
+      {/* Finance Watchlist */}
+      <Box
+        sx={{
+          display: "flex",
+          justifyContent: "space-between",
+          alignItems: "center",
+          mb: 3,
+        }}
+      >
+        <Typography variant="body1"><strong>Finance</strong>
+          <p style={{ marginTop: 0, marginBottom: 0 }}>Set your watchlist for daily updates and summaries</p>
+        </Typography>
+        <Button size="small" variant="outlined">
+          Manage
+        </Button>
+      </Box>
+
+      <Divider sx={{ my: 3 }} />
+
+      {/* -------- System Section -------- */}
+      <Typography variant="h6" sx={{ fontWeight: "bold", mb: 2 }}>
+        System
+      </Typography>
+
+      {/* Support */}
+      <Box
+        sx={{
+          display: "flex",
+          justifyContent: "space-between",
+          alignItems: "center",
+          mb: 2,
+        }}
+      >
+        <Typography variant="body2">Support</Typography>
+        <Button size="small" variant="outlined">
+          Contact
+        </Button>
+      </Box>
+
+      {/* Signed in as */}
+      <Box sx={{
+        display: "flex",
+        justifyContent: "space-between",
+        alignItems: "center",
+        mb: 2,
+      }}>
+        <Typography variant="body2">
+          You are signed in as <strong>{user.username}</strong>
+        </Typography>
+        <Button
+          variant="outlined"
+          startIcon={<Logout />}
+          onClick={() => {
+            localStorage.removeItem("token");
+            localStorage.removeItem("user");
+            dispatch(clearUser());
+            window.location.hash = "#/";
+          }}
+        >
+          Sign out
+        </Button>
+      </Box>
+
+      {/* Sign out of all sessions */}
+      <Box
+        sx={{
+          display: "flex",
+          justifyContent: "space-between",
+          alignItems: "center",
+          mb: 2,
+        }}
+      >
+        <Typography variant="body2">Sign out of all sessions</Typography>
+        <Button size="small" variant="outlined">
+          Sign out of all sessions
+        </Button>
+      </Box>
+
+      {/* Delete account */}
+      <Box
+        sx={{
+          display: "flex",
+          justifyContent: "space-between",
+          alignItems: "center",
+        }}
+      >
+        <Typography variant="body2">Delete account</Typography>
+        <Button
+          size="small"
+          variant="outlined"
+          color="error"
+          startIcon={<Delete />}
+        >
+          Learn more
+        </Button>
+      </Box>
     </Container>
-    </Box>
-    </>
   );
 };
 
