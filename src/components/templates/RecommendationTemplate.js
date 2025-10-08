@@ -8,7 +8,7 @@ import RatingTemplate from './RatingTemplate';
 import SocialInfoTemplate from './SocialInfoTemplate';
 import TransportTemplate from './TransportTemplate';
 
-const RecommendationTemplate = ({ content, index }) => {
+const RecommendationTemplate = ({ content, index, onBookingClick, isBooked = false }) => {
   const [activeTab, setActiveTab] = useState('about');
   const [tabStartIndex, setTabStartIndex] = useState(0);
   const maxVisibleTabs = 4;
@@ -354,16 +354,27 @@ const RecommendationTemplate = ({ content, index }) => {
               {content.name}
             </Typography>
             <Box sx={{ display: 'flex', alignItems: 'center', flexShrink: 0 }}>
-              <Typography 
-                variant="body2"
-                sx={{ 
-                  color: '#000', 
-                  fontSize: '12px',
+              <Button
+                variant="contained"
+                sx={{
+                  backgroundColor: '#000',
+                  color: '#fff',
+                  borderRadius: 3,
+                  height: '24px',
+                  minWidth: '60px',
+                  fontSize: '11px',
                   fontWeight: 600,
+                  textTransform: 'none',
+                  px: 1,
+                  boxShadow: 'none',
+                  '&:hover': {
+                    backgroundColor: '#2f3336ff',
+                    boxShadow: 'none'
+                  }
                 }}
               >
-                {content.category}
-              </Typography>
+                Save
+              </Button>
             </Box>
           </Box>
           
@@ -435,18 +446,20 @@ const RecommendationTemplate = ({ content, index }) => {
           <Box sx={{ display: 'flex', alignItems: 'center', gap: 1, ml: 0 }}>
             {/* Book Chip */}
             <Chip
-              label="Book"
+              label={isBooked ? "Booked" : "Book"}
               size="small"
+              onClick={() => !isBooked && onBookingClick && onBookingClick()}
               sx={{
-                backgroundColor: '#f39232',
+                backgroundColor: isBooked ? '#4caf50' : '#f39232',
                 color: 'white',
                 fontWeight: 500,
                 fontSize: '11px',
                 minWidth: 70,
                 height: 24,
                 borderRadius: 4,
+                cursor: isBooked ? 'default' : 'pointer',
                 '&:hover': {
-                  backgroundColor: '#5a7ba3'
+                  backgroundColor: isBooked ? '#4caf50' : '#5a7ba3'
                 }
               }}
             />
