@@ -1,10 +1,10 @@
 // Add outlined icons for search bar toggles
-import AttachFileOutlined from '@mui/icons-material/AttachFileOutlined';
 import AddIcon from '@mui/icons-material/Add';
-import MenuBookIcon from '@mui/icons-material/MenuBook';
+import AttachFileOutlined from '@mui/icons-material/AttachFileOutlined';
 import FeedbackOutlined from '@mui/icons-material/FeedbackOutlined';
 import GroupOutlined from '@mui/icons-material/GroupOutlined';
 import LanguageOutlined from '@mui/icons-material/LanguageOutlined';
+import MenuBookIcon from '@mui/icons-material/MenuBook';
 import MicOutlined from '@mui/icons-material/MicOutlined';
 import MoreHoriz from '@mui/icons-material/MoreHoriz';
 import MoreVert from '@mui/icons-material/MoreVert';
@@ -20,6 +20,9 @@ import {
   Typography,
   useTheme
 } from '@mui/material';
+import Divider from '@mui/material/Divider';
+import Menu from '@mui/material/Menu';
+import MenuItem from '@mui/material/MenuItem';
 import { AnimatePresence, LayoutGroup, motion } from 'framer-motion';
 import { useEffect, useRef, useState } from 'react';
 import { useSelector } from 'react-redux';
@@ -28,14 +31,12 @@ import BuzzCarousel from '../components/BuzzCarousel';
 import CommunityPostDialog from '../components/CommunityPostDialog';
 import FeedbackPopup from '../components/FeedbackPopup';
 import Footer from '../components/Footer';
+import Navigation from '../components/Navigation';
 import TrendingSearches from '../components/TrendingSearches';
 import { questionsAPI } from '../services/api';
 import { selectUser } from '../store';
 
 const imgBase = process.env.PUBLIC_URL;
-// Updated: Region/location icons with external URLs. Order matches the provided list (where assets exist).
-// Note: South Jeolla image not present in /public/images/home, so it's omitted for now.
-// TODO (optional): Add South Jeolla asset (e.g., 15. South_Jeolla.svg) and append its entry when available.
 const categoryIcons = [
   { icon: `${imgBase}/images/home/1.Chungju.svg`, label: 'Chungju', color: '#8888881A', url: 'https://www.chungju.go.kr/english/index.do' },
   { icon: `${imgBase}/images/home/2.Seoul.png`, label: 'Seoul', color: '#8888881A', url: 'https://english.seoul.go.kr' },
@@ -71,6 +72,15 @@ const Home = () => {
     mic: false,
     assist: false,
   });
+
+  // Dropdown menu state for plus sign
+  const [plusMenuAnchor, setPlusMenuAnchor] = useState(null);
+  const handlePlusMenuOpen = (event) => {
+    setPlusMenuAnchor(event.currentTarget);
+  };
+  const handlePlusMenuClose = () => {
+    setPlusMenuAnchor(null);
+  };
   // Mobile: toggle vertical actions menu from the three dots
   const [showMobileSearchActions, setShowMobileSearchActions] = useState(false);
   const toggleIcon = (key) => setSearchToggles((prev) => ({ ...prev, [key]: !prev[key] }));
@@ -178,6 +188,9 @@ const Home = () => {
 
   return (
     <>
+      {/* Navigation Component */}
+      <Navigation user={user} />
+      
       <Box sx={{ 
         display: 'flex',
         flexDirection: 'column',
@@ -185,7 +198,9 @@ const Home = () => {
         // Always allow parent to scroll on desktop; keep mobile hidden due to fixed bottom search bar
         overflowY: { xs: 'hidden', md: 'visible' },
         position: 'relative',
-        minHeight: '100%'
+        minHeight: '100%',
+        // Add left margin on desktop to account for sidebar
+        ml: { xs: 0, md: '66px' }
       }}>
         {/* Header with Logo */}
         <Box sx={{
@@ -446,39 +461,78 @@ const Home = () => {
                   minHeight: uploadedFiles.length > 0 ? 50 : 70,
                   py: uploadedFiles.length > 0 ? 1 : 0
                 }}>
-                  {/* Left-side icons: Add + Assist mode */}
+                  {/* Left-side icons: Plus dropdown menu */}
                   <Box sx={{ display: 'flex', alignItems: 'center', mr: 1 }}>
-                    <Tooltip title="Add files & more" placement="top" arrow>
+                    <Tooltip title="Add or Assist" placement="top" arrow>
                       <IconButton
                         size="small"
-                        aria-label="add-files"
-                        onClick={handleFileUpload}
+                        aria-label="add-menu"
+                        onClick={handlePlusMenuOpen}
                         sx={{ color: '#000', '&:hover': { backgroundColor: 'transparent' } }}
                       >
                         <AddIcon fontSize="small" />
                       </IconButton>
                     </Tooltip>
-                    <Tooltip
-                      arrow
-                      placement="top"
-                      title={
-                        <Box sx={{ maxWidth: 230 }}>
-                          <Typography variant="subtitle2" sx={{ fontWeight: 700 }}>Assist mode</Typography>
-                          <Typography variant="caption" sx={{ display: 'block', mt: 0.25, lineHeight: 1.25 }}>
-                            Attach any application form and we will help you fill it out
-                          </Typography>
-                        </Box>
-                      }
+                    <Menu
+                      anchorEl={plusMenuAnchor}
+                      open={Boolean(plusMenuAnchor)}
+                      onClose={handlePlusMenuClose}
+                      anchorOrigin={{ vertical: 'bottom', horizontal: 'left' }}
+                      transformOrigin={{ vertical: 'top', horizontal: 'left' }}
+                      PaperProps={{
+                        sx: {
+                          borderRadius: 3.5,
+                          minWidth: 270,
+                          boxShadow: '0 4px 24px rgba(0,0,0,0.15)',
+                          p: 0.5,
+                          mt: 1,
+                        }
+                      }}
                     >
-                      <IconButton
-                        size="small"
-                        aria-label="assist-mode"
-                        onClick={() => toggleIcon('assist')}
-                        sx={{ ml: 0.5, color: searchToggles.assist ? '#6F95BD' : 'text.secondary', '&:hover': { backgroundColor: 'transparent' } }}
+                      <MenuItem
+                        onClick={() => {
+                          handlePlusMenuClose();
+                          handleFileUpload();
+                        }}
+                        sx={{
+                          alignItems: 'center',
+                          py: 1,
+                          borderRadius: 2,
+                          mx: 0.5,
+                          mt: 0.3,
+                          mb: 0.6,
+                          backgroundColor: '#f5f5f5',
+                          gap: 1,
+                          '&:hover': { backgroundColor: '#ededed' }
+                        }}
                       >
-                        <MenuBookIcon sx={{ width: 20, height: 20 }} />
-                      </IconButton>
-                    </Tooltip>
+                        <AttachFileOutlined sx={{ color: '#000', width: 20, height: 20 }} />
+                        <Typography sx={{ fontWeight: 700, fontSize: 14, color: '#222' }}>Add photos & files</Typography>
+                      </MenuItem>
+                      <Divider sx={{ my: 0.4, mx: 0.5 }} />
+                      <Tooltip
+                        arrow
+                        placement="right"
+                        title={
+                          <Box sx={{ maxWidth: 230 }}>
+                            <Typography variant="caption" sx={{ display: 'block', lineHeight: 1.25 }}>
+                              Attach any application form and we will help you fill it out
+                            </Typography>
+                          </Box>
+                        }
+                      >
+                        <MenuItem
+                          onClick={() => {
+                            handlePlusMenuClose();
+                            toggleIcon('assist');
+                          }}
+                          sx={{ alignItems: 'center', py: 1, borderRadius: 3, mx: 0.5, gap: 1 }}
+                        >
+                          <MenuBookIcon sx={{ color: '#000', width: 20, height: 20 }} />
+                          <Typography sx={{ fontWeight: 700, fontSize: 14, color: '#222' }}>Assist mode</Typography>
+                        </MenuItem>
+                      </Tooltip>
+                    </Menu>
                   </Box>
                   
                 {/* Removed left plus icon previously triggering CommunityPostDialog */}
