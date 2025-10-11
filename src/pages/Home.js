@@ -63,15 +63,8 @@ const Home = () => {
   const fileInputRef = useRef(null);
   const [uploadedFiles, setUploadedFiles] = useState([]);
 
-  // Right-side icons in the search bar: toggle to highlight active; hover also highlights
-  const [searchToggles, setSearchToggles] = useState({
-    group: false,
-    badge: false,
-    globe: false,
-    attach: false,
-    mic: false,
-    assist: false,
-  });
+  // Right-side icons in the search bar: only one can be active at a time
+  const [activeMode, setActiveMode] = useState(null); // 'community', 'expert', 'translate', 'voice', or null
 
   // Dropdown menu state for plus sign
   const [plusMenuAnchor, setPlusMenuAnchor] = useState(null);
@@ -83,7 +76,98 @@ const Home = () => {
   };
   // Mobile: toggle vertical actions menu from the three dots
   const [showMobileSearchActions, setShowMobileSearchActions] = useState(false);
-  const toggleIcon = (key) => setSearchToggles((prev) => ({ ...prev, [key]: !prev[key] }));
+  
+  // Toggle function that ensures only one mode is active at a time
+  const toggleMode = (mode) => {
+    setActiveMode(prev => prev === mode ? null : mode);
+    
+    // Handle expert mode localStorage
+    if (mode === 'expert') {
+      if (activeMode === 'expert') {
+        localStorage.removeItem('expertMode');
+      } else {
+        localStorage.setItem('expertMode', '1');
+      }
+    } else if (activeMode === 'expert') {
+      localStorage.removeItem('expertMode');
+    }
+  };
+
+  // Get placeholder text based on active mode
+  const getPlaceholderText = () => {
+    switch (activeMode) {
+      case 'community':
+        return 'Ask your questions directly to the Foreign Community';
+      case 'expert':
+        return 'Ask our certified experts directly. Conversations remain private.';
+      case 'translate':
+        return 'Ask anything about Korea';
+      case 'voice':
+        return 'Click to speak or type your question...';
+      default:
+        return 'Ask anything about Korea';
+    }
+  };
+
+  // Get search bar styling based on active mode
+  const getSearchBarStyling = () => {
+    const baseStyle = {
+      borderColor: theme.palette.divider,
+      boxShadow: '0 0 14.5px 0 rgba(0, 0, 0, 0.25)',
+    };
+
+    switch (activeMode) {
+      case 'community':
+        return {
+          ...baseStyle,
+          borderColor: '#FF8C00',
+          boxShadow: '0 0 20px rgba(255, 140, 0, 0.3)',
+          '&:focus-within': {
+            borderColor: '#FF8C00',
+            boxShadow: '0 0 25px rgba(255, 140, 0, 0.4)'
+          }
+        };
+      case 'expert':
+        return {
+          ...baseStyle,
+          borderColor: '#8B5A9F',
+          boxShadow: '0 0 20px rgba(139, 90, 159, 0.3)',
+          '&:focus-within': {
+            borderColor: '#8B5A9F',
+            boxShadow: '0 0 25px rgba(139, 90, 159, 0.4)'
+          }
+        };
+      case 'translate':
+        return {
+          ...baseStyle,
+          borderColor: '#40E0D0',
+          boxShadow: '0 0 20px rgba(64, 224, 208, 0.3)',
+          '&:focus-within': {
+            borderColor: '#40E0D0',
+            boxShadow: '0 0 25px rgba(64, 224, 208, 0.4)'
+          }
+        };
+      case 'voice':
+        return {
+          ...baseStyle,
+          borderColor: '#32CD32',
+          boxShadow: activeMode === 'voice' ? '0 0 20px rgba(50, 205, 50, 0.6)' : '0 0 20px rgba(50, 205, 50, 0.3)',
+          animation: activeMode === 'voice' ? 'voice-pulse 1.5s ease-in-out infinite' : 'none',
+          '&:focus-within': {
+            borderColor: '#32CD32',
+            boxShadow: '0 0 25px rgba(50, 205, 50, 0.4)'
+          }
+        };
+      default:
+        return {
+          ...baseStyle,
+          '&:focus-within': {
+            borderColor: theme.palette.primary.main,
+            boxShadow: '0 12px 36px rgba(0,0,0,0.12)'
+          }
+        };
+    }
+  };
   // Mobile: show more categories when tapping the three dots
   const [showAllCategories, setShowAllCategories] = useState(false);
   const [postOpen, setPostOpen] = useState(false);
@@ -100,8 +184,26 @@ const Home = () => {
     setIsAuthenticated(!!token);
     // Initialize expert mode toggle from persisted flag
     if (localStorage.getItem('expertMode') === '1') {
-      setSearchToggles((prev) => ({ ...prev, badge: true }));
+      setActiveMode('expert');
     }
+
+    // Add voice pulse animation to document head
+    const style = document.createElement('style');
+    style.textContent = `
+      @keyframes voice-pulse {
+        0%, 100% { 
+          box-shadow: 0 0 20px rgba(50, 205, 50, 0.6), 0 0 40px rgba(50, 205, 50, 0.4), 0 0 60px rgba(50, 205, 50, 0.2);
+        }
+        50% { 
+          box-shadow: 0 0 30px rgba(50, 205, 50, 0.8), 0 0 60px rgba(50, 205, 50, 0.6), 0 0 90px rgba(50, 205, 50, 0.4);
+        }
+      }
+    `;
+    document.head.appendChild(style);
+
+    return () => {
+      document.head.removeChild(style);
+    };
   }, []);
 
   const handleSearchFocus = () => {
@@ -383,7 +485,8 @@ const Home = () => {
                   '&:focus-within': {
                     borderColor: theme.palette.primary.main,
                     boxShadow: '0 12px 36px rgba(0,0,0,0.12)'
-                  }
+                  },
+                  ...getSearchBarStyling()
                 }}
               >
                 {/* Hidden file input */}
@@ -524,7 +627,7 @@ const Home = () => {
                         <MenuItem
                           onClick={() => {
                             handlePlusMenuClose();
-                            toggleIcon('assist');
+                            // Could add assist mode functionality here if needed
                           }}
                           sx={{ alignItems: 'center', py: 1, borderRadius: 3, mx: 0.5, gap: 1 }}
                         >
@@ -541,7 +644,7 @@ const Home = () => {
                   ref={searchInputRef}
                   fullWidth
                   variant="standard"
-                  placeholder="Ask anything about Korea"
+                  placeholder={getPlaceholderText()}
                   value={searchValue}
                   onChange={handleSearchChange}
                   onFocus={handleSearchFocus}
@@ -589,10 +692,10 @@ const Home = () => {
                     <IconButton
                       size="small"
                       aria-label="group"
-                      onClick={() => toggleIcon('group')}
-                      sx={{ mx: 0.5, color: theme.palette.text.secondary, '&:hover': { backgroundColor: 'transparent' }, '&:hover svg': { color: '#6F95BD' } }}
+                      onClick={() => toggleMode('community')}
+                      sx={{ mx: 0.5, color: theme.palette.text.secondary, '&:hover': { backgroundColor: 'transparent' }, '&:hover svg': { color: '#FF8C00' } }}
                     >
-                      <GroupOutlined sx={{ width: 20, height: 20, color: searchToggles.group ? '#6F95BD' : undefined }} />
+                      <GroupOutlined sx={{ width: 20, height: 20, color: activeMode === 'community' ? '#FF8C00' : undefined }} />
                     </IconButton>
                   </Tooltip>
                   <Tooltip
@@ -614,37 +717,36 @@ const Home = () => {
                       size="small"
                       aria-label="badge"
                       onClick={() => {
-                        toggleIcon('badge');
-                        const next = !searchToggles.badge;
-                        if (next) {
+                        toggleMode('expert');
+                        if (activeMode !== 'expert') {
                           localStorage.setItem('expertMode', '1');
                         } else {
                           localStorage.removeItem('expertMode');
                         }
                       }}
-                      sx={{ mx: 0.5, color: theme.palette.text.secondary, '&:hover': { backgroundColor: 'transparent' }, '&:hover svg': { color: '#6F95BD' } }}
+                      sx={{ mx: 0.5, color: theme.palette.text.secondary, '&:hover': { backgroundColor: 'transparent' }, '&:hover svg': { color: '#8A2BE2' } }}
                     >
-                      <WorkspacePremiumOutlined sx={{ width: 20, height: 20, color: searchToggles.badge ? '#6F95BD' : undefined }} />
+                      <WorkspacePremiumOutlined sx={{ width: 20, height: 20, color: activeMode === 'expert' ? '#8A2BE2' : undefined }} />
                     </IconButton>
                   </Tooltip>
                   <Tooltip title="Translate" arrow enterDelay={300} placement="top">
                     <IconButton
                       size="small"
                       aria-label="language"
-                      onClick={() => toggleIcon('globe')}
-                      sx={{ mx: 0.5, color: theme.palette.text.secondary, '&:hover': { backgroundColor: 'transparent' }, '&:hover svg': { color: '#6F95BD' } }}
+                      onClick={() => toggleMode('translate')}
+                      sx={{ mx: 0.5, color: theme.palette.text.secondary, '&:hover': { backgroundColor: 'transparent' }, '&:hover svg': { color: '#20B2AA' } }}
                     >
-                      <LanguageOutlined sx={{ width: 20, height: 20, color: searchToggles.globe ? '#6F95BD' : undefined }} />
+                      <LanguageOutlined sx={{ width: 20, height: 20, color: activeMode === 'translate' ? '#20B2AA' : undefined }} />
                     </IconButton>
                   </Tooltip>
                   <Tooltip title="Voice" arrow enterDelay={300} placement="top">
                     <IconButton
                       size="small"
                       aria-label="mic"
-                      onClick={() => toggleIcon('mic')}
-                      sx={{ ml: 0.5, color: theme.palette.text.secondary, '&:hover': { backgroundColor: 'transparent' }, '&:hover svg': { color: '#6F95BD' } }}
+                      onClick={() => toggleMode('voice')}
+                      sx={{ ml: 0.5, color: theme.palette.text.secondary, '&:hover': { backgroundColor: 'transparent' }, '&:hover svg': { color: '#32CD32' } }}
                     >
-                      <MicOutlined sx={{ width: 20, height: 20, color: searchToggles.mic ? '#6F95BD' : undefined }} />
+                      <MicOutlined sx={{ width: 20, height: 20, color: activeMode === 'voice' ? '#32CD32' : undefined }} />
                     </IconButton>
                   </Tooltip>
                 </Box>
@@ -683,19 +785,19 @@ const Home = () => {
                   gap: 1.2,
                 }}
               >
-                <IconButton size="small" aria-label="group" onClick={() => toggleIcon('group')} sx={{ color: searchToggles.group ? '#6F95BD' : 'text.secondary' }}>
+                <IconButton size="small" aria-label="group" onClick={() => toggleMode('community')} sx={{ color: activeMode === 'community' ? '#FF8C00' : 'text.secondary' }}>
                   <GroupOutlined />
                 </IconButton>
-                <IconButton size="small" aria-label="badge" onClick={() => toggleIcon('badge')} sx={{ color: searchToggles.badge ? '#6F95BD' : 'text.secondary' }}>
+                <IconButton size="small" aria-label="badge" onClick={() => toggleMode('expert')} sx={{ color: activeMode === 'expert' ? '#8A2BE2' : 'text.secondary' }}>
                   <WorkspacePremiumOutlined />
                 </IconButton>
-                <IconButton size="small" aria-label="language" onClick={() => toggleIcon('globe')} sx={{ color: searchToggles.globe ? '#6F95BD' : 'text.secondary' }}>
+                <IconButton size="small" aria-label="language" onClick={() => toggleMode('translate')} sx={{ color: activeMode === 'translate' ? '#20B2AA' : 'text.secondary' }}>
                   <LanguageOutlined />
                 </IconButton>
-                <IconButton size="small" aria-label="attach" onClick={() => toggleIcon('attach')} sx={{ color: searchToggles.attach ? '#6F95BD' : 'text.secondary' }}>
+                <IconButton size="small" aria-label="attach" onClick={() => fileInputRef.current?.click()} sx={{ color: 'text.secondary' }}>
                   <AttachFileOutlined />
                 </IconButton>
-                <IconButton size="small" aria-label="mic" onClick={() => toggleIcon('mic')} sx={{ color: searchToggles.mic ? '#6F95BD' : 'text.secondary' }}>
+                <IconButton size="small" aria-label="mic" onClick={() => toggleMode('voice')} sx={{ color: activeMode === 'voice' ? '#32CD32' : 'text.secondary' }}>
                   <MicOutlined />
                 </IconButton>
               </Box>
