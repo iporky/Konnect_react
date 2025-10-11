@@ -33,6 +33,7 @@ import FeedbackPopup from '../components/FeedbackPopup';
 import Footer from '../components/Footer';
 import Navigation from '../components/Navigation';
 import TrendingSearches from '../components/TrendingSearches';
+import useSpeechRecognition from '../hooks/useSpeechRecognition';
 import { questionsAPI } from '../services/api';
 import { selectUser } from '../store';
 
@@ -77,9 +78,82 @@ const Home = () => {
   // Mobile: toggle vertical actions menu from the three dots
   const [showMobileSearchActions, setShowMobileSearchActions] = useState(false);
   
+  // Speech recognition using custom hook
+  const {
+    isListening,
+    isSupported: speechSupported,
+    transcript,
+    startListening,
+    stopListening,
+    resetTranscript,
+    error: speechError
+  } = useSpeechRecognition({
+    pauseTimeout: 3000,
+    language: 'en-US'
+  });
+
+  // Update search value when transcript changes
+  useEffect(() => {
+    if (transcript) {
+      setSearchValue(prev => prev + transcript);
+      resetTranscript(); // Clear the transcript after adding to search value
+    }
+  }, [transcript, resetTranscript]);
+
+  // Auto-untoggle voice mode when speech recognition stops (e.g., after 3-second pause)
+  // Add a small delay to prevent interference with user clicks
+  useEffect(() => {
+    if (activeMode === 'voice' && !isListening) {
+      const timeoutId = setTimeout(() => {
+        // Double-check the state after delay to ensure it wasn't a temporary transition
+        if (activeMode === 'voice' && !isListening) {
+          setActiveMode(null);
+        }
+      }, 100); // Small delay to allow speech recognition to start
+      
+      return () => clearTimeout(timeoutId);
+    }
+  }, [isListening, activeMode]);
+  
   // Toggle function that ensures only one mode is active at a time
   const toggleMode = (mode) => {
-    setActiveMode(prev => prev === mode ? null : mode);
+    // Handle voice mode speech recognition
+    if (mode === 'voice') {
+      if (activeMode === 'voice') {
+        // Stopping voice mode
+        stopListening();
+        setActiveMode(null);
+      } else {
+        // Starting voice mode - set mode first, then start listening
+        setActiveMode('voice');
+        if (speechSupported) {
+          const success = startListening();
+          if (!success) {
+            // If starting failed, revert the mode
+            setActiveMode(null);
+            // Show error message if available
+            if (speechError) {
+              alert(speechError.message);
+            } else {
+              alert('Failed to start speech recognition. Please check your microphone permissions.');
+            }
+            return;
+          }
+        } else {
+          // If not supported, revert the mode
+          setActiveMode(null);
+          alert('Speech recognition is not supported in this browser. Please try Chrome, Edge, or Safari.');
+          return;
+        }
+      }
+    } else {
+      // For other modes or switching away from voice mode
+      if (activeMode === 'voice') {
+        stopListening();
+      }
+      const newMode = activeMode === mode ? null : mode;
+      setActiveMode(newMode);
+    }
     
     // Handle expert mode localStorage
     if (mode === 'expert') {
@@ -103,7 +177,7 @@ const Home = () => {
       case 'translate':
         return 'Ask anything about Korea';
       case 'voice':
-        return 'Click to speak or type your question...';
+        return isListening ? 'Listening... (will stop after 3 seconds of silence)' : 'Click the microphone to start speaking or type your question...';
       default:
         return 'Ask anything about Korea';
     }
@@ -739,14 +813,25 @@ const Home = () => {
                       <LanguageOutlined sx={{ width: 20, height: 20, color: activeMode === 'translate' ? '#20B2AA' : undefined }} />
                     </IconButton>
                   </Tooltip>
-                  <Tooltip title="Voice" arrow enterDelay={300} placement="top">
+                  <Tooltip title={isListening ? "Listening... Click to stop" : "Voice"} arrow enterDelay={300} placement="top">
                     <IconButton
                       size="small"
                       aria-label="mic"
                       onClick={() => toggleMode('voice')}
-                      sx={{ ml: 0.5, color: theme.palette.text.secondary, '&:hover': { backgroundColor: 'transparent' }, '&:hover svg': { color: '#32CD32' } }}
+                      sx={{ 
+                        ml: 0.5, 
+                        color: theme.palette.text.secondary, 
+                        '&:hover': { backgroundColor: 'transparent' }, 
+                        '&:hover svg': { color: '#32CD32' },
+                        animation: isListening ? 'voice-pulse 1s ease-in-out infinite' : 'none'
+                      }}
                     >
-                      <MicOutlined sx={{ width: 20, height: 20, color: activeMode === 'voice' ? '#32CD32' : undefined }} />
+                      <MicOutlined sx={{ 
+                        width: 20, 
+                        height: 20, 
+                        color: activeMode === 'voice' ? '#32CD32' : undefined,
+                        opacity: isListening ? 1 : (activeMode === 'voice' ? 1 : undefined)
+                      }} />
                     </IconButton>
                   </Tooltip>
                 </Box>
@@ -797,7 +882,15 @@ const Home = () => {
                 <IconButton size="small" aria-label="attach" onClick={() => fileInputRef.current?.click()} sx={{ color: 'text.secondary' }}>
                   <AttachFileOutlined />
                 </IconButton>
-                <IconButton size="small" aria-label="mic" onClick={() => toggleMode('voice')} sx={{ color: activeMode === 'voice' ? '#32CD32' : 'text.secondary' }}>
+                <IconButton 
+                  size="small" 
+                  aria-label="mic" 
+                  onClick={() => toggleMode('voice')} 
+                  sx={{ 
+                    color: activeMode === 'voice' ? '#32CD32' : 'text.secondary',
+                    animation: isListening ? 'voice-pulse 1s ease-in-out infinite' : 'none'
+                  }}
+                >
                   <MicOutlined />
                 </IconButton>
               </Box>
