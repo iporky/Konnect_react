@@ -336,6 +336,48 @@ const Navigation = ({ user, onLogout }) => {
           );
         })}
       </List>
+
+      {/* Avatar at bottom - only show when user is authenticated */}
+      {user && (
+        <motion.div
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ 
+            duration: 0.5, 
+            delay: 1.0, // Appear after navigation items
+            ease: "easeOut" 
+          }}
+        >
+          <Box
+            onClick={() => navigate('/profile')}
+            sx={{
+              cursor: 'pointer',
+              mb: 2,
+              '&:hover .avatar-image': {
+                transform: 'scale(1.1)',
+              }
+            }}
+          >
+            <Box
+              className="avatar-image"
+              component="img"
+              src="https://picsum.photos/40/40?random=1"
+              alt="User Avatar"
+              sx={{
+                width: 40,
+                height: 40,
+                borderRadius: '50%',
+                objectFit: 'cover',
+                border: '2px solid #e0e0e0',
+                transition: 'transform 0.2s ease',
+                '&:hover': {
+                  border: '2px solid #6F95BD',
+                }
+              }}
+            />
+          </Box>
+        </motion.div>
+      )}
     </Box>
 
     {/* Desktop Language Drawer overlay */}
