@@ -6,8 +6,6 @@ import {
  Typography,
  CircularProgress,
  Skeleton,
- useTheme,
- useMediaQuery,
 } from "@mui/material";
 import {
  FavoriteBorder,
@@ -19,8 +17,6 @@ import {
 import { buzzImagesAPI } from "../services/api";
 import BuzzLightbox from "../components/BuzzLightbox";
 import CommunityPostDialog from "../components/CommunityPostDialog";
-import { useSelector } from "react-redux";
-import { selectUser } from "../store";
 
 const POSTS_PER_PAGE = 3;
 
@@ -29,8 +25,7 @@ const Buzz = () => {
  const [loading, setLoading] = useState(true);
  const [lightboxOpen, setLightboxOpen] = useState(false);
  const [selectedPost, setSelectedPost] = useState(null);
- const [postOpen, setPostOpen] = useState(false);
- const user = useSelector(selectUser);
+ const [postOpen, setPostOpen] = useState(false);``
 
  const [page, setPage] = useState(1);
  const [hasMore, setHasMore] = useState(true);
@@ -41,8 +36,6 @@ const Buzz = () => {
  const [lightboxLoadingComments, setLightboxLoadingComments] = useState(false);
  const [lightboxSubmittingComment, setLightboxSubmittingComment] = useState(false);
 
- const theme = useTheme();
- const isSmallScreen = useMediaQuery(theme.breakpoints.down("sm"));
  const containerRef = useRef(null);
  const observer = useRef();
 
