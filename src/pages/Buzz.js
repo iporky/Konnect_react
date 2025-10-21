@@ -691,7 +691,6 @@ const Buzz = () => {
                 backgroundColor: "#f5f5f5",
                 position: "relative",
                 overflow: "hidden",
-
             }}
         >
             <Box
