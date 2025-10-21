@@ -4,6 +4,7 @@ import { Box } from '@mui/material';
 import { ThemeContextProvider } from './contexts/ThemeContext';
 import { useDispatch, useSelector } from 'react-redux';
 import { selectUser, setUser, clearUser } from './store';
+import GoogleAnalytics from './components/GoogleAnalytics';
 import Navigation from './components/Navigation';
 import Home from './pages/Home';
 import Buzz from './pages/Buzz';
@@ -83,6 +84,7 @@ function App() {
 
   return (
     <ThemeContextProvider>
+      <GoogleAnalytics />
       <Router>
         <Box sx={{ 
           display: 'flex', 
