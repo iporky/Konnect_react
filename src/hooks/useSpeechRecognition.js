@@ -3,18 +3,18 @@ import { useState, useEffect, useRef, useCallback } from 'react';
 /**
  * Custom hook for speech recognition functionality
  * @param {Object} options - Configuration options
- * @param {number} options.pauseTimeout - Time in milliseconds to wait before stopping (default: 3000)
  * @param {string} options.language - Speech recognition language (default: 'en-US')
  * @param {boolean} options.continuous - Whether to use continuous recognition (default: true)
  * @param {boolean} options.interimResults - Whether to return interim results (default: true)
+ * @param {Function} options.onTranscriptComplete - Callback when transcript is complete after pause
  * @returns {Object} Speech recognition state and controls
  */
 const useSpeechRecognition = (options = {}) => {
   const {
-    pauseTimeout = 3000,
     language = 'en-US',
-    continuous = true,
-    interimResults = true
+    continuous = false,
+    interimResults = true,
+    onTranscriptComplete
   } = options;
 
   const [isListening, setIsListening] = useState(false);
@@ -24,8 +24,10 @@ const useSpeechRecognition = (options = {}) => {
   const [interimTranscript, setInterimTranscript] = useState('');
   const [error, setError] = useState(null);
 
-  const speechTimeoutRef = useRef(null);
   const recognitionRef = useRef(null);
+  const currentTranscriptRef = useRef('');
+  const currentInterimRef = useRef('');
+  const hasCalledCompleteRef = useRef(false); // Prevent duplicate calls
 
   // Handle speech recognition errors with user-friendly messages
   const handleSpeechError = useCallback((errorCode) => {
@@ -61,6 +63,11 @@ const useSpeechRecognition = (options = {}) => {
 
   // Initialize speech recognition
   useEffect(() => {
+    // Initialize refs
+    currentTranscriptRef.current = '';
+    currentInterimRef.current = '';
+    hasCalledCompleteRef.current = false; // Reset on initialization
+    
     if ('webkitSpeechRecognition' in window || 'SpeechRecognition' in window) {
       const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
       const recognition = new SpeechRecognition();
@@ -70,12 +77,21 @@ const useSpeechRecognition = (options = {}) => {
       recognition.lang = language;
       recognition.maxAlternatives = 1;
       
+      // Optimize for faster response
+      if ('webkitSpeechRecognition' in window) {
+        recognition.webkitServiceURI = 'wss://www.google.com/speech-api/v2/recognize';
+      }
+      
       recognition.onstart = () => {
+        const timestamp = new Date().toLocaleTimeString();
+        console.log(`🎤 [${timestamp}] Speech recognition started`);
+        hasCalledCompleteRef.current = false; // Reset flag on start
         setIsListening(true);
         setError(null);
       };
       
       recognition.onresult = (event) => {
+        console.log('🗣️ Speech recognition result received');
         let finalTranscript = '';
         let currentInterimTranscript = '';
         
@@ -88,24 +104,24 @@ const useSpeechRecognition = (options = {}) => {
           }
         }
         
-        // Update transcripts
+        console.log('📝 Final:', finalTranscript, '| Interim:', currentInterimTranscript);
+        
+        // Immediately update transcripts for real-time feedback
         if (finalTranscript) {
-          setTranscript(prev => prev + finalTranscript);
+          setTranscript(prev => {
+            const newTranscript = prev + finalTranscript;
+            currentTranscriptRef.current = newTranscript;
+            return newTranscript;
+          });
           setInterimTranscript(''); // Clear interim when we get final
-        } else {
+          currentInterimRef.current = '';
+        }
+        
+        // Update interim results immediately for visual feedback
+        if (currentInterimTranscript) {
           setInterimTranscript(currentInterimTranscript);
+          currentInterimRef.current = currentInterimTranscript;
         }
-        
-        // Reset the pause timeout on each speech result
-        if (speechTimeoutRef.current) {
-          clearTimeout(speechTimeoutRef.current);
-        }
-        
-        speechTimeoutRef.current = setTimeout(() => {
-          if (recognition && isListening) {
-            recognition.stop();
-          }
-        }, pauseTimeout);
       };
       
       recognition.onerror = (event) => {
@@ -113,11 +129,20 @@ const useSpeechRecognition = (options = {}) => {
       };
       
       recognition.onend = () => {
+        const finalTranscript = currentTranscriptRef.current + currentInterimRef.current;
+        const timestamp = new Date().toLocaleTimeString();
+        console.log(`🏁 [${timestamp}] Speech recognition ended naturally with transcript:`, finalTranscript);
         setIsListening(false);
-        setInterimTranscript('');
-        if (speechTimeoutRef.current) {
-          clearTimeout(speechTimeoutRef.current);
+        setInterimTranscript(''); // Only clear interim
+        currentInterimRef.current = '';
+        
+        // Trigger callback with complete transcript if provided and not already called
+        if (onTranscriptComplete && finalTranscript.trim() && !hasCalledCompleteRef.current) {
+          hasCalledCompleteRef.current = true; // Mark as called
+          console.log(`📞 [${timestamp}] Browser detected speech end - calling onTranscriptComplete with:`, finalTranscript.trim());
+          onTranscriptComplete(finalTranscript.trim());
         }
+        // Note: Keep the transcript - don't clear it
       };
       
       setSpeechRecognition(recognition);
@@ -132,21 +157,16 @@ const useSpeechRecognition = (options = {}) => {
     }
     
     return () => {
-      if (speechTimeoutRef.current) {
-        clearTimeout(speechTimeoutRef.current);
-      }
+      // Cleanup function - no timeouts to clear anymore
     };
   // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [language, continuous, interimResults, pauseTimeout, handleSpeechError]);
+  }, [language, continuous, interimResults, handleSpeechError, onTranscriptComplete]);
 
   // Cleanup on unmount
   useEffect(() => {
     return () => {
       if (recognitionRef.current) {
         recognitionRef.current.stop();
-      }
-      if (speechTimeoutRef.current) {
-        clearTimeout(speechTimeoutRef.current);
       }
     };
   }, []); // Empty dependency array for cleanup on unmount only
@@ -178,9 +198,6 @@ const useSpeechRecognition = (options = {}) => {
     if (speechRecognition && isListening) {
       speechRecognition.stop();
     }
-    if (speechTimeoutRef.current) {
-      clearTimeout(speechTimeoutRef.current);
-    }
   }, [speechRecognition, isListening]);
 
   // Toggle speech recognition
@@ -196,6 +213,8 @@ const useSpeechRecognition = (options = {}) => {
   const resetTranscript = useCallback(() => {
     setTranscript('');
     setInterimTranscript('');
+    currentTranscriptRef.current = '';
+    currentInterimRef.current = '';
   }, []);
 
   // Clear error
