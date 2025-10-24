@@ -5,13 +5,13 @@ import {
   Box,
   Button,
   Container,
-  Paper,
   IconButton,
+  Paper,
   Typography,
   useTheme
 } from '@mui/material';
 import { AnimatePresence, LayoutGroup, motion } from 'framer-motion';
-import { useEffect, useState } from 'react';
+import { useEffect, useMemo, useState, useCallback, useRef } from 'react';
 import { useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 import BuzzCarousel from '../components/BuzzCarousel';
@@ -22,7 +22,6 @@ import Navigation from '../components/Navigation';
 import SearchInput from '../components/SearchInput';
 import TrendingSearches from '../components/TrendingSearches';
 import useSpeechRecognition from '../hooks/useSpeechRecognition';
-import { questionsAPI } from '../services/api';
 import { selectUser } from '../store';
 
 const imgBase = process.env.PUBLIC_URL;
@@ -52,45 +51,87 @@ const Home = () => {
 
   // Right-side icons in the search bar: only one can be active at a time
   const [activeMode, setActiveMode] = useState(null); // 'community', 'expert', 'translate', 'voice', or null
+  const activeModeRef = useRef(null);
+  
+  // Update ref whenever activeMode changes
+  useEffect(() => {
+    activeModeRef.current = activeMode;
+  }, [activeMode]);
+  
   // Mobile: toggle vertical actions menu from the three dots
   const [showMobileSearchActions, setShowMobileSearchActions] = useState(false);
   
   // Speech recognition using custom hook
+  
+  // Define navigation function first
+  const requestProtectedSearch = useCallback((query) => {
+    console.log('requestProtectedSearch called with query:', query);
+    if (!query || !query.trim()) {
+      console.log('Empty query, returning early');
+      return;
+    }
+    // Always navigate to search results page for voice search
+    console.log('Navigating to search results with query:', query.trim());
+    navigate(`/search?q=${encodeURIComponent(query.trim())}`);
+  }, [navigate]);
+
+  // Handle auto-submit when speech recognition completes
+  const handleSpeechComplete = useCallback((finalTranscript) => {
+    const timestamp = new Date().toLocaleTimeString();
+    console.log(`🎯 [${timestamp}] handleSpeechComplete called with:`, finalTranscript);
+    if (finalTranscript.trim()) {
+      // Set the final transcript as search value first
+      setSearchValue(finalTranscript);
+      console.log(`🚀 [${timestamp}] Submitting query:`, finalTranscript);
+      
+      // Navigate to search results immediately
+      requestProtectedSearch(finalTranscript);
+      
+      // Turn off voice mode immediately but keep the transcript
+      setActiveMode(null);
+      console.log(`✅ [${timestamp}] Auto-submit completed`);
+    }
+  }, [requestProtectedSearch]);
+
+  // Get speech recognition functions
   const {
     isListening,
     isSupported: speechSupported,
     transcript,
+    interimTranscript,
     startListening,
     stopListening,
-    resetTranscript,
     error: speechError
   } = useSpeechRecognition({
-    pauseTimeout: 3000,
-    language: 'en-US'
+    language: 'en-US',
+    onTranscriptComplete: handleSpeechComplete // Auto-submit when browser detects speech end
   });
 
-  // Update search value when transcript changes
+  // Update search value with transcript in real-time
   useEffect(() => {
     if (transcript) {
-      setSearchValue(prev => prev + transcript);
-      resetTranscript(); // Clear the transcript after adding to search value
+      setSearchValue(transcript);
     }
-  }, [transcript, resetTranscript]);
+  }, [transcript]);
 
-  // Auto-untoggle voice mode when speech recognition stops (e.g., after 3-second pause)
-  // Add a small delay to prevent interference with user clicks
-  useEffect(() => {
-    if (activeMode === 'voice' && !isListening) {
-      const timeoutId = setTimeout(() => {
-        // Double-check the state after delay to ensure it wasn't a temporary transition
-        if (activeMode === 'voice' && !isListening) {
-          setActiveMode(null);
-        }
-      }, 100); // Small delay to allow speech recognition to start
-      
-      return () => clearTimeout(timeoutId);
+  // Show interim results in real-time for better user feedback
+  const displaySearchValue = useMemo(() => {
+    if (activeMode === 'voice' && interimTranscript) {
+      return searchValue + interimTranscript;
     }
-  }, [isListening, activeMode]);
+    return searchValue;
+  }, [searchValue, interimTranscript, activeMode]);
+
+  // Auto-untoggle voice mode when speech recognition stops (unless auto-submitting)
+  useEffect(() => {
+    if (activeModeRef.current === 'voice' && !isListening) {
+      // Only untoggle if we're still in voice mode and not listening
+      // (auto-submit will handle mode change immediately)
+      if (activeModeRef.current === 'voice' && !isListening) {
+        setActiveMode(null);
+      }
+    }
+  }, [isListening]); // Remove activeMode dependency to prevent infinite loop
   
   // Toggle function that ensures only one mode is active at a time
   const toggleMode = (mode) => {
@@ -145,7 +186,7 @@ const Home = () => {
   };
 
   // Get placeholder text based on active mode
-  const getPlaceholderText = () => {
+  const getPlaceholderText = useCallback(() => {
     switch (activeMode) {
       case 'community':
         return 'Ask your questions directly to the Foreign Community';
@@ -154,14 +195,14 @@ const Home = () => {
       case 'translate':
         return 'Ask anything about Korea';
       case 'voice':
-        return isListening ? 'Listening... (will stop after 3 seconds of silence)' : 'Click the microphone to start speaking or type your question...';
+        return isListening ? 'Listening... (will stop after 2 seconds of silence)' : 'Click the microphone to start speaking or type your question...';
       default:
         return 'Ask anything about Korea';
     }
-  };
+  }, [activeMode, isListening]);
 
   // Get search bar styling based on active mode
-  const getSearchBarStyling = () => {
+  const getSearchBarStyling = useCallback(() => {
     const baseStyle = {
       borderColor: theme.palette.divider,
       boxShadow: '0 0 14.5px 0 rgba(0, 0, 0, 0.25)',
@@ -218,13 +259,12 @@ const Home = () => {
           }
         };
     }
-  };
+  }, [activeMode, theme]);
   // Mobile: show more categories when tapping the three dots
   const [showAllCategories, setShowAllCategories] = useState(false);
   const [postOpen, setPostOpen] = useState(false);
   const [feedbackOpen, setFeedbackOpen] = useState(false);
   // Password gating removed for standard search
-  const [expertPosting, setExpertPosting] = useState(false);
   // Desktop: number of category tiles visible before the "More" tile
   const DESKTOP_VISIBLE = 6; // collapsed: 6 + More = 7 tiles in row 1
   const ROW1_COUNT = 7; // expanded: always keep 7 real icons on the top row
@@ -267,41 +307,8 @@ const Home = () => {
     // Do not open dialog from typing
   };
 
-  const goSearch = (query) => {
-    if (!query.trim()) return;
-    const isExpert = localStorage.getItem('expertMode') === '1';
-    if (isExpert) {
-      // Redirect to library with expert tab flag
-      navigate('/library?tab=expert');
-      return;
-    }
-    navigate(`/search?q=${encodeURIComponent(query.trim())}`);
-  };
 
-  const requestProtectedSearch = (query) => {
-    // Expert mode still posts then redirects; standard search navigates directly (no password)
-    if (localStorage.getItem('expertMode') === '1') {
-      const trimmed = (query || '').trim();
-      if (!trimmed) return;
-      if (expertPosting) return;
-      setExpertPosting(true);
-      try {
-        const asked_by = user?.email || 'anonymous';
-        questionsAPI
-          .ask({ question_text: trimmed, asked_by })
-          .catch(() => {})
-          .finally(() => {
-            setExpertPosting(false);
-            goSearch(trimmed);
-          });
-      } catch (e) {
-        setExpertPosting(false);
-        goSearch(trimmed);
-      }
-      return;
-    }
-    goSearch(query);
-  };
+
 
   const handleCategoryClick = (category) => {
     // If a URL is provided, open it in a new tab. This is public info so no auth gating.
@@ -505,7 +512,7 @@ const Home = () => {
         <Container maxWidth="lg" sx={{ flex: 1, px: 2, pt: 1, pb: { xs: 0, md: showAllCategories ? 2 : 8.5 } }}>
           {/* Search Section */}
           <SearchInput
-            searchValue={searchValue}
+            searchValue={displaySearchValue}
             onSearchChange={handleSearchChange}
             onSearchFocus={handleSearchFocus}
             onSearchSubmit={requestProtectedSearch}
