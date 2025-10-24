@@ -19,7 +19,7 @@ import {
   useTheme
 } from '@mui/material';
 import { motion } from 'framer-motion';
-import { useRef, useState } from 'react';
+import { useRef, useState, useMemo } from 'react';
 
 const SearchInput = ({
   searchValue,
@@ -40,6 +40,10 @@ const SearchInput = ({
   const theme = useTheme();
   const searchInputRef = useRef(null);
   const fileInputRef = useRef(null);
+  
+  // Memoize computed values to prevent re-render loops
+  const placeholderText = useMemo(() => getPlaceholderText(), [getPlaceholderText]);
+  const searchBarStyling = useMemo(() => getSearchBarStyling(), [getSearchBarStyling]);
   
   // Dropdown menu state for plus sign
   const [plusMenuAnchor, setPlusMenuAnchor] = useState(null);
@@ -86,7 +90,7 @@ const SearchInput = ({
               borderColor: theme.palette.primary.main,
               boxShadow: '0 12px 36px rgba(0,0,0,0.12)'
             },
-            ...getSearchBarStyling()
+            ...searchBarStyling
           }}
         >
           {/* Hidden file input */}
@@ -243,7 +247,7 @@ const SearchInput = ({
               ref={searchInputRef}
               fullWidth
               variant="standard"
-              placeholder={getPlaceholderText()}
+              placeholder={placeholderText}
               value={searchValue}
               onChange={onSearchChange}
               onFocus={onSearchFocus}
@@ -341,6 +345,8 @@ const SearchInput = ({
                     color: theme.palette.text.secondary, 
                     '&:hover': { backgroundColor: 'transparent' }, 
                     '&:hover svg': { color: '#32CD32' },
+                    '&:focus': { outline: 'none' },
+                    outline: 'none',
                     animation: isListening ? 'voice-pulse 1s ease-in-out infinite' : 'none'
                   }}
                 >
@@ -405,6 +411,8 @@ const SearchInput = ({
               onClick={() => onToggleMode('voice')} 
               sx={{ 
                 color: activeMode === 'voice' ? '#32CD32' : 'text.secondary',
+                '&:focus': { outline: 'none' },
+                outline: 'none',
                 animation: isListening ? 'voice-pulse 1s ease-in-out infinite' : 'none'
               }}
             >
