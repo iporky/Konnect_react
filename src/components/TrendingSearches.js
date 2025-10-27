@@ -2,7 +2,7 @@ import { Bolt } from '@mui/icons-material';
 import { Box, Typography } from '@mui/material';
 import { useState } from 'react';
 
-const TrendingSearches = () => {
+const TrendingSearches = ({ onSearchClick }) => {
   // Mock trending searches data
   const trendingSearches = [
     { id: 1, text: 'Seongsu shopping cafés', rank: 1, change: 'up' },
@@ -45,10 +45,10 @@ const TrendingSearches = () => {
         <Typography
           variant="h6"
           sx={{
-            fontWeight: 'bold',
             color: '#ff4757',
-            fontSize: '13px',
+            fontSize: '14px',
             whiteSpace: 'nowrap',
+            lineHeight: 1.3,
             overflow: 'hidden',
             textOverflow: 'ellipsis',
           }}
@@ -69,6 +69,7 @@ const TrendingSearches = () => {
         {pages[page].map((item) => (
           <Box
             key={item.id}
+            onClick={() => onSearchClick && onSearchClick(item.text)}
             sx={{
               display: 'flex',
               alignItems: 'center',
