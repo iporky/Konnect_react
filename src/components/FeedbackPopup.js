@@ -37,12 +37,14 @@ const FeedbackPopup = ({ open, onClose }) => {
       return;
     }
     
-    if (!email.trim()) {
-      setSubmitError('Please enter your email address');
+    // Email is only required if user wants a reply
+    if (wantReply && !email.trim()) {
+      setSubmitError('Please enter your email address to receive a reply');
       return;
     }
     
-    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email.trim())) {
+    // Validate email format only if email is provided
+    if (email.trim() && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email.trim())) {
       setSubmitError('Please enter a valid email address');
       return;
     }
@@ -52,7 +54,7 @@ const FeedbackPopup = ({ open, onClose }) => {
       await feedbacksAPI.submit({
         type,
         details: message.trim(),
-        user_email: email.trim(),
+        user_email: email.trim() || null, // Send null if no email provided
         feedback_reply: wantReply,
         file: includeScreenshot ? file : null
       });
@@ -111,9 +113,6 @@ const FeedbackPopup = ({ open, onClose }) => {
           {submitError && (
             <Alert severity="error" sx={{ mb: 2 }}>{submitError}</Alert>
           )}
-          <Typography variant="body2" sx={{ mb: 2, color: 'text.secondary' }}>
-            Please click on the specific area of the page that your feedback is related to.
-          </Typography>
 
           {/* Type */}
           <FormControl component="fieldset" sx={{ mb: 2 }}>
@@ -138,12 +137,12 @@ const FeedbackPopup = ({ open, onClose }) => {
           <TextField
             value={email}
             onChange={(e) => setEmail(e.target.value)}
-            placeholder="Your email address"
+            placeholder="Your email address (optional)"
             fullWidth
             type="email"
-            required
+            required={wantReply}
             sx={{ my: 1 }}
-            helperText="Email is required for all feedback submissions"
+            helperText={wantReply ? "Email is required to receive a reply" : "Email is optional unless you want a reply"}
           />
 
           {/* Options */}
@@ -176,7 +175,7 @@ const FeedbackPopup = ({ open, onClose }) => {
               type="submit"
               variant="contained"
               color="primary"
-              disabled={!message.trim() || !email.trim() || submitting}
+              disabled={!message.trim() || (wantReply && !email.trim()) || submitting}
               sx={{ borderRadius: 999, px: 5, boxShadow: '0 8px 18px rgba(0,0,0,0.12)' }}
             >
               {submitting ? 'Sending...' : 'Send'}

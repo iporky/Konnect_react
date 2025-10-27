@@ -356,7 +356,7 @@ const Home = () => {
         position: 'relative',
         minHeight: '100%',
         // Add left margin on desktop to account for sidebar
-        ml: { xs: 0, md: '66px' }
+        ml: { xs: 0 }
       }}>
         {/* Header with Logo */}
         <Box sx={{
@@ -693,7 +693,7 @@ const Home = () => {
                   <BuzzCarousel />
                 </Box>
                 <Box sx={{ width: 260, height: 244 }}>
-                  <TrendingSearches />
+                  <TrendingSearches onSearchClick={requestProtectedSearch} />
                 </Box>
               </Box>
             </Box>
