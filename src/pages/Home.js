@@ -75,24 +75,6 @@ const Home = () => {
     navigate(`/search?q=${encodeURIComponent(query.trim())}`);
   }, [navigate]);
 
-  // Handle auto-submit when speech recognition completes
-  const handleSpeechComplete = useCallback((finalTranscript) => {
-    const timestamp = new Date().toLocaleTimeString();
-    console.log(`🎯 [${timestamp}] handleSpeechComplete called with:`, finalTranscript);
-    if (finalTranscript.trim()) {
-      // Set the final transcript as search value first
-      setSearchValue(finalTranscript);
-      console.log(`🚀 [${timestamp}] Submitting query:`, finalTranscript);
-      
-      // Navigate to search results immediately
-      requestProtectedSearch(finalTranscript);
-      
-      // Turn off voice mode immediately but keep the transcript
-      setActiveMode(null);
-      console.log(`✅ [${timestamp}] Auto-submit completed`);
-    }
-  }, [requestProtectedSearch]);
-
   // Get speech recognition functions
   const {
     isListening,
@@ -103,9 +85,35 @@ const Home = () => {
     stopListening,
     error: speechError
   } = useSpeechRecognition({
-    language: 'en-US',
-    onTranscriptComplete: handleSpeechComplete // Auto-submit when browser detects speech end
+    language: 'en-US'
+    // No onTranscriptComplete callback since we don't auto-submit
   });
+  
+  // Add click outside handler to deactivate modes
+  useEffect(() => {
+    const handleClickOutside = (event) => {
+      // Check if click is outside the search input area and mode icons
+      const searchContainer = document.querySelector('[data-search-container]');
+      const mobileActionsContainer = document.querySelector('[data-mobile-actions]');
+      
+      if (searchContainer && !searchContainer.contains(event.target) && 
+          (!mobileActionsContainer || !mobileActionsContainer.contains(event.target))) {
+        // Deactivate any active mode
+        if (activeMode) {
+          if (activeMode === 'voice') {
+            stopListening();
+          }
+          setActiveMode(null);
+          setShowMobileSearchActions(false);
+        }
+      }
+    };
+
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => {
+      document.removeEventListener('mousedown', handleClickOutside);
+    };
+  }, [activeMode, stopListening]);
 
   // Update search value with transcript in real-time
   useEffect(() => {
@@ -405,8 +413,8 @@ const Home = () => {
             </Box>
           </motion.div>
           
-          {/* Desktop: top-right auth buttons */}
-          {!isAuthenticated ? (
+          {/* Desktop: top-right auth buttons - only show when not authenticated */}
+          {!isAuthenticated && (
             <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ duration: 1.2, delay: 0.2 }}>
               <Box
                 sx={{
@@ -464,44 +472,6 @@ const Home = () => {
                   }}
                 >
                   Log in
-                </Button>
-              </Box>
-            </motion.div>
-          ) : (
-            <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ duration: 1.0, delay: 0.1 }}>
-              <Box
-                sx={{
-                  position: 'fixed',
-                  top: 25,
-                  right: 45,
-                  display: { xs: 'none', md: 'flex' },
-                  gap: 1,
-                  zIndex: 1200,
-                }}
-              >
-                <Button
-                  variant="contained"
-                  onClick={() => navigate('/profile')}
-                  sx={{
-                    borderRadius: '25px',
-                    px: 2.5,
-                    height: '45px',
-                    textTransform: 'none',
-                    fontWeight: 600,
-                    fontFamily: 'Metropolis',
-                    fontStyle: 'normal',
-                    fontSize: '12px',
-                    backgroundColor: '#121212',
-                    color: '#ffffff',
-                    border: '1px solid #121212',
-                    boxShadow: 'none',
-                    '&:hover': {
-                      backgroundColor: '#121212',
-                      boxShadow: 'none'
-                    }
-                  }}
-                >
-                  Profile
                 </Button>
               </Box>
             </motion.div>
@@ -571,7 +541,7 @@ const Home = () => {
                           <Box component="img" src={category.icon} alt={category.label} sx={{ width: 36, height: 36 }} />
                         )}
                       </Box>
-                      <Typography variant="caption" sx={{ color: '#888888', fontSize: '12px', fontWeight: '600' }}>
+                      <Typography variant="caption" sx={{ color: '#888888', fontSize: '13px', fontWeight: '400' }}>
                         {category.label}
                       </Typography>
                     </Box>
@@ -646,7 +616,7 @@ const Home = () => {
                                 <Box component="img" src={category.icon} alt={category.label} sx={{ width: 36, height: 36 }} />
                               )}
                             </Box>
-                            <Typography variant="caption" sx={{ color: '#888888', fontSize: '12px', fontWeight: 'bold' }}>
+                            <Typography variant="caption" sx={{ color: '#888888', fontSize: '13px', fontWeight: '400' }}>
                               {category.label}
                             </Typography>
                           </Box>
@@ -736,7 +706,7 @@ const Home = () => {
                   <Box component="img" src={category.icon} alt={category.label} sx={{ width: 26, height: 26 }} />
                 )}
               </div>
-              <Typography variant="caption" sx={{ mt: 0.5, color: 'text.secondary', fontSize: '12px', lineHeight: 1.2 }}>
+              <Typography variant="caption" sx={{ mt: 0.5, color: 'text.secondary', fontSize: '13px', lineHeight: 1.2 }}>
                 {category.label}
               </Typography>
             </Box>
@@ -798,7 +768,7 @@ const Home = () => {
                     <Box component="img" src={category.icon} alt={category.label} sx={{ width: 26, height: 26 }} />
                   )}
                 </Paper>
-                <Typography variant="caption" sx={{ mt: 0.5, color: 'text.secondary', fontSize: '12px', lineHeight: 1.2 }}>
+                <Typography variant="caption" sx={{ mt: 0.5, color: 'text.secondary', fontSize: '13px', lineHeight: 1.2 }}>
                   {category.label}
                 </Typography>
               </Box>

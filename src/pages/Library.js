@@ -68,23 +68,6 @@ const Library = () => {
           minHeight: { xs: 'calc(100vh - 64px)', md: '95vh' },
         }}
       >
-        {/* Header */}
-        <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: { xs: 'center', md: 'flex-start' }, mb: 2 }}>
-          <Typography
-            variant="h2"
-            sx={{
-              color: '#3289C9',
-              fontFamily: 'Metropolis',
-              fontWeight: 700,
-              fontSize: { xs: '32px', md: '56px' },
-              lineHeight: 1.1,
-              letterSpacing: { xs: '-0.32px', md: '-0.56px' },
-            }}
-          >
-            Library
-          </Typography>
-        </Box>
-
         {/* Chips row - carousel on mobile with arrows */}
         <Box sx={{ position: 'relative', mb: 3 }}>
           <Box

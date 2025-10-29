@@ -2,13 +2,11 @@ import AddIcon from '@mui/icons-material/Add';
 import AttachFileOutlined from '@mui/icons-material/AttachFileOutlined';
 import GroupOutlined from '@mui/icons-material/GroupOutlined';
 import LanguageOutlined from '@mui/icons-material/LanguageOutlined';
-import MenuBookIcon from '@mui/icons-material/MenuBook';
 import MicOutlined from '@mui/icons-material/MicOutlined';
 import MoreVert from '@mui/icons-material/MoreVert';
 import WorkspacePremiumOutlined from '@mui/icons-material/WorkspacePremiumOutlined';
 import {
   Box,
-  Divider,
   IconButton,
   Menu,
   MenuItem,
@@ -19,7 +17,7 @@ import {
   useTheme
 } from '@mui/material';
 import { motion } from 'framer-motion';
-import { useRef, useState, useMemo } from 'react';
+import { useMemo, useRef, useState } from 'react';
 
 const SearchInput = ({
   searchValue,
@@ -68,6 +66,7 @@ const SearchInput = ({
     >
       <Box sx={{ display: 'flex', justifyContent: 'center', mb: { xs: 0, md: '25px' } }}>
         <Paper
+          data-search-container
           elevation={6}
           sx={{
             display: 'flex',
@@ -105,7 +104,12 @@ const SearchInput = ({
           
           {/* Uploaded files section */}
           {uploadedFiles.length > 0 && (
-            <Box sx={{ mb: 2 }}>
+            <Box sx={{ 
+              mb: 2,
+              display: 'flex',
+              flexWrap: 'wrap',
+              gap: 1
+            }}>
               {uploadedFiles.map((file) => (
                 <Box
                   key={file.id}
@@ -113,11 +117,11 @@ const SearchInput = ({
                     display: 'flex',
                     alignItems: 'center',
                     gap: 1,
-                    mb: 1,
                     p: 1,
                     backgroundColor: '#f7ededff',
                     borderRadius: 3,
-                    fontSize: '14px'
+                    fontSize: '14px',
+                    flexShrink: 0
                   }}
                 >
                   <Box
@@ -138,7 +142,7 @@ const SearchInput = ({
                   </Box>
                   <Typography 
                     sx={{ 
-                      maxWidth: '300px',
+                      maxWidth: '180px',
                       overflow: 'hidden',
                       textOverflow: 'ellipsis',
                       whiteSpace: 'nowrap',
@@ -216,7 +220,7 @@ const SearchInput = ({
                   <AttachFileOutlined sx={{ color: '#000', width: 20, height: 20 }} />
                   <Typography sx={{ fontWeight: 700, fontSize: 14, color: '#222' }}>Add photos & files</Typography>
                 </MenuItem>
-                <Divider sx={{ my: 0.4, mx: 0.5 }} />
+                {/* <Divider sx={{ my: 0.4, mx: 0.5 }} />
                 <Tooltip
                   arrow
                   placement="right"
@@ -238,7 +242,7 @@ const SearchInput = ({
                     <MenuBookIcon sx={{ color: '#000', width: 20, height: 20 }} />
                     <Typography sx={{ fontWeight: 700, fontSize: 14, color: '#222' }}>Assist mode</Typography>
                   </MenuItem>
-                </Tooltip>
+                </Tooltip> */}
               </Menu>
             </Box>
             
@@ -378,6 +382,7 @@ const SearchInput = ({
           {/* backdrop to close on outside click */}
           <Box onClick={() => setShowMobileSearchActions(false)} sx={{ position: 'fixed', inset: 0, zIndex: 1105, display: { xs: 'block', md: 'none' } }} />
           <Box
+            data-mobile-actions
             sx={{
               position: 'fixed',
               right: 22,
