@@ -19,9 +19,8 @@ const Footer = ({ floating = false, stickToBottom = true }) => {
     color: '#888',
     textAlign: 'center',
     fontFamily: 'Metropolis',
-    fontSize: '14px',
+    fontSize: '13px',
     fontStyle: 'normal',
-    fontWeight: 500,
     textDecoration: 'none',
     cursor: 'pointer',
     '&:hover': { 
