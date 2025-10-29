@@ -46,8 +46,9 @@ const TrendingSearches = ({ onSearchClick }) => {
           variant="h6"
           sx={{
             color: '#ff4757',
-            fontSize: '14px',
+            fontSize: '13px',
             whiteSpace: 'nowrap',
+            fontWeight: 'bold',
             lineHeight: 1.3,
             overflow: 'hidden',
             textOverflow: 'ellipsis',
@@ -84,12 +85,11 @@ const TrendingSearches = ({ onSearchClick }) => {
               <Typography
                 variant="body2"
                 sx={{
-                  fontWeight: 'bold',
+                  fontWeight: item.rank <= 3 ? 'bold' : 'normal',
                   color: item.rank <= 3 ? '#ff4757' : 'text.secondary',
                   mr: 1,
                   minWidth: '16px',
-                  fontSize: '14px',
-                  
+                  fontSize: '14px',                 
                 }}
               >
                 {item.rank}
@@ -98,7 +98,7 @@ const TrendingSearches = ({ onSearchClick }) => {
                 variant="body2"
                 sx={{
                   color: 'text.primary',
-                  fontSize: '14px',
+                  fontSize: '13px',
                   lineHeight: 1.3,
                   flex: 1,
                   transition: 'all 0.2s ease-in-out',
