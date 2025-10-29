@@ -4,9 +4,9 @@ import { useState, useEffect, useRef, useCallback } from 'react';
  * Custom hook for speech recognition functionality
  * @param {Object} options - Configuration options
  * @param {string} options.language - Speech recognition language (default: 'en-US')
- * @param {boolean} options.continuous - Whether to use continuous recognition (default: true)
+ * @param {boolean} options.continuous - Whether to use continuous recognition (default: false)
  * @param {boolean} options.interimResults - Whether to return interim results (default: true)
- * @param {Function} options.onTranscriptComplete - Callback when transcript is complete after pause
+ * @param {Function} options.onTranscriptComplete - Optional callback when transcript is complete (not used for auto-submit)
  * @returns {Object} Speech recognition state and controls
  */
 const useSpeechRecognition = (options = {}) => {
@@ -136,12 +136,10 @@ const useSpeechRecognition = (options = {}) => {
         setInterimTranscript(''); // Only clear interim
         currentInterimRef.current = '';
         
-        // Trigger callback with complete transcript if provided and not already called
-        if (onTranscriptComplete && finalTranscript.trim() && !hasCalledCompleteRef.current) {
-          hasCalledCompleteRef.current = true; // Mark as called
-          console.log(`📞 [${timestamp}] Browser detected speech end - calling onTranscriptComplete with:`, finalTranscript.trim());
-          onTranscriptComplete(finalTranscript.trim());
-        }
+        // Don't auto-submit - just keep the text in the search bar
+        // The onTranscriptComplete callback can still be used for other purposes if needed
+        // but we won't call it automatically anymore
+        console.log(`� [${timestamp}] Speech recognition complete - text preserved in search bar`);
         // Note: Keep the transcript - don't clear it
       };
       
