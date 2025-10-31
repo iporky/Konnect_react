@@ -52,6 +52,17 @@ const Home = () => {
 
   // Get language context for speech recognition
   const { speechLanguageCode } = useLanguage();
+  
+  // Search limit for non-authenticated users
+  const [searchCount, setSearchCount] = useState(() => {
+    const stored = localStorage.getItem('guestSearchCount');
+    return stored ? parseInt(stored, 10) : 0;
+  });
+  const MAX_GUEST_SEARCHES = 3;
+
+  // Helper function to get remaining searches for display
+  const getRemainingSearches = () => Math.max(0, MAX_GUEST_SEARCHES - searchCount);
+  const hasExceededLimit = () => searchCount >= MAX_GUEST_SEARCHES;
 
   // Right-side icons in the search bar: only one can be active at a time
   const [activeMode, setActiveMode] = useState(null); // 'community', 'expert', 'translate', 'voice', or null
@@ -74,10 +85,27 @@ const Home = () => {
       console.log('Empty query, returning early');
       return;
     }
-    // Always navigate to search results page for voice search
+    
+    // Check if user is authenticated
+    if (!user) {
+      // For non-authenticated users, check search limit
+      if (searchCount >= MAX_GUEST_SEARCHES) {
+        console.log('Guest user has exceeded search limit, redirecting to signup');
+        navigate('/signup');
+        return;
+      }
+      
+      // Increment search count for guest users
+      const newCount = searchCount + 1;
+      setSearchCount(newCount);
+      localStorage.setItem('guestSearchCount', newCount.toString());
+      console.log(`Guest search ${newCount}/${MAX_GUEST_SEARCHES}`);
+    }
+    
+    // Always navigate to search results page
     console.log('Navigating to search results with query:', query.trim());
     navigate(`/search?q=${encodeURIComponent(query.trim())}`);
-  }, [navigate]);
+  }, [navigate, user, searchCount, MAX_GUEST_SEARCHES]);
 
   // Get speech recognition functions
   const {
@@ -94,6 +122,14 @@ const Home = () => {
     language: speechLanguageCode
     // No onTranscriptComplete callback since we don't auto-submit
   });
+  
+  // Reset search count when user logs in
+  useEffect(() => {
+    if (user) {
+      setSearchCount(0);
+      localStorage.removeItem('guestSearchCount');
+    }
+  }, [user]);
   
   // Update speech recognition language when global language changes
   useEffect(() => {
@@ -391,7 +427,7 @@ const Home = () => {
           right: { xs: 0, md: 'auto' },
           top: { xs: '30%', md: 'auto' },
           transform: { xs: 'translateY(-50%)', md: 'none' },
-          mb: { xs: 0, md: '60px' },
+          mb: { xs: 0, md: '30px' },
           mt: { xs: 0, md: '60px' }
         }}>
           <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ duration: 0.8 }}>
@@ -494,23 +530,44 @@ const Home = () => {
 
         {/* Main Content */}
         <Container maxWidth="lg" sx={{ flex: 1, px: 2, pt: 1, pb: { xs: 0, md: showAllCategories ? 2 : 8.5 } }}>
+          {/* Search limit indicator for non-authenticated users */}
+          {!user && searchCount > 0 && (
+            <Box sx={{ 
+              textAlign: 'center', 
+              mb: 0.5 
+            }}>
+              <Typography variant="caption" sx={{ 
+                color: hasExceededLimit() || getRemainingSearches() === 1 ? 'error.main' : 'text.secondary',
+                fontSize: '12px'
+              }}>
+                {hasExceededLimit() ? (
+                  'Search limit reached. Please sign up to continue searching.'
+                ) : (
+                  `${getRemainingSearches()} search${getRemainingSearches() === 1 ? '' : 'es'} remaining. Sign up for unlimited searches.`
+                )}
+              </Typography>
+            </Box>
+          )}
+          
           {/* Search Section */}
-          <SearchInput
-            searchValue={displaySearchValue}
-            onSearchChange={handleSearchChange}
-            onSearchFocus={handleSearchFocus}
-            onSearchSubmit={requestProtectedSearch}
-            uploadedFiles={uploadedFiles}
-            onFileChange={handleFileChange}
-            onRemoveFile={removeFile}
-            activeMode={activeMode}
-            onToggleMode={toggleMode}
-            isListening={isListening}
-            getPlaceholderText={getPlaceholderText}
-            getSearchBarStyling={getSearchBarStyling}
-            showMobileSearchActions={showMobileSearchActions}
-            setShowMobileSearchActions={setShowMobileSearchActions}
-          />
+          <Box sx={{ mb: 1 }}>
+            <SearchInput
+              searchValue={displaySearchValue}
+              onSearchChange={handleSearchChange}
+              onSearchFocus={handleSearchFocus}
+              onSearchSubmit={requestProtectedSearch}
+              uploadedFiles={uploadedFiles}
+              onFileChange={handleFileChange}
+              onRemoveFile={removeFile}
+              activeMode={activeMode}
+              onToggleMode={toggleMode}
+              isListening={isListening}
+              getPlaceholderText={getPlaceholderText}
+              getSearchBarStyling={getSearchBarStyling}
+              showMobileSearchActions={showMobileSearchActions}
+              setShowMobileSearchActions={setShowMobileSearchActions}
+            />
+          </Box>
 
           {/* Category Icons - desktop: collapsed => first 6 + More; expanded => first 7 icons; remaining left-aligned with More at end */}
           <LayoutGroup>
