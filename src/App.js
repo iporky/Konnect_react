@@ -2,6 +2,7 @@ import React, { useEffect } from 'react';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import { Box } from '@mui/material';
 import { ThemeContextProvider } from './contexts/ThemeContext';
+import { LanguageProvider } from './contexts/LanguageContext';
 import { useDispatch, useSelector } from 'react-redux';
 import { selectUser, setUser, clearUser } from './store';
 import GoogleAnalytics from './components/GoogleAnalytics';
@@ -84,14 +85,15 @@ function App() {
 
   return (
     <ThemeContextProvider>
-      <GoogleAnalytics />
-      <Router>
-        <Box sx={{ 
-          display: 'flex', 
-          flexDirection: 'column', 
-          minHeight: '100vh',
-          backgroundColor: '#cf202a0d'
-        }}>
+      <LanguageProvider>
+        <GoogleAnalytics />
+        <Router>
+          <Box sx={{ 
+            display: 'flex', 
+            flexDirection: 'column', 
+            minHeight: '100vh',
+            backgroundColor: '#cf202a0d'
+          }}>
           <Navigation user={user} onLogout={handleLogout} />
           
           <Box
@@ -134,6 +136,7 @@ function App() {
           </Box>
         </Box>
       </Router>
+      </LanguageProvider>
     </ThemeContextProvider>
   );
 }

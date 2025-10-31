@@ -14,6 +14,7 @@ import { AnimatePresence, LayoutGroup, motion } from 'framer-motion';
 import { useEffect, useMemo, useState, useCallback, useRef } from 'react';
 import { useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
+import { useLanguage } from '../contexts/LanguageContext';
 import BuzzCarousel from '../components/BuzzCarousel';
 import CommunityPostDialog from '../components/CommunityPostDialog';
 import FeedbackPopup from '../components/FeedbackPopup';
@@ -49,6 +50,9 @@ const Home = () => {
   const theme = useTheme();
   const [uploadedFiles, setUploadedFiles] = useState([]);
 
+  // Get language context for speech recognition
+  const { speechLanguageCode } = useLanguage();
+
   // Right-side icons in the search bar: only one can be active at a time
   const [activeMode, setActiveMode] = useState(null); // 'community', 'expert', 'translate', 'voice', or null
   const activeModeRef = useRef(null);
@@ -83,11 +87,21 @@ const Home = () => {
     interimTranscript,
     startListening,
     stopListening,
-    error: speechError
+    error: speechError,
+    changeLanguage,
+    currentLanguage
   } = useSpeechRecognition({
-    language: 'en-US'
+    language: speechLanguageCode
     // No onTranscriptComplete callback since we don't auto-submit
   });
+  
+  // Update speech recognition language when global language changes
+  useEffect(() => {
+    if (changeLanguage && speechLanguageCode !== currentLanguage) {
+      console.log(`🌍 Updating speech recognition language from ${currentLanguage} to ${speechLanguageCode}`);
+      changeLanguage(speechLanguageCode);
+    }
+  }, [speechLanguageCode, currentLanguage, changeLanguage]);
   
   // Add click outside handler to deactivate modes
   useEffect(() => {

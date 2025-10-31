@@ -8,8 +8,6 @@ import WorkspacePremiumOutlined from '@mui/icons-material/WorkspacePremiumOutlin
 import {
   Box,
   IconButton,
-  Menu,
-  MenuItem,
   Paper,
   TextField,
   Tooltip,
@@ -17,7 +15,8 @@ import {
   useTheme
 } from '@mui/material';
 import { motion } from 'framer-motion';
-import { useMemo, useRef, useState } from 'react';
+import { useMemo, useRef } from 'react';
+import { useLanguage } from '../contexts/LanguageContext';
 
 const SearchInput = ({
   searchValue,
@@ -39,20 +38,12 @@ const SearchInput = ({
   const searchInputRef = useRef(null);
   const fileInputRef = useRef(null);
   
+  // Get current language for display
+  const { selectedLanguage, speechLanguageCode } = useLanguage();
+  
   // Memoize computed values to prevent re-render loops
   const placeholderText = useMemo(() => getPlaceholderText(), [getPlaceholderText]);
   const searchBarStyling = useMemo(() => getSearchBarStyling(), [getSearchBarStyling]);
-  
-  // Dropdown menu state for plus sign
-  const [plusMenuAnchor, setPlusMenuAnchor] = useState(null);
-  
-  const handlePlusMenuOpen = (event) => {
-    setPlusMenuAnchor(event.currentTarget);
-  };
-  
-  const handlePlusMenuClose = () => {
-    setPlusMenuAnchor(null);
-  };
 
   const handleFileUpload = () => {
     fileInputRef.current?.click();
@@ -172,78 +163,18 @@ const SearchInput = ({
             minHeight: uploadedFiles.length > 0 ? 50 : 70,
             py: uploadedFiles.length > 0 ? 1 : 0
           }}>
-            {/* Left-side icons: Plus dropdown menu */}
+            {/* Left-side icons: Plus icon for file upload */}
             <Box sx={{ display: 'flex', alignItems: 'center', mr: 1 }}>
-              <Tooltip title="Add or Assist" placement="top" arrow>
+              <Tooltip title="Add photos & files" placement="top" arrow>
                 <IconButton
                   size="small"
-                  aria-label="add-menu"
-                  onClick={handlePlusMenuOpen}
+                  aria-label="add-files"
+                  onClick={handleFileUpload}
                   sx={{ color: '#000', '&:hover': { backgroundColor: 'transparent' } }}
                 >
                   <AddIcon fontSize="small" />
                 </IconButton>
               </Tooltip>
-              <Menu
-                anchorEl={plusMenuAnchor}
-                open={Boolean(plusMenuAnchor)}
-                onClose={handlePlusMenuClose}
-                anchorOrigin={{ vertical: 'bottom', horizontal: 'left' }}
-                transformOrigin={{ vertical: 'top', horizontal: 'left' }}
-                PaperProps={{
-                  sx: {
-                    borderRadius: 3.5,
-                    minWidth: 270,
-                    boxShadow: '0 4px 24px rgba(0,0,0,0.15)',
-                    p: 0.5,
-                    mt: 1,
-                  }
-                }}
-              >
-                <MenuItem
-                  onClick={() => {
-                    handlePlusMenuClose();
-                    handleFileUpload();
-                  }}
-                  sx={{
-                    alignItems: 'center',
-                    py: 1,
-                    borderRadius: 2,
-                    mx: 0.5,
-                    mt: 0.3,
-                    mb: 0.6,
-                    backgroundColor: '#f5f5f5',
-                    gap: 1,
-                    '&:hover': { backgroundColor: '#ededed' }
-                  }}
-                >
-                  <AttachFileOutlined sx={{ color: '#000', width: 20, height: 20 }} />
-                  <Typography sx={{ fontWeight: 700, fontSize: 14, color: '#222' }}>Add photos & files</Typography>
-                </MenuItem>
-                {/* <Divider sx={{ my: 0.4, mx: 0.5 }} />
-                <Tooltip
-                  arrow
-                  placement="right"
-                  title={
-                    <Box sx={{ maxWidth: 230 }}>
-                      <Typography variant="caption" sx={{ display: 'block', lineHeight: 1.25 }}>
-                        Attach any application form and we will help you fill it out
-                      </Typography>
-                    </Box>
-                  }
-                >
-                  <MenuItem
-                    onClick={() => {
-                      handlePlusMenuClose();
-                      // Could add assist mode functionality here if needed
-                    }}
-                    sx={{ alignItems: 'center', py: 1, borderRadius: 3, mx: 0.5, gap: 1 }}
-                  >
-                    <MenuBookIcon sx={{ color: '#000', width: 20, height: 20 }} />
-                    <Typography sx={{ fontWeight: 700, fontSize: 14, color: '#222' }}>Assist mode</Typography>
-                  </MenuItem>
-                </Tooltip> */}
-              </Menu>
             </Box>
             
             {/* Search Input Field */}
@@ -339,7 +270,21 @@ const SearchInput = ({
                   <LanguageOutlined sx={{ width: 20, height: 20, color: activeMode === 'translate' ? '#20B2AA' : undefined }} />
                 </IconButton>
               </Tooltip>
-              <Tooltip title={isListening ? "Listening... Click to stop" : "Voice"} arrow enterDelay={300} placement="top">
+              <Tooltip 
+                title={
+                  <Box>
+                    <Typography variant="body2" component="div">
+                      {isListening ? "Listening... Click to stop" : "Voice"}
+                    </Typography>
+                    <Typography variant="caption" sx={{ opacity: 0.8, fontSize: '11px' }}>
+                      Language: {selectedLanguage.split(' ')[0]} ({speechLanguageCode})
+                    </Typography>
+                  </Box>
+                } 
+                arrow 
+                enterDelay={300} 
+                placement="top"
+              >
                 <IconButton
                   size="small"
                   aria-label="mic"
