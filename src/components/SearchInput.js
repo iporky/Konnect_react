@@ -175,6 +175,66 @@ const SearchInput = ({
                   <AddIcon fontSize="small" />
                 </IconButton>
               </Tooltip>
+              <Menu
+                anchorEl={plusMenuAnchor}
+                open={Boolean(plusMenuAnchor)}
+                onClose={handlePlusMenuClose}
+                anchorOrigin={{ vertical: 'bottom', horizontal: 'left' }}
+                transformOrigin={{ vertical: 'top', horizontal: 'left' }}
+                PaperProps={{
+                  sx: {
+                    borderRadius: 3.5,
+                    minWidth: 270,
+                    boxShadow: '0 4px 24px rgba(0,0,0,0.15)',
+                    p: 0.5,
+                    mt: 1,
+                  }
+                }}
+              >
+                <MenuItem
+                  onClick={() => {
+                    handlePlusMenuClose();
+                    handleFileUpload();
+                  }}
+                  sx={{
+                    alignItems: 'center',
+                    py: 1,
+                    borderRadius: 2,
+                    mx: 0.5,
+                    mt: 0.3,
+                    mb: 0.6,
+                    backgroundColor: '#f5f5f5',
+                    gap: 1,
+                    '&:hover': { backgroundColor: '#ededed' }
+                  }}
+                >
+                  <AttachFileOutlined sx={{ color: '#000', width: 20, height: 20 }} />
+                  <Typography sx={{ fontWeight: 700, fontSize: 14, color: '#222' }}>Add photos & files</Typography>
+                </MenuItem>
+                {/* <Divider sx={{ my: 0.4, mx: 0.5 }} />
+                <Tooltip
+                  arrow
+                  placement="right"
+                  title={
+                    <Box sx={{ maxWidth: 230 }}>
+                      <Typography variant="caption" sx={{ display: 'block', lineHeight: 1.25 }}>
+                        Attach any application form and we will help you fill it out
+                      </Typography>
+                    </Box>
+                  }
+                >
+                  <MenuItem
+                    onClick={() => {
+                      handlePlusMenuClose();
+                      // Could add assist mode functionality here if needed
+                    }}
+                    sx={{ alignItems: 'center', py: 1, borderRadius: 3, mx: 0.5, gap: 1 }}
+                  >
+                    <MenuBookIcon sx={{ color: '#000', width: 20, height: 20 }} />
+                    <Typography sx={{ fontWeight: 700, fontSize: 14, color: '#222' }}>Assist mode</Typography>
+                  </MenuItem>
+                </Tooltip> */}
+              </Menu>
             </Box>
             
             {/* Search Input Field */}
