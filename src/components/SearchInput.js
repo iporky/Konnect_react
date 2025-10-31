@@ -8,8 +8,6 @@ import WorkspacePremiumOutlined from '@mui/icons-material/WorkspacePremiumOutlin
 import {
   Box,
   IconButton,
-  Menu,
-  MenuItem,
   Paper,
   TextField,
   Tooltip,
@@ -17,7 +15,8 @@ import {
   useTheme
 } from '@mui/material';
 import { motion } from 'framer-motion';
-import { useMemo, useRef, useState } from 'react';
+import { useMemo, useRef } from 'react';
+import { useLanguage } from '../contexts/LanguageContext';
 
 const SearchInput = ({
   searchValue,
@@ -39,20 +38,12 @@ const SearchInput = ({
   const searchInputRef = useRef(null);
   const fileInputRef = useRef(null);
   
+  // Get current language for display
+  const { selectedLanguage, speechLanguageCode } = useLanguage();
+  
   // Memoize computed values to prevent re-render loops
   const placeholderText = useMemo(() => getPlaceholderText(), [getPlaceholderText]);
   const searchBarStyling = useMemo(() => getSearchBarStyling(), [getSearchBarStyling]);
-  
-  // Dropdown menu state for plus sign
-  const [plusMenuAnchor, setPlusMenuAnchor] = useState(null);
-  
-  const handlePlusMenuOpen = (event) => {
-    setPlusMenuAnchor(event.currentTarget);
-  };
-  
-  const handlePlusMenuClose = () => {
-    setPlusMenuAnchor(null);
-  };
 
   const handleFileUpload = () => {
     fileInputRef.current?.click();
@@ -172,13 +163,13 @@ const SearchInput = ({
             minHeight: uploadedFiles.length > 0 ? 50 : 70,
             py: uploadedFiles.length > 0 ? 1 : 0
           }}>
-            {/* Left-side icons: Plus dropdown menu */}
+            {/* Left-side icons: Plus icon for file upload */}
             <Box sx={{ display: 'flex', alignItems: 'center', mr: 1 }}>
-              <Tooltip title="Add or Assist" placement="top" arrow>
+              <Tooltip title="Add photos & files" placement="top" arrow>
                 <IconButton
                   size="small"
-                  aria-label="add-menu"
-                  onClick={handlePlusMenuOpen}
+                  aria-label="add-files"
+                  onClick={handleFileUpload}
                   sx={{ color: '#000', '&:hover': { backgroundColor: 'transparent' } }}
                 >
                   <AddIcon fontSize="small" />
@@ -339,7 +330,21 @@ const SearchInput = ({
                   <LanguageOutlined sx={{ width: 20, height: 20, color: activeMode === 'translate' ? '#20B2AA' : undefined }} />
                 </IconButton>
               </Tooltip>
-              <Tooltip title={isListening ? "Listening... Click to stop" : "Voice"} arrow enterDelay={300} placement="top">
+              <Tooltip 
+                title={
+                  <Box>
+                    <Typography variant="body2" component="div">
+                      {isListening ? "Listening... Click to stop" : "Voice"}
+                    </Typography>
+                    <Typography variant="caption" sx={{ opacity: 0.8, fontSize: '11px' }}>
+                      Language: {selectedLanguage.split(' ')[0]} ({speechLanguageCode})
+                    </Typography>
+                  </Box>
+                } 
+                arrow 
+                enterDelay={300} 
+                placement="top"
+              >
                 <IconButton
                   size="small"
                   aria-label="mic"

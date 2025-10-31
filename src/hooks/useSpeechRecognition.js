@@ -1,7 +1,7 @@
-import { useState, useEffect, useRef, useCallback } from 'react';
+import { useCallback, useEffect, useRef, useState } from 'react';
 
 /**
- * Custom hook for speech recognition functionality
+ * Custom hook for speech recognition functionality with dynamic language support
  * @param {Object} options - Configuration options
  * @param {string} options.language - Speech recognition language (default: 'en-US')
  * @param {boolean} options.continuous - Whether to use continuous recognition (default: false)
@@ -23,6 +23,7 @@ const useSpeechRecognition = (options = {}) => {
   const [transcript, setTranscript] = useState('');
   const [interimTranscript, setInterimTranscript] = useState('');
   const [error, setError] = useState(null);
+  const [currentLanguage, setCurrentLanguage] = useState(language);
 
   const recognitionRef = useRef(null);
   const currentTranscriptRef = useRef('');
@@ -77,6 +78,9 @@ const useSpeechRecognition = (options = {}) => {
       recognition.lang = language;
       recognition.maxAlternatives = 1;
       
+      // Update current language state
+      setCurrentLanguage(language);
+      
       // Optimize for faster response
       if ('webkitSpeechRecognition' in window) {
         recognition.webkitServiceURI = 'wss://www.google.com/speech-api/v2/recognize';
@@ -84,7 +88,7 @@ const useSpeechRecognition = (options = {}) => {
       
       recognition.onstart = () => {
         const timestamp = new Date().toLocaleTimeString();
-        console.log(`🎤 [${timestamp}] Speech recognition started`);
+        console.log(`🎤 [${timestamp}] Speech recognition started for language: ${language}`);
         hasCalledCompleteRef.current = false; // Reset flag on start
         setIsListening(true);
         setError(null);
@@ -220,6 +224,23 @@ const useSpeechRecognition = (options = {}) => {
     setError(null);
   }, []);
 
+  // Change language dynamically
+  const changeLanguage = useCallback((newLanguage) => {
+    console.log(`🌍 Changing speech recognition language to: ${newLanguage}`);
+    
+    // Stop current recognition if running
+    if (isListening && speechRecognition) {
+      speechRecognition.stop();
+    }
+    
+    // Update the language for the current recognition instance
+    if (speechRecognition) {
+      speechRecognition.lang = newLanguage;
+      setCurrentLanguage(newLanguage);
+      console.log(`✅ Language updated to: ${newLanguage}`);
+    }
+  }, [speechRecognition, isListening]);
+
   return {
     // State
     isListening,
@@ -227,6 +248,7 @@ const useSpeechRecognition = (options = {}) => {
     transcript,
     interimTranscript,
     error,
+    currentLanguage,
     
     // Actions
     startListening,
@@ -234,6 +256,7 @@ const useSpeechRecognition = (options = {}) => {
     toggleListening,
     resetTranscript,
     clearError,
+    changeLanguage,
     
     // Utility
     hasTranscript: transcript.length > 0,
