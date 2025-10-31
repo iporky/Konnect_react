@@ -21,6 +21,8 @@ import { motion } from 'framer-motion';
 import { useState } from 'react';
 import SearchIcon from '@mui/icons-material/Search';
 import { useLocation, useNavigate } from 'react-router-dom';
+import { useLanguage } from '../contexts/LanguageContext';
+import { getAllSupportedLanguages } from '../utils/speechLanguages';
 import {
   CustomBuzzIcon,
   CustomHomeIcon,
@@ -37,6 +39,12 @@ const Navigation = ({ user, onLogout }) => {
   const [mobileOpen, setMobileOpen] = useState(false);
   const [languageOpen, setLanguageOpen] = useState(false);
   const [languageQuery, setLanguageQuery] = useState('');
+  
+  // Use language context
+  const { selectedLanguage, setSelectedLanguage } = useLanguage();
+  
+  // Get supported languages for speech recognition
+  const supportedLanguages = getAllSupportedLanguages();
 
   const menuItems = [
     { 
@@ -353,6 +361,11 @@ const Navigation = ({ user, onLogout }) => {
             sx={{
               cursor: 'pointer',
               mb: 2,
+              ml: 0.4,
+              display: 'flex',
+              justifyContent: 'center',
+              alignItems: 'center',
+              width: '100%',
               '&:hover .avatar-image': {
                 transform: 'scale(1.1)',
               }
@@ -439,99 +452,41 @@ const Navigation = ({ user, onLogout }) => {
           {/* Language list */}
           <Box sx={{ flex: 1, overflowY: 'auto' }}>
             {
-            [
-              // East Asia
-              '한국어 (Korean)',
-              '普通话 (Mandarin Chinese)',
-              '繁體中文 (Traditional Chinese)',
-              '粵語 (Cantonese)',
-              '日本語 (Japanese)',
-              'Монгол хэл (Mongolian)',
-
-              // South & Southeast Asia
-              'हिन्दी (Hindi)',
-              'বাংলা (Bengali)',
-              'اردو (Urdu)',
-              'ਪੰਜਾਬੀ (Punjabi)',
-              'मराठी (Marathi)',
-              'తెలుగు (Telugu)',
-              'தமிழ் (Tamil)',
-              'ગુજરાતી (Gujarati)',
-              'ಕನ್ನಡ (Kannada)',
-              'മലയാളം (Malayalam)',
-              'සිංහල (Sinhala)',
-              'नेपाली (Nepali)',
-              'Bahasa Indonesia (Indonesian)',
-              'Bahasa Melayu (Malay)',
-              'မြန်မာ (Burmese)',
-              'ខ្មែរ (Khmer)',
-              'ລາວ (Lao)',
-              'ไทย (Thai)',
-              'Tiếng Việt (Vietnamese)',
-              'Filipino (Filipino)',
-
-              // Middle East & Central Asia
-              'العربية (Arabic)',
-              'فارسی (Persian)',
-              'پښتو (Pashto)',
-              'کوردی (Kurdish)',
-              'Türkçe (Turkish)',
-              'Azərbaycan dili (Azerbaijani)',
-              'Қазақша (Kazakh)',
-              'Oʻzbekcha (Uzbek)',
-              'Тоҷикӣ (Tajik)',
-              'Հայերեն (Armenian)',
-              'ქართული (Georgian)',
-              'עברית (Hebrew)',
-
-              // Africa
-              'Kiswahili (Swahili)',
-              'Yorùbá (Yoruba)',
-              'Igbo (Igbo)',
-              'Hausa (Hausa)',
-              'isiZulu (Zulu)',
-              'isiXhosa (Xhosa)',
-              'Af Soomaali (Somali)',
-              'Afrikaans (Afrikaans)',
-              'Amharic (አማርኛ)',
-
-              // Europe
-              'English (English)',
-              'Français (French)',
-              'Deutsch (German)',
-              'Español (Spanish)',
-              'Português (Portuguese)',
-              'Italiano (Italian)',
-              'Nederlands (Dutch)',
-              'Polski (Polish)',
-              'Українська (Ukrainian)',
-              'Русский (Russian)',
-              'Română (Romanian)',
-              'Ελληνικά (Greek)',
-              'Čeština (Czech)',
-              'Magyar (Hungarian)',
-              'Slovenčina (Slovak)',
-              'Slovenščina (Slovenian)',
-              'Hrvatski (Croatian)',
-              'Srpski (Serbian)',
-              'Български (Bulgarian)',
-              'Lietuvių (Lithuanian)',
-              'Latviešu (Latvian)',
-              'Eesti (Estonian)',
-              'Svenska (Swedish)',
-              'Dansk (Danish)',
-              'Norsk (Norwegian)',
-              'Suomi (Finnish)',
-              'Català (Catalan)',
-              'Euskara (Basque)',
-              'Galego (Galician)'
-            ]
-              .filter((l) => l.toLowerCase().includes(languageQuery.toLowerCase()))
-              .map((label, idx, arr) => (
-                <Box key={label} onClick={() => setLanguageOpen(false)} sx={{ px: 2, py: 1.75, borderBottom: idx < arr.length - 1 ? '1px solid' : 'none', borderColor: 'divider', cursor: 'pointer', '&:hover': { bgcolor: 'grey.50' } }}>
-                  <Typography sx={{ fontSize: 14 }}>{label}</Typography>
-                </Box>
-              ))
+            supportedLanguages
+              .filter((lang) => lang.displayName.toLowerCase().includes(languageQuery.toLowerCase()))
+              .map((lang, idx, arr) => {
+                const isSelected = selectedLanguage === lang.displayName;
+                
+                return (
+                  <Box 
+                    key={lang.displayName} 
+                    onClick={() => {
+                      setSelectedLanguage(lang.displayName);
+                      setLanguageOpen(false);
+                      console.log(`Language changed to: ${lang.displayName} (${lang.code})`);
+                    }} 
+                    sx={{ 
+                      px: 2, 
+                      py: 1.75, 
+                      borderBottom: idx < arr.length - 1 ? '1px solid' : 'none', 
+                      borderColor: 'divider', 
+                      cursor: 'pointer', 
+                      backgroundColor: isSelected ? '#6F95BD' : 'transparent',
+                      '&:hover': { 
+                        bgcolor: isSelected ? '#6F95BD' : 'grey.50' 
+                      }
+                    }}
+                  >
+                    <Typography sx={{ 
+                      fontSize: 14,
+                      fontWeight: isSelected ? 600 : 400,
+                      color: isSelected ? 'white' : 'text.primary'
+                    }}>
+                      {lang.displayName}
+                    </Typography>
+                  </Box>
+                );
+              })
             }
           </Box>
         </Box>

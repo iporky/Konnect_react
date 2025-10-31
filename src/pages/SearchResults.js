@@ -3,6 +3,7 @@ import CloseIcon from '@mui/icons-material/Close';
 import SendIcon from '@mui/icons-material/Send';
 import { Box, Button, Divider, IconButton, InputBase, Paper, Tooltip, Typography } from '@mui/material';
 import { useCallback, useEffect, useRef, useState } from 'react';
+import { useSelector } from 'react-redux';
 import { useLocation, useNavigate } from 'react-router-dom';
 import BookingModal from '../components/BookingModal';
 import BookingSuccessNotification from '../components/BookingSuccessNotification';
@@ -11,6 +12,7 @@ import SourcesPanel from '../components/SourcesPanel';
 import FollowupQuestionsTemplate from '../components/templates/FollowupQuestionsTemplate';
 import StreamingSearchTemplate from '../components/templates/StreamingSearchTemplate';
 import { createSearchAbortController, performStreamingSearch } from '../services/searchAPI';
+import { selectUser } from '../store';
 
 function useQueryParam(name) {
   const { search } = useLocation();
@@ -19,6 +21,7 @@ function useQueryParam(name) {
 
 export default function SearchResults() {
   const navigate = useNavigate();
+  const user = useSelector(selectUser);
   const q = useQueryParam('q');
   const mode = 'standard';
   const [input, setInput] = useState('');
@@ -31,6 +34,25 @@ export default function SearchResults() {
   const [bookingModalOpen, setBookingModalOpen] = useState(false);
   const [selectedRecommendation, setSelectedRecommendation] = useState(null);
   const [bookedRecommendations, setBookedRecommendations] = useState(new Set());
+  
+  // Search limit for non-authenticated users
+  const [searchCount, setSearchCount] = useState(() => {
+    const stored = localStorage.getItem('guestSearchCount');
+    return stored ? parseInt(stored, 10) : 0;
+  });
+  const MAX_GUEST_SEARCHES = 3;
+
+  // Helper functions for search limit
+  const getRemainingSearches = () => Math.max(0, MAX_GUEST_SEARCHES - searchCount);
+  const hasExceededLimit = () => searchCount >= MAX_GUEST_SEARCHES;
+
+  // Reset search count when user logs in
+  useEffect(() => {
+    if (user) {
+      setSearchCount(0);
+      localStorage.removeItem('guestSearchCount');
+    }
+  }, [user]);
   const [showSuccessNotification, setShowSuccessNotification] = useState(false);
   const [lastBookingDetails, setLastBookingDetails] = useState(null);
   const abortRef = useRef();
@@ -168,6 +190,22 @@ export default function SearchResults() {
     e.preventDefault();
     const prompt = input.trim();
     if (!prompt) return;
+    
+    // Check search limit for non-authenticated users
+    if (!user) {
+      if (hasExceededLimit()) {
+        console.log('Guest user has exceeded search limit on SearchResults page, redirecting to signup');
+        navigate('/signup');
+        return;
+      }
+      
+      // Increment search count for guest users
+      const newCount = searchCount + 1;
+      setSearchCount(newCount);
+      localStorage.setItem('guestSearchCount', newCount.toString());
+      console.log(`Guest search ${newCount}/${MAX_GUEST_SEARCHES} from SearchResults page`);
+    }
+    
     setInput('');
     setShowStickyQuestions(false); // Hide current sticky questions when asking new question
     setVisibleRecs(2); // Reset visible recommendations for new query
@@ -187,6 +225,21 @@ export default function SearchResults() {
   };
 
   const handleFollowUpClick = (question) => {
+    // Check search limit for non-authenticated users
+    if (!user) {
+      if (hasExceededLimit()) {
+        console.log('Guest user has exceeded search limit on follow-up question, redirecting to signup');
+        navigate('/signup');
+        return;
+      }
+      
+      // Increment search count for guest users
+      const newCount = searchCount + 1;
+      setSearchCount(newCount);
+      localStorage.setItem('guestSearchCount', newCount.toString());
+      console.log(`Guest search ${newCount}/${MAX_GUEST_SEARCHES} from follow-up question`);
+    }
+    
     setShowStickyQuestions(false); // Hide current sticky questions when asking follow-up
     setVisibleRecs(2); // Reset visible recommendations for new query
     
@@ -646,6 +699,29 @@ export default function SearchResults() {
             </Box>
           );
         })()}
+        
+        {/* Search limit indicator for non-authenticated users */}
+        {!user && searchCount > 0 && (
+          <Box sx={{ 
+            textAlign: 'center', 
+            mt: 1, 
+            mb: 1,
+            mx: 'auto',
+            maxWidth: { xs: 600, md: 660 }
+          }}>
+            <Typography variant="caption" sx={{ 
+              color: hasExceededLimit() || getRemainingSearches() === 1 ? 'error.main' : 'text.secondary',
+              fontSize: '12px'
+            }}>
+              {hasExceededLimit() ? (
+                'Search limit reached. Please sign up to continue searching.'
+              ) : (
+                `${getRemainingSearches()} search${getRemainingSearches() === 1 ? '' : 'es'} remaining. Sign up for unlimited searches.`
+              )}
+            </Typography>
+          </Box>
+        )}
+        
         <Paper
           component="form"
           onSubmit={submit}
