@@ -20,9 +20,7 @@ import { buzzImagesAPI } from "../services/api";
 import BuzzLightbox from "../components/BuzzLightbox";
 import CommunityPostDialog from "../components/CommunityPostDialog";
 
-const CARD_WIDTH = '28vw';
-const CARD_ASPECT_RATIO = 4 / 5;
-const POSTS_PER_PAGE = 6; // load 6 images at a time
+const POSTS_PER_PAGE = 3;
 
 const Buzz = () => {
     const [buzzImages, setBuzzImages] = useState([]);
@@ -31,60 +29,18 @@ const Buzz = () => {
     const [selectedPost, setSelectedPost] = useState(null);
     const [postOpen, setPostOpen] = useState(false);
 
-  // Lightbox state
-  const [lightboxOpen, setLightboxOpen] = useState(false);
-  const [selectedPost, setSelectedPost] = useState(null);
-  const [lightboxComments, setLightboxComments] = useState([]);
-  const [lightboxNewComment, setLightboxNewComment] = useState('');
-  const [lightboxLoadingComments, setLightboxLoadingComments] = useState(false);
-  const [lightboxSubmittingComment, setLightboxSubmittingComment] = useState(false);
+    const [page, setPage] = useState(1);
+    const [hasMore, setHasMore] = useState(true);
+    const [loadingMore, setLoadingMore] = useState(false);
 
-  // Auth gating state
-  const [authGateActive, setAuthGateActive] = useState(false); // true once we need login to continue
-  const [authGateDismissed, setAuthGateDismissed] = useState(false); // user closed sheet without login
-  // Add state for community post dialog (plus icon)
-  const [postOpen, setPostOpen] = useState(false);
+    const [lightboxComments, setLightboxComments] = useState([]);
+    const [lightboxNewComment, setLightboxNewComment] = useState('');
+    const [lightboxLoadingComments, setLightboxLoadingComments] = useState(false);
+    const [lightboxSubmittingComment, setLightboxSubmittingComment] = useState(false);
 
-  useEffect(() => { fetchInitial(); }, []); // initial load
+    const containerRef = useRef(null);
+    const observer = useRef();
 
-  const fetchInitial = async () => {
-    try {
-      setLoading(true); setError(null);
-      const data = await buzzImagesAPI.list({ skip: 0, limit: POSTS_PER_PAGE });
-      if (Array.isArray(data)) {
-        setBuzzImages(data);
-        setHasMore(data.length === POSTS_PER_PAGE);
-        setPage(1);
-      } else { setBuzzImages([]); setHasMore(false); }
-    } catch (e) { setError('Failed to load posts'); } finally { setLoading(false); }
-  };
-
-  // Actual fetch (assumes loadingMore already true)
-  const fetchMore = async () => {
-    if (!hasMore) { setLoadingMore(false); return; }
-    const skip = page * POSTS_PER_PAGE;
-    try {
-      const data = await buzzImagesAPI.list({ skip, limit: POSTS_PER_PAGE });
-      if (Array.isArray(data) && data.length) {
-        setBuzzImages(prev => [...prev, ...data]);
-        setHasMore(data.length === POSTS_PER_PAGE);
-        setPage(p => p + 1);
-      } else {
-        setHasMore(false);
-      }
-    } finally {
-      setLoadingMore(false);
-    }
-  };
-
-  // Post card
-  const PostCard = ({ post }) => {
-    const title = post.title || 'Buzz';
-    const description = post.description || '';
-    const [liked, setLiked] = useState(false);
-    const [likeCount, setLikeCount] = useState(0);
-
-    // Load like status when post.id changes
     useEffect(() => {
       if (!post.id) return;
       let cancelled = false;
@@ -1254,87 +1210,164 @@ const Buzz = () => {
             aria-label="add community post"
             onClick={() => setPostOpen(true)}
             sx={{
-              width: 50,
-              height: 50,
-              borderRadius: '50%',
-              border: '2px solid #222',
-              color: '#222',
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'center',
-              '&:hover': { backgroundColor: '#f5f5f5' }
+                height: "100vh",
+                width: "100%",
+                display: "flex",
+                flexDirection: "column",
+                backgroundColor: "#f5f5f5",
+                position: "relative",
+                overflow: "hidden",
             }}
-          >
-            <AddRounded sx={{ fontSize: 30 }} />
-          </IconButton>
-        </Box>
-        {error && (<Alert severity="error" sx={{ mb: 4, maxWidth: 900, mx: 'auto', borderRadius: 3, fontSize: '1.05rem' }}>{error}</Alert>)}
-        {loading && <LoadingSkeleton />}
-        {!loading && !error && (
-          <>
-            {buzzImages.length === 0 ? (
-              <Box sx={{ textAlign: 'center', py: 10 }}><Typography variant="h5" color="text.secondary" sx={{ fontWeight: 500 }}>No posts yet</Typography></Box>
-            ) : (
-              <Box sx={{ display: 'flex', flexDirection: { xs: 'column', sm: 'column', md: 'row' }, flexWrap: { md: 'wrap' }, gap: 5, justifyContent: 'center', alignItems: { xs: 'stretch', md: 'center' } }}>
-                {buzzImages.map(p => <PostCard key={p.id} post={p} />)}
-              </Box>
-            )}
-            {hasMore && (
-              <Box sx={{ textAlign: 'center', mt: 4, minHeight: 40, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-                {loadingMore && <CircularProgress size={28} thickness={4} />}
-                {!loadingMore && (
-                  <Button variant="outlined" onClick={handleLoadMore} sx={{ borderRadius: 2, px: 3, py: 1.2, color: '#3289C9', borderColor: '#3289C9', '&:hover': { borderColor: '#1d6f9a', color: '#1d6f9a' } }}>
-                    Load More
-                  </Button>
-                )}
-              </Box>
-            )}
-            {!hasMore && buzzImages.length > 0 && (<Box sx={{ textAlign: 'center', mt: 4 }}><Typography variant="body2" color="text.secondary">You've reached the end</Typography></Box>)}
-            {authGateDismissed && !user && hasMore && (
-              <Box sx={{ textAlign: 'center', mt: 4 }}>
-                <Typography variant="body2" color="text.secondary">
-                  Please login to load further posts.
-                </Typography>
-              </Box>
-            )}
-          </>
-        )}
-        <BuzzLightbox
-          open={lightboxOpen}
-          onClose={() => setLightboxOpen(false)}
-          post={selectedPost}
-          comments={lightboxComments}
-          newComment={lightboxNewComment}
-          setNewComment={setLightboxNewComment}
-          handleSubmitComment={handleLightboxSubmitComment}
-          loadingComments={lightboxLoadingComments}
-          submittingComment={lightboxSubmittingComment}
-        />
-        <AuthBottomSheet
-          open={authGateActive && !authGateDismissed}
-          onClose={() => setAuthGateDismissed(true)}
-          onLogin={() => { navigate('/login'); }}
-          onSignup={() => { navigate('/signup'); }}
-        />
-        <CommunityPostDialog open={postOpen} onClose={() => setPostOpen(false)} onSubmit={(payload) => console.log('post payload', payload)} />
-      </Container>
-    </Box>
-  );
-};
+        >
+            <Box
+                sx={{
+                    position: "absolute",
+                    top: 0,
+                    left: 0,
+                    right: 0,
+                    zIndex: 100,
+                    background: "linear-gradient(to bottom, rgba(245,245,245,0.95) 0%, rgba(245,245,245,0.7) 70%, transparent 100%)",
+                    pointerEvents: "none",
+                }}
+            >
+                <Box
+                    sx={{
+                        display: "flex",
+                        justifyContent: "space-between",
+                        alignItems: "center",
+                        px: { xs: 2, md: 3 },
+                        py: 2,
+                        pointerEvents: "auto",
+                    }}
+                >
+                    <Typography
+                        variant="h2"
+                        component="h1"
+                        sx={{
+                            color: "#222",
+                            fontFamily: "Metropolis",
+                            fontWeight: 800,
+                            fontSize: { xs: '40px', md: '54px' },
+                            lineHeight: 1,
+                            letterSpacing: { xs: '-0.4px', md: '-0.64px' },
+                        }}
+                    >
+                        Buzz
+                    </Typography>
+                    <IconButton
+                        aria-label="add community post"
+                        onClick={() => setPostOpen(true)}
+                        sx={{
+                            width: { xs: 44, md: 50 },
+                            height: { xs: 44, md: 50 },
+                            borderRadius: "50%",
+                            border: "2px solid #222",
+                            color: "#222",
+                            backgroundColor: "rgba(255,255,255,0.9)",
+                            "&:hover": {
+                                backgroundColor: "#fff",
+                                transform: "scale(1.05)",
+                            },
+                            transition: "all 0.2s",
+                        }}
+                    >
+                        <AddRounded sx={{ fontSize: { xs: 26, md: 30 } }} />
+                    </IconButton>
+                </Box>
+            </Box>
 
-// Skeleton loader component
-const LoadingSkeleton = () => (
-  <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 2, justifyContent: 'center' }}>
-    {Array.from(new Array(6)).map((_, i) => (
-      <Box key={i} sx={{ width: '32vw', maxWidth: 480, position: 'relative', height:  '30vh', maxHeight: 600, borderRadius: 2, overflow: 'hidden' }}>
-        <Skeleton animation="wave" variant="circular" width={40} height={40} />
-        <Skeleton animation="wave" height={10} width="80%" style={{ marginBottom: 6 }}/>
-        <Skeleton sx={{ height: 190 }} animation="wave" variant="rectangular" />
-        <Skeleton animation="wave" height={10} style={{ marginBottom: 6 }} />
-        <Skeleton animation="wave" height={12} width="80%" />
-      </Box>
-    ))}
-  </Box>
-);
+            <Box
+                ref={containerRef}
+                sx={{
+                    height: "100vh",
+                    width: "100%",
+                    overflowY: "scroll",
+                    overflowX: "hidden",
+                    scrollSnapType: "y mandatory",
+                    scrollBehavior: "smooth",
+                    "&::-webkit-scrollbar": { display: "none" },
+                    scrollbarWidth: "none",
+                    msOverflowStyle: "none",
+                    pt: { xs: '80px', md: 0 }, // Add padding top for mobile header
+                }}
+            >
+                {loading ? (
+                    <PostSkeleton />
+                ) : buzzImages.length === 0 ? (
+                    <Box
+                        sx={{
+                            height: "100vh",
+                            display: "flex",
+                            flexDirection: "column",
+                            justifyContent: "center",
+                            alignItems: "center",
+                            scrollSnapAlign: "start",
+                        }}
+                    >
+                        <Typography color="#666" variant="h6" sx={{ mb: 2 }}>
+                            No posts yet
+                        </Typography>
+                        <Typography color="#999" variant="body2">
+                            Be the first to add one!
+                        </Typography>
+                    </Box>
+                ) : (
+                    <>
+                        {buzzImages.map((post, index) => {
+                            const isLast = index === buzzImages.length - 1;
+                            return (
+                                <PostCard
+                                    key={post.id}
+                                    post={post}
+                                    isLast={isLast}
+                                />
+                            );
+                        })}
+
+                        {loadingMore && (
+                            <Box
+                                sx={{
+                                    height: "100vh",
+                                    display: "flex",
+                                    justifyContent: "center",
+                                    alignItems: "center",
+                                    scrollSnapAlign: "start",
+                                }}
+                            >
+                                <CircularProgress sx={{ color: "#666" }} size={40} />
+                                <Typography sx={{ ml: 2, color: "#666" }}>Loading more...</Typography>
+                            </Box>
+                        )}
+                        {!hasMore && buzzImages.length > 0 && (
+                            <Box sx={{
+                                height: "50vh",
+                                display: "flex",
+                                justifyContent: "center",
+                                alignItems: "center",
+                                scrollSnapAlign: "start",
+                                pb: 10
+                            }}>
+                                <Typography variant="body2" color="text.secondary">You've reached the end</Typography>
+                            </Box>
+                        )}
+                    </>
+                )}
+            </Box>
+
+            <BuzzLightbox
+                open={lightboxOpen}
+                onClose={() => setLightboxOpen(false)}
+                post={selectedPost}
+                comments={lightboxComments}
+                newComment={lightboxNewComment}
+                setNewComment={setLightboxNewComment}
+                handleSubmitComment={handleLightboxSubmitComment}
+                loadingComments={lightboxLoadingComments}
+                submittingComment={lightboxSubmittingComment}
+            />
+            <CommunityPostDialog open={postOpen} onClose={() => setPostOpen(false)} />
+        </Box>
+    );
+};
 
 export default Buzz;
