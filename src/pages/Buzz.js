@@ -711,6 +711,7 @@ const Buzz = () => {
                 backgroundColor: "#f5f5f5",
                 position: "relative",
                 overflow: "hidden",
+
             }}
         >
             <Box
@@ -1240,20 +1241,6 @@ const Buzz = () => {
                         pointerEvents: "auto",
                     }}
                 >
-                    <Typography
-                        variant="h2"
-                        component="h1"
-                        sx={{
-                            color: "#222",
-                            fontFamily: "Metropolis",
-                            fontWeight: 800,
-                            fontSize: { xs: '40px', md: '54px' },
-                            lineHeight: 1,
-                            letterSpacing: { xs: '-0.4px', md: '-0.64px' },
-                        }}
-                    >
-                        Buzz
-                    </Typography>
                     <IconButton
                         aria-label="add community post"
                         onClick={() => setPostOpen(true)}
