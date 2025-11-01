@@ -224,6 +224,17 @@ const useSpeechRecognition = (options = {}) => {
     setError(null);
   }, []);
 
+  // Sync transcript with external value (useful when user manually edits search)
+  // This ensures that when a user deletes text from search box, the speech recognition
+  // state is updated to match, preventing appending to deleted text on next speech input
+  const syncTranscript = useCallback((newValue) => {
+    setTranscript(newValue || '');
+    setInterimTranscript('');
+    currentTranscriptRef.current = newValue || '';
+    currentInterimRef.current = '';
+    console.log(`🔄 Speech transcript synced with external value: "${newValue}"`);
+  }, []);
+
   // Change language dynamically
   const changeLanguage = useCallback((newLanguage) => {
     console.log(`🌍 Changing speech recognition language to: ${newLanguage}`);
@@ -256,6 +267,7 @@ const useSpeechRecognition = (options = {}) => {
     toggleListening,
     resetTranscript,
     clearError,
+    syncTranscript,
     changeLanguage,
     
     // Utility
