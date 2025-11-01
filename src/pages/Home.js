@@ -117,7 +117,8 @@ const Home = () => {
     stopListening,
     error: speechError,
     changeLanguage,
-    currentLanguage
+    currentLanguage,
+    syncTranscript
   } = useSpeechRecognition({
     language: speechLanguageCode
     // No onTranscriptComplete callback since we don't auto-submit
@@ -202,6 +203,10 @@ const Home = () => {
       } else {
         // Starting voice mode - set mode first, then start listening
         setActiveMode('voice');
+        // Sync transcript with current search value before starting
+        if (syncTranscript) {
+          syncTranscript(searchValue);
+        }
         if (speechSupported) {
           const success = startListening();
           if (!success) {
@@ -362,6 +367,10 @@ const Home = () => {
   const handleSearchChange = (e) => {
     const value = e.target.value;
     setSearchValue(value);
+    // Sync speech transcript with manually entered text
+    if (syncTranscript) {
+      syncTranscript(value);
+    }
     // Do not open dialog from typing
   };
 
