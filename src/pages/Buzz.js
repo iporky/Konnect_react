@@ -13,6 +13,8 @@ import {
     ChatBubbleOutline,
     Send,
     AddRounded,
+    BookmarkBorder,
+    OutlinedFlag,
 } from "@mui/icons-material";
 import { buzzImagesAPI } from "../services/api";
 import BuzzLightbox from "../components/BuzzLightbox";
@@ -136,22 +138,39 @@ const Buzz = () => {
             <Box
                 sx={{
                     width: {
-                        xs: "calc(100% - 80px)",
-                        sm: "min(450px, 90%)",
-                        md: "min(450px, 90%)",
+                        xs: "calc(100% - 80px)",   // mobile (<600px)
+                        sm: "min(450px, 90%)",     // tablet (600–900px)
+                        md: "min(450px, 90%)",     // desktop (>900px)
                     },
                     height: {
                         xs: "calc(100vh - 160px)",
                         sm: "90vh",
                     },
                     maxHeight: { xs: "calc(100vh - 160px)", sm: "100vh" },
-                    borderRadius: { xs: 3, sm: 3 },
-                    overflow: "hidden",
-                    backgroundColor: "#e0e0e0",
                     position: "relative",
-                    boxShadow: { xs: "none", sm: "none" },
+                    borderRadius: 3,
+                    overflow: "hidden",
+                    backgroundColor: "#fff",
+                    boxShadow: "none",
+
+                    // --- Korean Flag Gradient Border (uniform across all devices) ---
+                    border: "0.5mm solid transparent",
+                    backgroundImage: {
+                        xs: "linear-gradient(white, white), linear-gradient(135deg, #000 0%, #c60c30 50%, #003478 100%)",
+                        sm: "linear-gradient(white, white), linear-gradient(135deg, #000 0%, #c60c30 50%, #003478 100%)",
+                        md: "linear-gradient(white, white), linear-gradient(135deg, #000 0%, #c60c30 50%, #003478 100%)",
+                    },
+                    backgroundOrigin: "border-box",
+                    backgroundClip: "content-box, border-box",
+
+                    // Ensures border visibility is consistent (tablet fix)
+                    "@media (min-width:600px) and (max-width:900px)": {
+                        borderWidth: "0.6mm",
+                    },
                 }}
             >
+
+
                 <Skeleton
                     variant="rectangular"
                     width="100%"
@@ -224,7 +243,7 @@ const Buzz = () => {
                     height: "85vh",
                 }}
             >
-                {[1, 2, 3].map((i) => (
+                {[1, 2, 3, 4, 5].map((i) => (
                     <Skeleton
                         key={i}
                         variant="circular"
@@ -319,20 +338,35 @@ const Buzz = () => {
                 <Box
                     sx={{
                         width: {
-                            xs: "calc(100% - 80px)",
-                            sm: "min(450px, 90%)",
-                            md: "min(450px, 90%)",
+                            xs: "calc(100% - 80px)",   // mobile (<600px)
+                            sm: "min(450px, 90%)",     // tablet (600–900px)
+                            md: "min(450px, 90%)",     // desktop (>900px)
                         },
                         height: {
-                            xs: "calc(100vh - 160px)", // Account for header and padding
+                            xs: "calc(100vh - 160px)",
                             sm: "90vh",
                         },
                         maxHeight: { xs: "calc(100vh - 160px)", sm: "100vh" },
                         position: "relative",
-                        borderRadius: { xs: 3, sm: 3 },
+                        borderRadius: 3,
                         overflow: "hidden",
                         backgroundColor: "#fff",
-                        boxShadow: { xs: "none", sm: "none" },
+                        boxShadow: "none",
+
+                        // --- Korean Flag Gradient Border (uniform across all devices) ---
+                        border: "0.5mm solid transparent",
+                        backgroundImage: {
+                            xs: "linear-gradient(white, white), linear-gradient(135deg, #000 0%, #c60c30 50%, #003478 100%)",
+                            sm: "linear-gradient(white, white), linear-gradient(135deg, #000 0%, #c60c30 50%, #003478 100%)",
+                            md: "linear-gradient(white, white), linear-gradient(135deg, #000 0%, #c60c30 50%, #003478 100%)",
+                        },
+                        backgroundOrigin: "border-box",
+                        backgroundClip: "content-box, border-box",
+
+                        // Ensures border visibility is consistent (tablet fix)
+                        "@media (min-width:600px) and (max-width:900px)": {
+                            borderWidth: "0.6mm",
+                        },
                     }}
                 >
                     <img
@@ -482,6 +516,38 @@ const Buzz = () => {
                         >
                             <Send sx={{ fontSize: 26 }} />
                         </IconButton>
+                        <IconButton
+                            sx={{
+                                color: "#fff",
+                                backgroundColor: "rgba(0,0,0,0.3)",
+                                backdropFilter: "blur(10px)",
+                                "&:hover": {
+                                    backgroundColor: "rgba(0,0,0,0.5)",
+                                    transform: "scale(1.1)",
+                                },
+                                transition: "all 0.2s",
+                                width: 48,
+                                height: 48,
+                            }}
+                        >
+                            <BookmarkBorder sx={{ fontSize: 26 }} />
+                        </IconButton>
+                        <IconButton
+                            sx={{
+                                color: "#fff",
+                                backgroundColor: "rgba(0,0,0,0.3)",
+                                backdropFilter: "blur(10px)",
+                                "&:hover": {
+                                    backgroundColor: "rgba(0,0,0,0.5)",
+                                    transform: "scale(1.1)",
+                                },
+                                transition: "all 0.2s",
+                                width: 48,
+                                height: 48,
+                            }}
+                        >
+                            <OutlinedFlag sx={{ fontSize: 26 }} />
+                        </IconButton>
                     </Box>
                 </Box>
 
@@ -577,6 +643,38 @@ const Buzz = () => {
                         >
                             <Send sx={{ fontSize: 26 }} />
                         </IconButton>
+                        <IconButton
+                            sx={{
+                                color: "#fff",
+                                backgroundColor: "rgba(0,0,0,0.3)",
+                                backdropFilter: "blur(10px)",
+                                "&:hover": {
+                                    backgroundColor: "rgba(0,0,0,0.5)",
+                                    transform: "scale(1.1)",
+                                },
+                                transition: "all 0.2s",
+                                width: 48,
+                                height: 48,
+                            }}
+                        >
+                            <BookmarkBorder sx={{ fontSize: 26 }} onClick={() => console.log("hello")} />
+                        </IconButton>
+                        <IconButton
+                            sx={{
+                                color: "#fff",
+                                backgroundColor: "rgba(0,0,0,0.3)",
+                                backdropFilter: "blur(10px)",
+                                "&:hover": {
+                                    backgroundColor: "rgba(0,0,0,0.5)",
+                                    transform: "scale(1.1)",
+                                },
+                                transition: "all 0.2s",
+                                width: 48,
+                                height: 48,
+                            }}
+                        >
+                            <OutlinedFlag sx={{ fontSize: 26 }} />
+                        </IconButton>
                     </Box>
                 </Box>
             </Box>
@@ -593,6 +691,7 @@ const Buzz = () => {
                 backgroundColor: "#f5f5f5",
                 position: "relative",
                 overflow: "hidden",
+
             }}
         >
             <Box
@@ -609,27 +708,13 @@ const Buzz = () => {
                 <Box
                     sx={{
                         display: "flex",
-                        justifyContent: "space-between",
+                        justifyContent: "end",
                         alignItems: "center",
                         px: { xs: 2, md: 3 },
                         py: 2,
                         pointerEvents: "auto",
                     }}
                 >
-                    <Typography
-                        variant="h2"
-                        component="h1"
-                        sx={{
-                            color: "#222",
-                            fontFamily: "Metropolis",
-                            fontWeight: 800,
-                            fontSize: { xs: '40px', md: '54px' },
-                            lineHeight: 1,
-                            letterSpacing: { xs: '-0.4px', md: '-0.64px' },
-                        }}
-                    >
-                        Buzz
-                    </Typography>
                     <IconButton
                         aria-label="add community post"
                         onClick={() => setPostOpen(true)}
