@@ -11,10 +11,9 @@ import {
   useTheme
 } from '@mui/material';
 import { AnimatePresence, LayoutGroup, motion } from 'framer-motion';
-import { useEffect, useMemo, useState, useCallback, useRef } from 'react';
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
-import { useLanguage } from '../contexts/LanguageContext';
 import BuzzCarousel from '../components/BuzzCarousel';
 import CommunityPostDialog from '../components/CommunityPostDialog';
 import FeedbackPopup from '../components/FeedbackPopup';
@@ -22,6 +21,7 @@ import Footer from '../components/Footer';
 import Navigation from '../components/Navigation';
 import SearchInput from '../components/SearchInput';
 import TrendingSearches from '../components/TrendingSearches';
+import { useLanguage } from '../contexts/LanguageContext';
 import useSpeechRecognition from '../hooks/useSpeechRecognition';
 import { selectUser } from '../store';
 
@@ -58,11 +58,11 @@ const Home = () => {
     const stored = localStorage.getItem('guestSearchCount');
     return stored ? parseInt(stored, 10) : 0;
   });
-  const MAX_GUEST_SEARCHES = 3;
+  const MAX_GUEST_SEARCHES = 100;
 
-  // Helper function to get remaining searches for display
-  const getRemainingSearches = () => Math.max(0, MAX_GUEST_SEARCHES - searchCount);
-  const hasExceededLimit = () => searchCount >= MAX_GUEST_SEARCHES;
+  // // Helper function to get remaining searches for display
+  // const getRemainingSearches = () => Math.max(0, MAX_GUEST_SEARCHES - searchCount);
+  // const hasExceededLimit = () => searchCount >= MAX_GUEST_SEARCHES;
 
   // Right-side icons in the search bar: only one can be active at a time
   const [activeMode, setActiveMode] = useState(null); // 'community', 'expert', 'translate', 'voice', or null
@@ -235,17 +235,6 @@ const Home = () => {
       const newMode = activeMode === mode ? null : mode;
       setActiveMode(newMode);
     }
-    
-    // Handle expert mode localStorage
-    if (mode === 'expert') {
-      if (activeMode === 'expert') {
-        localStorage.removeItem('expertMode');
-      } else {
-        localStorage.setItem('expertMode', '1');
-      }
-    } else if (activeMode === 'expert') {
-      localStorage.removeItem('expertMode');
-    }
   };
 
   // Get placeholder text based on active mode
@@ -336,10 +325,6 @@ const Home = () => {
     // Check if user is authenticated
     const token = localStorage.getItem('token');
     setIsAuthenticated(!!token);
-    // Initialize expert mode toggle from persisted flag
-    if (localStorage.getItem('expertMode') === '1') {
-      setActiveMode('expert');
-    }
 
     // Add voice pulse animation to document head
     const style = document.createElement('style');
@@ -540,7 +525,7 @@ const Home = () => {
         {/* Main Content */}
         <Container maxWidth="lg" sx={{ flex: 1, px: 2, pt: 1, pb: { xs: 0, md: showAllCategories ? 2 : 8.5 } }}>
           {/* Search limit indicator for non-authenticated users */}
-          {!user && searchCount > 0 && (
+          {/* {!user && searchCount > 0 && (
             <Box sx={{ 
               textAlign: 'center', 
               mb: 0.5 
@@ -556,7 +541,7 @@ const Home = () => {
                 )}
               </Typography>
             </Box>
-          )}
+          )} */}
           
           {/* Search Section */}
           <Box sx={{ mb: 1 }}>
