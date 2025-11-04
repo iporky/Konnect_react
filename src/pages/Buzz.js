@@ -15,6 +15,9 @@ import {
     AddRounded,
     BookmarkBorder,
     OutlinedFlag,
+    ArrowDownward,
+    ArrowUpward,
+    ReplyOutlined
 } from "@mui/icons-material";
 import { buzzImagesAPI } from "../services/api";
 import BuzzLightbox from "../components/BuzzLightbox";
@@ -40,6 +43,10 @@ const Buzz = () => {
 
     const containerRef = useRef(null);
     const observer = useRef();
+
+    // NEW: arrow visibility state
+    const [showUpArrow, setShowUpArrow] = useState(false); // initially hidden
+    const [showDownArrow, setShowDownArrow] = useState(true); // initially visible
 
     useEffect(() => {
         loadInitialPosts();
@@ -117,6 +124,44 @@ const Buzz = () => {
         },
         [loading, hasMore, loadingMore, handleLoadMore]
     );
+
+    // NEW: scroll listener to toggle arrow visibility
+    useEffect(() => {
+        const handleScroll = () => {
+            if (!containerRef.current) return;
+            const scrollTop = containerRef.current.scrollTop;
+            const scrollHeight = containerRef.current.scrollHeight;
+            const clientHeight = containerRef.current.clientHeight;
+
+            // Show up arrow after user scrolls down some amount
+            setShowUpArrow(scrollTop > 50);
+            // Show down arrow if not at bottom
+            setShowDownArrow(scrollTop + clientHeight < scrollHeight - 50);
+        };
+
+        const container = containerRef.current;
+        if (container) {
+            container.addEventListener("scroll", handleScroll, { passive: true });
+            // run once to set initial states correctly
+            handleScroll();
+        }
+        return () => {
+            if (container) container.removeEventListener("scroll", handleScroll);
+        };
+    }, [buzzImages, loading, loadingMore, hasMore]);
+
+    // NEW: handlers for clicking arrows (page-like scroll by viewport height)
+    const handleScrollDown = () => {
+        if (!containerRef.current) return;
+        const vh = containerRef.current.clientHeight; // use container's visible height
+        containerRef.current.scrollBy({ top: vh, behavior: "smooth" });
+    };
+
+    const handleScrollUp = () => {
+        if (!containerRef.current) return;
+        const vh = containerRef.current.clientHeight;
+        containerRef.current.scrollBy({ top: -vh, behavior: "smooth" });
+    };
 
     const PostSkeleton = () => (
         <Box
@@ -257,7 +302,6 @@ const Buzz = () => {
         </Box>
     );
 
-
     const handleOpenLightbox = async (post) => {
         setSelectedPost(post);
         setLightboxOpen(true);
@@ -331,7 +375,7 @@ const Buzz = () => {
                     scrollSnapAlign: "start",
                     scrollSnapStop: "always",
                     position: "relative",
-                    backgroundColor: "#f5f5f5",
+                    backgroundColor: "#fff",
                     gap: 2,
                 }}
             >
@@ -348,24 +392,23 @@ const Buzz = () => {
                         },
                         maxHeight: { xs: "calc(100vh - 160px)", sm: "100vh" },
                         position: "relative",
-                        borderRadius: 3,
+                        borderRadius: 7,
                         overflow: "hidden",
-                        backgroundColor: "#fff",
+                        backgroundColor: "black",
                         boxShadow: "none",
 
                         // --- Korean Flag Gradient Border (uniform across all devices) ---
-                        border: "0.5mm solid transparent",
-                        backgroundImage: {
-                            xs: "linear-gradient(white, white), linear-gradient(135deg, #000 0%, #c60c30 50%, #003478 100%)",
-                            sm: "linear-gradient(white, white), linear-gradient(135deg, #000 0%, #c60c30 50%, #003478 100%)",
-                            md: "linear-gradient(white, white), linear-gradient(135deg, #000 0%, #c60c30 50%, #003478 100%)",
-                        },
+                        border: "5px solid transparent",
+                        backgroundImage: `
+                                        linear-gradient(black, black),
+                                        linear-gradient(135deg, #ffffff 15%, #0055a4 50%, #ff0000 85%)
+                                        `,
                         backgroundOrigin: "border-box",
                         backgroundClip: "content-box, border-box",
 
                         // Ensures border visibility is consistent (tablet fix)
                         "@media (min-width:600px) and (max-width:900px)": {
-                            borderWidth: "0.6mm",
+                            borderWidth: "5px",
                         },
                     }}
                 >
@@ -466,7 +509,7 @@ const Buzz = () => {
                             >
                                 {liked ? <Favorite sx={{ fontSize: 28 }} /> : <FavoriteBorder sx={{ fontSize: 28 }} />}
                             </IconButton>
-                            {likeCount > 0 && (
+                            {/* {likeCount > 0 && (
                                 <Typography
                                     variant="caption"
                                     sx={{
@@ -479,7 +522,7 @@ const Buzz = () => {
                                 >
                                     {likeCount}
                                 </Typography>
-                            )}
+                            )} */}
                         </Box>
 
                         <IconButton
@@ -514,7 +557,7 @@ const Buzz = () => {
                                 height: 48,
                             }}
                         >
-                            <Send sx={{ fontSize: 26 }} />
+                            <ReplyOutlined sx={{ fontSize: 26, transform: 'rotate(-5deg) scaleX(-1)'}}/>
                         </IconButton>
                         <IconButton
                             sx={{
@@ -575,15 +618,16 @@ const Buzz = () => {
                             height: "85vh",
                         }}
                     >
+                        
                         <Box sx={{ textAlign: "center" }}>
                             <IconButton
                                 onClick={handleLike}
                                 sx={{
-                                    color: liked ? "#ff4444" : "#fff",
-                                    backgroundColor: "rgba(0,0,0,0.3)",
+                                    color: liked ? "#ff4444" : "#000000",
+                                    backgroundColor: "rgba(0,0,0,0.05)",
                                     backdropFilter: "blur(10px)",
                                     "&:hover": {
-                                        backgroundColor: "rgba(0,0,0,0.5)",
+                                        backgroundColor: "rgba(0,0,0,0.1)",
                                         transform: "scale(1.1)",
                                     },
                                     transition: "all 0.2s",
@@ -593,7 +637,7 @@ const Buzz = () => {
                             >
                                 {liked ? <Favorite sx={{ fontSize: 28 }} /> : <FavoriteBorder sx={{ fontSize: 28 }} />}
                             </IconButton>
-                            {likeCount > 0 && (
+                            {/* {likeCount > 0 && (
                                 <Typography
                                     variant="caption"
                                     sx={{
@@ -606,17 +650,17 @@ const Buzz = () => {
                                 >
                                     {likeCount}
                                 </Typography>
-                            )}
+                            )} */}
                         </Box>
 
                         <IconButton
                             onClick={() => handleOpenLightbox(post)}
                             sx={{
-                                color: "#fff",
-                                backgroundColor: "rgba(0,0,0,0.3)",
+                                color: "#000000",
+                                backgroundColor: "rgba(0,0,0,0.05)",
                                 backdropFilter: "blur(10px)",
                                 "&:hover": {
-                                    backgroundColor: "rgba(0,0,0,0.5)",
+                                    backgroundColor: "rgba(0,0,0,0.1)",
                                     transform: "scale(1.1)",
                                 },
                                 transition: "all 0.2s",
@@ -629,11 +673,11 @@ const Buzz = () => {
 
                         <IconButton
                             sx={{
-                                color: "#fff",
-                                backgroundColor: "rgba(0,0,0,0.3)",
+                                color: "#000000",
+                                backgroundColor: "rgba(0,0,0,0.05)",
                                 backdropFilter: "blur(10px)",
                                 "&:hover": {
-                                    backgroundColor: "rgba(0,0,0,0.5)",
+                                    backgroundColor: "rgba(0,0,0,0.1)",
                                     transform: "scale(1.1)",
                                 },
                                 transition: "all 0.2s",
@@ -641,15 +685,15 @@ const Buzz = () => {
                                 height: 48,
                             }}
                         >
-                            <Send sx={{ fontSize: 26 }} />
+                            <ReplyOutlined sx={{ fontSize: 26, transform: 'rotate(-5deg) scaleX(-1)'}} />
                         </IconButton>
                         <IconButton
                             sx={{
-                                color: "#fff",
-                                backgroundColor: "rgba(0,0,0,0.3)",
+                                color: "#000000",
+                                backgroundColor: "rgba(0,0,0,0.05)",
                                 backdropFilter: "blur(10px)",
                                 "&:hover": {
-                                    backgroundColor: "rgba(0,0,0,0.5)",
+                                    backgroundColor: "rgba(0,0,0,0.1)",
                                     transform: "scale(1.1)",
                                 },
                                 transition: "all 0.2s",
@@ -661,11 +705,11 @@ const Buzz = () => {
                         </IconButton>
                         <IconButton
                             sx={{
-                                color: "#fff",
-                                backgroundColor: "rgba(0,0,0,0.3)",
+                                color: "#000000",
+                                backgroundColor: "rgba(0,0,0,0.05)",
                                 backdropFilter: "blur(10px)",
                                 "&:hover": {
-                                    backgroundColor: "rgba(0,0,0,0.5)",
+                                    backgroundColor: "rgba(0,0,0,0.1)",
                                     transform: "scale(1.1)",
                                 },
                                 transition: "all 0.2s",
@@ -701,7 +745,7 @@ const Buzz = () => {
                     left: 0,
                     right: 0,
                     zIndex: 100,
-                    background: "linear-gradient(to bottom, rgba(245,245,245,0.95) 0%, rgba(245,245,245,0.7) 70%, transparent 100%)",
+                    background: "linear-gradient(to bottom, rgba(245,245,245,0.95) 0%, rgba(245,245,245,0.7) 0%, transparent 0%)",
                     pointerEvents: "none",
                 }}
             >
@@ -812,6 +856,53 @@ const Buzz = () => {
                             </Box>
                         )}
                     </>
+                )}
+            </Box>
+
+            {/* NEW: Floating arrows - placed so they don't overlap desktop action buttons */}
+            {/* 🆕 Floating scroll arrows (center aligned on right side) */}
+            {/* 🆕 Floating scroll arrows (center aligned, visible only >900px) */}
+            <Box
+                sx={{
+                    position: "fixed",
+                    right: 25,
+                    top: "50%",
+                    transform: "translateY(-50%)",
+                    display: { xs: "none", sm: "none", md: "flex" }, // hides for <900px
+                    flexDirection: "column",
+                    alignItems: "center",
+                    zIndex: 200,
+                    gap: 1.5,
+                }}
+            >
+                {showUpArrow && (
+                    <IconButton
+                        onClick={handleScrollUp}
+                        sx={{
+                            backgroundColor: "rgba(0,0,0,0.05)",
+                            color: "#000000",
+                            "&:hover": { backgroundColor: "rgba(0,0,0,0.1)" },
+                            width: 50,
+                            height: 50,
+                        }}
+                    >
+                        <ArrowUpward />
+                    </IconButton>
+                )}
+
+                {showDownArrow && (
+                    <IconButton
+                        onClick={handleScrollDown}
+                        sx={{
+                            backgroundColor: "rgba(0,0,0,0.05)",
+                            color: "#000000",
+                            "&:hover": { backgroundColor: "rgba(0,0,0,0.1)" },
+                            width: 50,
+                            height: 50,
+                        }}
+                    >
+                        <ArrowDownward />
+                    </IconButton>
                 )}
             </Box>
 
