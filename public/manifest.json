@@ -1,0 +1,21 @@
+{
+  "short_name": "Konnect",
+  "name": "Konnect - Korea's No. 1 Platform for Foreigners",
+  "description": "Do everything with one app. Make your visit to South Korea effortless with Konnect, the trusted platform for foreigners.",
+  "icons": [
+    {
+      "src": "images/Konnect_k_logo.png",
+      "type": "image/png",
+      "sizes": "192x192"
+    },
+    {
+      "src": "images/Konnect_k_logo.png",
+      "type": "image/png",
+      "sizes": "512x512"
+    }
+  ],
+  "start_url": ".",
+  "display": "standalone",
+  "theme_color": "#6F95BD",
+  "background_color": "#ffffff"
+}
