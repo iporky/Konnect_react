@@ -1,26 +1,26 @@
-import { useEffect, useState, useRef, useCallback } from "react";
 import {
-    Box,
-    Avatar,
-    IconButton,
-    Typography,
-    CircularProgress,
-    Skeleton,
-} from "@mui/material";
-import {
-    FavoriteBorder,
-    Favorite,
-    ChatBubbleOutline,
     AddRounded,
-    BookmarkBorder,
-    OutlinedFlag,
     ArrowDownward,
     ArrowUpward,
+    BookmarkBorder,
+    ChatBubbleOutline,
+    Favorite,
+    FavoriteBorder,
+    OutlinedFlag,
     ReplyOutlined
 } from "@mui/icons-material";
-import { buzzImagesAPI } from "../services/api";
+import {
+    Avatar,
+    Box,
+    CircularProgress,
+    IconButton,
+    Skeleton,
+    Typography,
+} from "@mui/material";
+import { useCallback, useEffect, useRef, useState } from "react";
 import BuzzLightbox from "../components/BuzzLightbox";
 import CommunityPostDialog from "../components/CommunityPostDialog";
+import { buzzImagesAPI } from "../services/api";
 
 const POSTS_PER_PAGE = 3;
 
@@ -329,7 +329,6 @@ const Buzz = () => {
 
     const PostCard = ({ post, isLast }) => {
         const [liked, setLiked] = useState(false);
-        const [likeCount, setLikeCount] = useState(0);
 
         useEffect(() => {
             if (!post.id) return;
@@ -339,11 +338,9 @@ const Buzz = () => {
                     const likeData = await buzzImagesAPI.getLikes(post.id);
                     if (cancelled) return;
                     setLiked(likeData.isLiked || false);
-                    setLikeCount(likeData.count || 0);
                 } catch {
                     if (cancelled) return;
                     setLiked(false);
-                    setLikeCount(0);
                 }
             };
             run();
@@ -354,9 +351,9 @@ const Buzz = () => {
             e.stopPropagation();
             try {
                 const result = await buzzImagesAPI.toggleLike(post.id);
-                setLiked(result.isLiked); setLikeCount(result.count);
+                setLiked(result.isLiked);
             } catch {
-                setLiked(prev => !prev); setLikeCount(c => (liked ? c - 1 : c + 1));
+                setLiked(prev => !prev);
             }
         };
 
