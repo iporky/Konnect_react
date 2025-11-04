@@ -11,7 +11,6 @@ import {
     FavoriteBorder,
     Favorite,
     ChatBubbleOutline,
-    Send,
     AddRounded,
     BookmarkBorder,
     OutlinedFlag,
@@ -483,6 +482,30 @@ const Buzz = () => {
                     <Box
                         sx={{
                             display: { xs: 'flex', md: 'none' },
+                            position: "absolute",
+                            right: 16,
+                            zIndex: 3,
+                            top: 20
+                        }}
+                    >
+                        <IconButton
+                            aria-label="add community post"
+                            onClick={() => setPostOpen(true)}
+                            sx={{
+                                width: { xs: 44, md: 50 },
+                                height: { xs: 44, md: 50 },
+                                borderRadius: "50%",
+                                border: "2px solid #fff",
+                                color: "#fff",
+                                transition: "all 0.2s",
+                            }}
+                        >
+                            <AddRounded sx={{ fontSize: { xs: 26, md: 30 } }} />
+                        </IconButton>
+                    </Box>
+                    <Box
+                        sx={{
+                            display: { xs: 'flex', md: 'none' },
                             flexDirection: "column",
                             gap: 2,
                             position: "absolute",
@@ -510,19 +533,19 @@ const Buzz = () => {
                                 {liked ? <Favorite sx={{ fontSize: 28 }} /> : <FavoriteBorder sx={{ fontSize: 28 }} />}
                             </IconButton>
                             {/* {likeCount > 0 && (
-                                <Typography
-                                    variant="caption"
-                                    sx={{
+                                        <Typography
+                                        variant="caption"
+                                        sx={{
                                         color: "#fff",
                                         fontWeight: 600,
                                         textShadow: "0 1px 3px rgba(0,0,0,0.8)",
                                         display: "block",
                                         mt: 0.5,
-                                    }}
-                                >
-                                    {likeCount}
-                                </Typography>
-                            )} */}
+                                        }}
+                                        >
+                                        {likeCount}
+                                        </Typography>
+                                        )} */}
                         </Box>
 
                         <IconButton
@@ -557,7 +580,7 @@ const Buzz = () => {
                                 height: 48,
                             }}
                         >
-                            <ReplyOutlined sx={{ fontSize: 26, transform: 'rotate(-5deg) scaleX(-1)'}}/>
+                            <ReplyOutlined sx={{ fontSize: 26, transform: 'rotate(-5deg) scaleX(-1)' }} />
                         </IconButton>
                         <IconButton
                             sx={{
@@ -614,16 +637,77 @@ const Buzz = () => {
                             flexDirection: "column",
                             gap: 2,
                             alignItems: "flex-end",
-                            justifyContent: "flex-end",
+                            justifyContent: "space-between",
                             height: "85vh",
                         }}
                     >
-                        
-                        <Box sx={{ textAlign: "center" }}>
+                        <IconButton
+                            aria-label="add community post"
+                            onClick={() => setPostOpen(true)}
+                            sx={{
+                                width: { xs: 44, md: 50 },
+                                height: { xs: 44, md: 50 },
+                                borderRadius: "50%",
+                                border: "2px solid #222",
+                                color: "#222",
+                                backgroundColor: "rgba(255,255,255,0.9)",
+                                "&:hover": {
+                                    backgroundColor: "#fff",
+                                    transform: "scale(1.05)",
+                                },
+                                transition: "all 0.2s",
+                            }}
+                        >
+                            <AddRounded sx={{ fontSize: { xs: 26, md: 30 } }} />
+                        </IconButton>
+
+                        <Box
+                            sx={{
+                                display: { xs: "none", md: "flex" }, // Show only on desktop
+                                flexDirection: "column",
+                                gap: 2,
+                                alignItems: "flex-end",
+                            }}
+                        >
+
+                            <Box sx={{ textAlign: "center" }}>
+                                <IconButton
+                                    onClick={handleLike}
+                                    sx={{
+                                        color: liked ? "#ff4444" : "#000000",
+                                        backgroundColor: "rgba(0,0,0,0.05)",
+                                        backdropFilter: "blur(10px)",
+                                        "&:hover": {
+                                            backgroundColor: "rgba(0,0,0,0.1)",
+                                            transform: "scale(1.1)",
+                                        },
+                                        transition: "all 0.2s",
+                                        width: 48,
+                                        height: 48,
+                                    }}
+                                >
+                                    {liked ? <Favorite sx={{ fontSize: 28 }} /> : <FavoriteBorder sx={{ fontSize: 28 }} />}
+                                </IconButton>
+                                {/* {likeCount > 0 && (
+ <Typography
+ variant="caption"
+ sx={{
+ color: "#fff",
+ fontWeight: 600,
+ textShadow: "0 1px 3px rgba(0,0,0,0.8)",
+ display: "block",
+ mt: 0.5,
+ }}
+ >
+ {likeCount}
+ </Typography>
+ )} */}
+                            </Box>
+
                             <IconButton
-                                onClick={handleLike}
+                                onClick={() => handleOpenLightbox(post)}
                                 sx={{
-                                    color: liked ? "#ff4444" : "#000000",
+                                    color: "#000000",
                                     backgroundColor: "rgba(0,0,0,0.05)",
                                     backdropFilter: "blur(10px)",
                                     "&:hover": {
@@ -635,90 +719,58 @@ const Buzz = () => {
                                     height: 48,
                                 }}
                             >
-                                {liked ? <Favorite sx={{ fontSize: 28 }} /> : <FavoriteBorder sx={{ fontSize: 28 }} />}
+                                <ChatBubbleOutline sx={{ fontSize: 26 }} />
                             </IconButton>
-                            {/* {likeCount > 0 && (
-                                <Typography
-                                    variant="caption"
-                                    sx={{
-                                        color: "#fff",
-                                        fontWeight: 600,
-                                        textShadow: "0 1px 3px rgba(0,0,0,0.8)",
-                                        display: "block",
-                                        mt: 0.5,
-                                    }}
-                                >
-                                    {likeCount}
-                                </Typography>
-                            )} */}
+
+                            <IconButton
+                                sx={{
+                                    color: "#000000",
+                                    backgroundColor: "rgba(0,0,0,0.05)",
+                                    backdropFilter: "blur(10px)",
+                                    "&:hover": {
+                                        backgroundColor: "rgba(0,0,0,0.1)",
+                                        transform: "scale(1.1)",
+                                    },
+                                    transition: "all 0.2s",
+                                    width: 48,
+                                    height: 48,
+                                }}
+                            >
+                                <ReplyOutlined sx={{ fontSize: 26, transform: 'rotate(-5deg) scaleX(-1)' }} />
+                            </IconButton>
+                            <IconButton
+                                sx={{
+                                    color: "#000000",
+                                    backgroundColor: "rgba(0,0,0,0.05)",
+                                    backdropFilter: "blur(10px)",
+                                    "&:hover": {
+                                        backgroundColor: "rgba(0,0,0,0.1)",
+                                        transform: "scale(1.1)",
+                                    },
+                                    transition: "all 0.2s",
+                                    width: 48,
+                                    height: 48,
+                                }}
+                            >
+                                <BookmarkBorder sx={{ fontSize: 26 }} onClick={() => console.log("hello")} />
+                            </IconButton>
+                            <IconButton
+                                sx={{
+                                    color: "#000000",
+                                    backgroundColor: "rgba(0,0,0,0.05)",
+                                    backdropFilter: "blur(10px)",
+                                    "&:hover": {
+                                        backgroundColor: "rgba(0,0,0,0.1)",
+                                        transform: "scale(1.1)",
+                                    },
+                                    transition: "all 0.2s",
+                                    width: 48,
+                                    height: 48,
+                                }}
+                            >
+                                <OutlinedFlag sx={{ fontSize: 26 }} />
+                            </IconButton>
                         </Box>
-
-                        <IconButton
-                            onClick={() => handleOpenLightbox(post)}
-                            sx={{
-                                color: "#000000",
-                                backgroundColor: "rgba(0,0,0,0.05)",
-                                backdropFilter: "blur(10px)",
-                                "&:hover": {
-                                    backgroundColor: "rgba(0,0,0,0.1)",
-                                    transform: "scale(1.1)",
-                                },
-                                transition: "all 0.2s",
-                                width: 48,
-                                height: 48,
-                            }}
-                        >
-                            <ChatBubbleOutline sx={{ fontSize: 26 }} />
-                        </IconButton>
-
-                        <IconButton
-                            sx={{
-                                color: "#000000",
-                                backgroundColor: "rgba(0,0,0,0.05)",
-                                backdropFilter: "blur(10px)",
-                                "&:hover": {
-                                    backgroundColor: "rgba(0,0,0,0.1)",
-                                    transform: "scale(1.1)",
-                                },
-                                transition: "all 0.2s",
-                                width: 48,
-                                height: 48,
-                            }}
-                        >
-                            <ReplyOutlined sx={{ fontSize: 26, transform: 'rotate(-5deg) scaleX(-1)'}} />
-                        </IconButton>
-                        <IconButton
-                            sx={{
-                                color: "#000000",
-                                backgroundColor: "rgba(0,0,0,0.05)",
-                                backdropFilter: "blur(10px)",
-                                "&:hover": {
-                                    backgroundColor: "rgba(0,0,0,0.1)",
-                                    transform: "scale(1.1)",
-                                },
-                                transition: "all 0.2s",
-                                width: 48,
-                                height: 48,
-                            }}
-                        >
-                            <BookmarkBorder sx={{ fontSize: 26 }} onClick={() => console.log("hello")} />
-                        </IconButton>
-                        <IconButton
-                            sx={{
-                                color: "#000000",
-                                backgroundColor: "rgba(0,0,0,0.05)",
-                                backdropFilter: "blur(10px)",
-                                "&:hover": {
-                                    backgroundColor: "rgba(0,0,0,0.1)",
-                                    transform: "scale(1.1)",
-                                },
-                                transition: "all 0.2s",
-                                width: 48,
-                                height: 48,
-                            }}
-                        >
-                            <OutlinedFlag sx={{ fontSize: 26 }} />
-                        </IconButton>
                     </Box>
                 </Box>
             </Box>
@@ -738,48 +790,6 @@ const Buzz = () => {
 
             }}
         >
-            <Box
-                sx={{
-                    position: "absolute",
-                    top: 0,
-                    left: 0,
-                    right: 0,
-                    zIndex: 100,
-                    background: "linear-gradient(to bottom, rgba(245,245,245,0.95) 0%, rgba(245,245,245,0.7) 0%, transparent 0%)",
-                    pointerEvents: "none",
-                }}
-            >
-                <Box
-                    sx={{
-                        display: "flex",
-                        justifyContent: "end",
-                        alignItems: "center",
-                        px: { xs: 2, md: 3 },
-                        py: 2,
-                        pointerEvents: "auto",
-                    }}
-                >
-                    <IconButton
-                        aria-label="add community post"
-                        onClick={() => setPostOpen(true)}
-                        sx={{
-                            width: { xs: 44, md: 50 },
-                            height: { xs: 44, md: 50 },
-                            borderRadius: "50%",
-                            border: "2px solid #222",
-                            color: "#222",
-                            backgroundColor: "rgba(255,255,255,0.9)",
-                            "&:hover": {
-                                backgroundColor: "#fff",
-                                transform: "scale(1.05)",
-                            },
-                            transition: "all 0.2s",
-                        }}
-                    >
-                        <AddRounded sx={{ fontSize: { xs: 26, md: 30 } }} />
-                    </IconButton>
-                </Box>
-            </Box>
 
             <Box
                 ref={containerRef}
