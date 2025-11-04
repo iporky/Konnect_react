@@ -40,10 +40,10 @@ export default function SearchResults() {
     const stored = localStorage.getItem('guestSearchCount');
     return stored ? parseInt(stored, 10) : 0;
   });
-  const MAX_GUEST_SEARCHES = 3;
+  const MAX_GUEST_SEARCHES = 100;
 
   // Helper functions for search limit
-  const getRemainingSearches = () => Math.max(0, MAX_GUEST_SEARCHES - searchCount);
+  // const getRemainingSearches = () => Math.max(0, MAX_GUEST_SEARCHES - searchCount);
   const hasExceededLimit = () => searchCount >= MAX_GUEST_SEARCHES;
 
   // Reset search count when user logs in
@@ -701,7 +701,7 @@ export default function SearchResults() {
         })()}
         
         {/* Search limit indicator for non-authenticated users */}
-        {!user && searchCount > 0 && (
+        {/* {!user && searchCount > 0 && (
           <Box sx={{ 
             textAlign: 'center', 
             mt: 1, 
@@ -720,7 +720,7 @@ export default function SearchResults() {
               )}
             </Typography>
           </Box>
-        )}
+        )} */}
         
         <Paper
           component="form"
