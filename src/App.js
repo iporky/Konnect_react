@@ -8,7 +8,7 @@ import { selectUser, setUser, clearUser } from './store';
 import GoogleAnalytics from './components/GoogleAnalytics';
 import Navigation from './components/Navigation';
 import Home from './pages/Home';
-import Buzz from './pages/Buzz';
+// import Buzz from './pages/Buzz';
 import AboutUs from './pages/AboutUs';
 import Library from './pages/Library';
 import Profile from './pages/Profile';
@@ -116,7 +116,7 @@ function App() {
             <Box sx={{ flex: 1, overflowY: 'auto', overflowX: 'hidden', WebkitOverflowScrolling: 'touch', scrollbarWidth: 'none', '&::-webkit-scrollbar': { width: 8 }, '&::-webkit-scrollbar-thumb': { backgroundColor: 'rgba(0,0,0,0.18)', borderRadius: 4 } }}>
               <Routes>
                 <Route path="/" element={<Home />} />
-                <Route path="/buzz" element={<Buzz />} />
+                {/* <Route path="/buzz" element={<Buzz />} /> */}
                 <Route path="/about" element={<AboutUs />} />
                 <Route path="/business" element={<Business />} />
                 <Route path="/linkBusiness" element={<LinkBusiness />} />
