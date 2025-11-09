@@ -1,6 +1,8 @@
 // Add outlined icons for search bar toggles
 import FeedbackOutlined from '@mui/icons-material/FeedbackOutlined';
 import MoreHoriz from '@mui/icons-material/MoreHoriz';
+import AccessTime from '@mui/icons-material/AccessTime';
+import LocationOn from '@mui/icons-material/LocationOn';
 import {
   Box,
   Button,
@@ -20,27 +22,35 @@ import FeedbackPopup from '../components/FeedbackPopup';
 import Footer from '../components/Footer';
 import Navigation from '../components/Navigation';
 import SearchInput from '../components/SearchInput';
+import ServiceBookingModal from '../components/ServiceBookingModal';
 import TrendingSearches from '../components/TrendingSearches';
 import { useLanguage } from '../contexts/LanguageContext';
 import useSpeechRecognition from '../hooks/useSpeechRecognition';
 import { selectUser } from '../store';
+import weatherAPI from '../services/weatherAPI';
 
 const imgBase = process.env.PUBLIC_URL;
 const categoryIcons = [
-  { icon: `${imgBase}/images/home/1.Chungju.svg`, label: 'Chungju', color: '#8888881A', url: 'https://www.chungju.go.kr/english/index.do' },
-  { icon: `${imgBase}/images/home/2.Seoul.png`, label: 'Seoul', color: '#8888881A', url: 'https://english.seoul.go.kr' },
-  { icon: `${imgBase}/images/home/3.%20Busan.png`, label: 'Busan', color: '#8888881A', url: 'https://english.busan.go.kr' },
-  { icon: `${imgBase}/images/home/4.Daegu.png`, label: 'Daegu', color: '#8888881A', url: 'https://daegu.go.kr/english/index.do' },
-  { icon: `${imgBase}/images/home/6.%20Gwangju.png`, label: 'Gwangju', color: '#8888881A', url: 'https://gwangju.go.kr/eng/' },
-  { icon: `${imgBase}/images/home/7.%20Daejeon.png`, label: 'Daejeon', color: '#8888881A', url: 'https://www.daejeon.go.kr/english/index.do' },
-  { icon: `${imgBase}/images/home/8.%20Ulsan.png`, label: 'Ulsan', color: '#8888881A', url: 'https://www.ulsan.go.kr/u/english/main.ulsan' },
-  { icon: `${imgBase}/images/home/9.%20Sejong.png`, label: 'Sejong', color: '#8888881A', url: 'https://www.sejong.go.kr/eng.do' },
-  { icon: `${imgBase}/images/home/10.%20Gyeonggi.svg`, label: 'Gyeonggi', color: '#8888881A', url: 'https://english.gg.go.kr' },
-  { icon: `${imgBase}/images/home/11.%20gangwon.png`, label: 'Gangwon', color: '#8888881A', url: 'https://state.gwd.go.kr/portal' },
-  { icon: `${imgBase}/images/home/14.%20North_Jeolla.svg`, label: 'N. Jeolla', color: '#8888881A', url: 'https://www.jeonbuk.go.kr/eng/index.jeonbuk' },
-  { icon: `${imgBase}/images/home/15.%20South_Jeolla.svg`, label: 'S. Jeolla', color: '#8888881A', url: 'https://www.jeonbuk.go.kr/eng/index.jeonbuk' },
-  { icon: `${imgBase}/images/home/18.%20Jeju.png`, label: 'Jeju', color: '#8888881A', url: 'https://www.jeju.go.kr' },
+  { icon: `${imgBase}/images/home/1.Chungju.svg`, label: 'Chungju', color: '#8888881A', url: 'https://www.chungju.go.kr/english/index.do', hideCategory: false },
+  { icon: `${imgBase}/images/home/2.Seoul.png`, label: 'Seoul', color: '#8888881A', url: 'https://english.seoul.go.kr', hideCategory: false },
+  { icon: `${imgBase}/images/home/3.%20Busan.png`, label: 'Busan', color: '#8888881A', url: 'https://english.busan.go.kr', hideCategory: false },
+  { icon: `${imgBase}/images/home/4.Daegu.png`, label: 'Daegu', color: '#8888881A', url: 'https://daegu.go.kr/english/index.do', hideCategory: false },
+  { icon: `${imgBase}/images/home/6.%20Gwangju.png`, label: 'Gwangju', color: '#8888881A', url: 'https://gwangju.go.kr/eng/', hideCategory: false },
+  { icon: `${imgBase}/images/home/7.%20Daejeon.png`, label: 'Daejeon', color: '#8888881A', url: 'https://www.daejeon.go.kr/english/index.do', hideCategory: false },
+  { icon: `${imgBase}/images/home/8.%20Ulsan.png`, label: 'Ulsan', color: '#8888881A', url: 'https://www.ulsan.go.kr/u/english/main.ulsan', hideCategory: false },
+  { icon: `${imgBase}/images/home/9.%20Sejong.png`, label: 'Sejong', color: '#8888881A', url: 'https://www.sejong.go.kr/eng.do', hideCategory: false },
+  { icon: `${imgBase}/images/home/10.%20Gyeonggi.svg`, label: 'Gyeonggi', color: '#8888881A', url: 'https://english.gg.go.kr', hideCategory: false },
+  { icon: `${imgBase}/images/home/11.%20gangwon.png`, label: 'Gangwon', color: '#8888881A', url: 'https://state.gwd.go.kr/portal', hideCategory: false },
+  { icon: `${imgBase}/images/home/14.%20North_Jeolla.svg`, label: 'N. Jeolla', color: '#8888881A', url: 'https://www.jeonbuk.go.kr/eng/index.jeonbuk', hideCategory: false },
+  { icon: `${imgBase}/images/home/15.%20South_Jeolla.svg`, label: 'S. Jeolla', color: '#8888881A', url: 'https://www.jeonbuk.go.kr/eng/index.jeonbuk', hideCategory: false },
+  { icon: `${imgBase}/images/home/18.%20Jeju.png`, label: 'Jeju', color: '#8888881A', url: 'https://www.jeju.go.kr', hideCategory: false },
 ];
+
+// Filter out hidden categories
+const visibleCategoryIcons = categoryIcons.filter(category => !category.hideCategory);
+
+// Flag to hide/show the entire category icons component
+const hideCategoryComponent = true; // Set to true to hide entire category section
 
 const Home = () => {
   const navigate = useNavigate();
@@ -316,6 +326,13 @@ const Home = () => {
   const [showAllCategories, setShowAllCategories] = useState(false);
   const [postOpen, setPostOpen] = useState(false);
   const [feedbackOpen, setFeedbackOpen] = useState(false);
+  const [serviceBookingOpen, setServiceBookingOpen] = useState(false);
+  
+  // Weather state
+  const [weatherData, setWeatherData] = useState(null);
+  const [weatherLoading, setWeatherLoading] = useState(true);
+  const [currentDateTime, setCurrentDateTime] = useState(new Date());
+  
   // Password gating removed for standard search
   // Desktop: number of category tiles visible before the "More" tile
   const DESKTOP_VISIBLE = 6; // collapsed: 6 + More = 7 tiles in row 1
@@ -326,7 +343,33 @@ const Home = () => {
     const token = localStorage.getItem('token');
     setIsAuthenticated(!!token);
 
-    // Add voice pulse animation to document head
+    // Load weather data
+    const loadWeather = async () => {
+      try {
+        setWeatherLoading(true);
+        console.log('Loading weather data...');
+        const weather = await weatherAPI.getCurrentLocationWeather();
+        console.log('Weather data loaded:', weather);
+        setWeatherData(weather);
+      } catch (error) {
+        console.error('Failed to load weather:', error);
+        // Use mock data as fallback
+        const mockData = weatherAPI.getMockWeatherData();
+        console.log('Using mock weather data:', mockData);
+        setWeatherData(mockData);
+      } finally {
+        setWeatherLoading(false);
+      }
+    };
+
+    loadWeather();
+
+    // Update time every minute
+    const timeInterval = setInterval(() => {
+      setCurrentDateTime(new Date());
+    }, 60000);
+
+    // Add voice pulse animation and loading pulse to document head
     const style = document.createElement('style');
     style.textContent = `
       @keyframes voice-pulse {
@@ -337,10 +380,20 @@ const Home = () => {
           box-shadow: 0 0 30px rgba(50, 205, 50, 0.8), 0 0 60px rgba(50, 205, 50, 0.6), 0 0 90px rgba(50, 205, 50, 0.4);
         }
       }
+      
+      @keyframes pulse {
+        0%, 100% { 
+          opacity: 1;
+        }
+        50% { 
+          opacity: 0.5;
+        }
+      }
     `;
     document.head.appendChild(style);
 
     return () => {
+      clearInterval(timeInterval);
       document.head.removeChild(style);
     };
   }, []);
@@ -563,8 +616,172 @@ const Home = () => {
             />
           </Box>
 
+          {/* Weather Info and Action Buttons Section */}
+          <Box sx={{ 
+            display: { xs: 'none', md: 'flex' }, 
+            justifyContent: 'space-between', 
+            alignItems: 'center',
+            mb: 4,
+            mt: -1,
+            maxWidth: '690px', // Slightly smaller to fit better under search
+            mx: 'auto', // Center align like search input
+            px: 2 // More padding to bring content inward
+          }}>
+            {/* Weather and DateTime Info - Left Side */}
+            <Box sx={{ display: 'flex', alignItems: 'flex-start', gap: 0.5, flexDirection: 'row'}}>
+              {weatherLoading ? (
+                <Box sx={{ display: 'flex', alignItems: 'flex-start', gap: 0.5 }}>
+                  <Box sx={{ 
+                    width: 20, 
+                    height: 20, 
+                    borderRadius: '50%', 
+                    backgroundColor: '#f0f0f0',
+                    animation: 'pulse 1.5s infinite'
+                  }} />
+                  <Box sx={{ display: 'flex', flexDirection: 'row', gap: 0.5 }}>
+                    <Box sx={{ 
+                      width: 50, 
+                      height: 13, 
+                      backgroundColor: '#f0f0f0', 
+                      borderRadius: 1, 
+                      mb: 0.5,
+                      animation: 'pulse 1.5s infinite'
+                    }} />
+                    <Box sx={{ 
+                      width: 60, 
+                      height: 13, 
+                      backgroundColor: '#f0f0f0', 
+                      borderRadius: 1,
+                      animation: 'pulse 1.5s infinite'
+                    }} />
+                  </Box>
+                  <Box sx={{ ml: 2, display: 'flex', flexDirection: 'row', gap: 0.5 }}>
+                    <Box sx={{ 
+                      width: 100, 
+                      height: 13, 
+                      backgroundColor: '#f0f0f0', 
+                      borderRadius: 1,
+                      animation: 'pulse 1.5s infinite'
+                    }} />
+                    <Box sx={{ 
+                      width: 80, 
+                      height: 13, 
+                      backgroundColor: '#f0f0f0', 
+                      borderRadius: 1,
+                      animation: 'pulse 1.5s infinite'
+                    }} />
+                  </Box>
+                </Box>
+              ) : weatherData ? (
+                <>
+                  <Box sx={{ display: 'flex', alignItems: 'flex-start', gap: 0.2 }}>
+                    <img 
+                      src={weatherAPI.getWeatherIconUrl(weatherData.icon)}
+                      alt={weatherData.description || 'Weather'}
+                      style={{ 
+                        width: 40, 
+                        height: 40, 
+                        marginTop: -8,
+                        objectFit: 'contain',
+                        objectPosition: 'center'
+                      }}
+                      onError={(e) => {
+                        console.log('Weather icon failed to load, using fallback');
+                        e.target.src = 'https://openweathermap.org/img/wn/01d@2x.png';
+                      }}
+                    />
+                    <Box sx={{ display: 'flex', flexDirection: 'row', justifyContent: 'top', gap: 0.5 }}>
+                      <Typography variant="caption" sx={{ fontWeight: 400, color: '#333', fontSize: '13px' }}>
+                        {weatherData.temperature || 0}°C,
+                      </Typography>
+                      <Typography variant="caption" sx={{ color: '#666', textTransform: 'capitalize', fontSize: '13px' }}>
+                        {weatherData.description || 'Unknown'}
+                      </Typography>
+                    </Box>
+                  </Box>
+                  <Box sx={{ ml: 0.5, display: 'flex', flexDirection: 'row', gap: 0.5 }}>
+                    <Box sx={{ display: 'flex', alignItems: 'center', gap: 0.5 }}>
+                      <AccessTime sx={{ fontSize: 16, color: '#6F95BD' }} />
+                      <Typography variant="body2" sx={{ fontWeight: 500, color: '#333', fontSize: '13px' }}>
+                        {currentDateTime.toLocaleDateString('en-US', { 
+                          month: 'short', 
+                          day: 'numeric' 
+                        })} • {currentDateTime.toLocaleTimeString('en-US', { 
+                          hour: '2-digit', 
+                          minute: '2-digit',
+                          hour12: false
+                        })}
+                      </Typography>
+                    </Box>
+                    <Box sx={{ display: 'flex', alignItems: 'center', gap: 0.5 }}>
+                      <LocationOn sx={{ fontSize: 16, color: '#6F95BD' }} />
+                      <Typography variant="body2" sx={{ color: '#666', fontSize: '13px' }}>
+                        {weatherData.location || 'Unknown Location'}
+                      </Typography>
+                    </Box>
+                  </Box>
+                </>
+              ) : (
+                <Box sx={{ display: 'flex', alignItems: 'center', gap: 0.5 }}>
+                  <Typography variant="body2" sx={{ color: '#666' }}>
+                    Weather data unavailable
+                  </Typography>
+                </Box>
+              )}
+            </Box>
+
+            {/* Action Buttons - Right Side */}
+            <Box sx={{ display: 'flex', gap: 1.5 }}>
+              <Button
+                variant="contained"
+                onClick={() => setPostOpen(true)}
+                sx={{
+                  borderRadius: '20px',
+                  px: 2.5,
+                  py: 0.75,
+                  textTransform: 'none',
+                  fontWeight: 600,
+                  fontSize: '13px',
+                  backgroundColor: '#6F95BD',
+                  color: '#ffffff',
+                  boxShadow: '0 2px 8px rgba(111, 149, 189, 0.3)',
+                  minWidth: '120px',
+                  '&:hover': {
+                    backgroundColor: '#5A7BA3',
+                    boxShadow: '0 4px 12px rgba(111, 149, 189, 0.4)'
+                  }
+                }}
+              >
+                Post an Event
+              </Button>
+              <Button
+                variant="outlined"
+                onClick={() => setServiceBookingOpen(true)}
+                sx={{
+                  borderRadius: '20px',
+                  px: 2.5,
+                  py: 0.75,
+                  textTransform: 'none',
+                  fontWeight: 600,
+                  fontSize: '13px',
+                  border: '2px solid #6F95BD',
+                  color: '#6F95BD',
+                  backgroundColor: 'transparent',
+                  minWidth: '120px',
+                  '&:hover': {
+                    backgroundColor: 'rgba(111, 149, 189, 0.1)',
+                    borderColor: '#5A7BA3'
+                  }
+                }}
+              >
+                Book a Service
+              </Button>
+            </Box>
+          </Box>
+
           {/* Category Icons - desktop: collapsed => first 6 + More; expanded => first 7 icons; remaining left-aligned with More at end */}
           <LayoutGroup>
+          {!hideCategoryComponent && (
           <motion.div
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
@@ -575,7 +792,7 @@ const Home = () => {
               <Box sx={{ width: 'fit-content' }}>
                 {/* Row 1: first N categories; show More here only when collapsed */}
                 <Box sx={{ display: 'flex', gap: '30px', mb: showAllCategories ? 0.5 : 0, justifyContent: 'flex-start' }}>
-                  {(showAllCategories ? categoryIcons.slice(0, ROW1_COUNT) : categoryIcons.slice(0, DESKTOP_VISIBLE)).map((category, index) => (
+                  {(showAllCategories ? visibleCategoryIcons.slice(0, ROW1_COUNT) : visibleCategoryIcons.slice(0, DESKTOP_VISIBLE)).map((category, index) => (
                     <Box
                       key={index}
                       onClick={() => handleCategoryClick(category)}
@@ -719,6 +936,7 @@ const Home = () => {
               </Box>
             </Box>
           </motion.div>
+          )}
 
           {/* Carousel and Trending - hidden on mobile per mock; layout animates when tiles expand/collapse */}
           <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ duration: 0.8, delay: 0.6 }}>
@@ -737,6 +955,7 @@ const Home = () => {
         </Container>
         
         {/* Mobile category row (only the shown icons) */}
+        {!hideCategoryComponent && (
         <Box
           sx={{
             position: 'absolute',
@@ -796,9 +1015,10 @@ const Home = () => {
             </Paper>
           </Box>
         </Box>
+        )}
 
         {/* Extra categories row when expanded (mobile only) */}
-        {showAllCategories && (
+        {!hideCategoryComponent && showAllCategories && (
           <Box
             sx={{
               position: 'absolute',
@@ -869,6 +1089,9 @@ const Home = () => {
 
   {/* Community Post Dialog */}
   <CommunityPostDialog open={postOpen} onClose={() => setPostOpen(false)} onSubmit={(payload) => console.log('post payload', payload)} />
+  
+  {/* Service Booking Modal */}
+  <ServiceBookingModal open={serviceBookingOpen} onClose={() => setServiceBookingOpen(false)} />
       </Box>
     </>
   );

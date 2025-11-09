@@ -24,7 +24,7 @@ import { useLocation, useNavigate } from 'react-router-dom';
 import { useLanguage } from '../contexts/LanguageContext';
 import { getAllSupportedLanguages } from '../utils/speechLanguages';
 import {
-  CustomBuzzIcon,
+  // CustomBuzzIcon,
   CustomHomeIcon,
   CustomLanguageIcon,
   CustomLibraryIcon
@@ -53,12 +53,12 @@ const Navigation = ({ user, onLogout }) => {
       path: '/', 
       requireAuth: false 
     },
-    { 
-      text: 'Buzz', 
-      icon: <CustomBuzzIcon selected={location.pathname === '/buzz'} />, 
-      path: '/buzz', 
-      requireAuth: false 
-    },
+    // { 
+    //   text: 'Buzz', 
+    //   icon: <CustomBuzzIcon selected={location.pathname === '/buzz'} />, 
+    //   path: '/buzz', 
+    //   requireAuth: false 
+    // },
     { 
       text: 'Library', 
       icon: <CustomLibraryIcon selected={location.pathname === '/library'} />, 
